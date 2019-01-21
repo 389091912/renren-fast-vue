@@ -3,7 +3,7 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="130px">
     <el-form-item label="产品名称" prop="productName">
       <el-input v-model="dataForm.productName" placeholder="产品名称"></el-input>
     </el-form-item>
@@ -23,10 +23,26 @@
       <el-input v-model="dataForm.productWeight" placeholder="产品克数"></el-input>
     </el-form-item>
     <el-form-item label="产品图片" prop="productImage">
-      <el-input v-model="dataForm.productImage" placeholder="产品图片"></el-input>
+     <el-upload
+      class="avatar-uploader"
+      action="https://jsonplaceholder.typicode.com/posts/"
+      :show-file-list="false"
+      :on-success="handleAvatarSuccess"
+      :before-upload="beforeAvatarUpload">
+      <img v-if="imageUrl" :src="imageUrl" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+    </el-upload>
     </el-form-item>
     <el-form-item label="产品图纸" prop="productDrawing">
-      <el-input v-model="dataForm.productDrawing" placeholder="产品图纸"></el-input>
+      <el-upload
+        class="upload-demo"
+        drag
+        action="https://jsonplaceholder.typicode.com/posts/"
+        multiple>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
     </el-form-item>
     <el-form-item label="产品容量" prop="productVolume">
       <el-input v-model="dataForm.productVolume" placeholder="产品容量"></el-input>
@@ -35,22 +51,19 @@
       <el-input v-model="dataForm.productBatch" placeholder="产品批次"></el-input>
     </el-form-item>
     <el-form-item label="产品问题" prop="productQuestion">
-      <el-input v-model="dataForm.productQuestion" placeholder="产品问题"></el-input>
+      <el-input v-model="dataForm.productQuestion" type="textarea" placeholder="产品问题"></el-input>
     </el-form-item>
     <el-form-item label="产品组合套" prop="productAssort">
       <el-input v-model="dataForm.productAssort" placeholder="产品组合套"></el-input>
     </el-form-item>
     <el-form-item label="产品后续加工" prop="productTrailingProcess">
-      <el-input v-model="dataForm.productTrailingProcess" placeholder="产品后续加工"></el-input>
+      <el-input v-model="dataForm.productTrailingProcess" type="textarea" placeholder="产品后续加工"></el-input>
     </el-form-item>
     <el-form-item label="产品备注" prop="productRemark">
-      <el-input v-model="dataForm.productRemark" placeholder="产品备注"></el-input>
+      <el-input v-model="dataForm.productRemark" placeholder="产品备注" type="textarea"></el-input>
     </el-form-item>
     <el-form-item label="产品成品率" prop="yield">
-      <el-input v-model="dataForm.yield" placeholder="产品成品率"></el-input>
-    </el-form-item>
-    <el-form-item label="产品分类" prop="productCategory">
-      <el-input v-model="dataForm.productCategory" placeholder="产品分类"></el-input>
+      <el-input v-model="dataForm.yield"  placeholder="产品成品率"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -59,6 +72,34 @@
     </span>
   </el-dialog>
 </template>
+
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+</style>
+
+
 
 <script>
   export default {
@@ -112,27 +153,6 @@
           productVolume: [
             { required: true, message: '产品容量不能为空', trigger: 'blur' }
           ],
-          productBatch: [
-            { required: true, message: '产品批次不能为空', trigger: 'blur' }
-          ],
-          productQuestion: [
-            { required: true, message: '产品问题不能为空', trigger: 'blur' }
-          ],
-          productAssort: [
-            { required: true, message: '产品组合套不能为空', trigger: 'blur' }
-          ],
-          productTrailingProcess: [
-            { required: true, message: '产品后续加工不能为空', trigger: 'blur' }
-          ],
-          productRemark: [
-            { required: true, message: '产品备注不能为空', trigger: 'blur' }
-          ],
-          yield: [
-            { required: true, message: '产品成品率不能为空', trigger: 'blur' }
-          ],
-          productCategory: [
-            { required: true, message: '产品分类不能为空', trigger: 'blur' }
-          ]
         }
       }
     },
@@ -213,7 +233,23 @@
             })
           }
         })
-      }
+      },
+       handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      },
+    
     }
   }
 </script>
