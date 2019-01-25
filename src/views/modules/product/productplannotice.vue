@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('product:productplannotice:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:productplannotice:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -29,40 +29,130 @@
         label="ID">
       </el-table-column>
       <el-table-column
+        prop="deviceId"
+        header-align="center"
+        align="center"
+        label="设备编号">
+      </el-table-column>
+      <el-table-column
         prop="productId"
         header-align="center"
         align="center"
-        label="产品ID">
+        label="产品编号">
       </el-table-column>
       <el-table-column
-        prop="zhiNumber"
+        prop="modelId"
         header-align="center"
         align="center"
-        label="只数">
+        label="模具编号">
+      </el-table-column>
+      <el-table-column
+        prop="customerProductNo"
+        header-align="center"
+        align="center"
+        label="客户编号">
+      </el-table-column>
+      <el-table-column
+        prop="materialWeight"
+        header-align="center"
+        align="center"
+        label="料重">
+      </el-table-column>
+      <el-table-column
+        prop="volume"
+        header-align="center"
+        align="center"
+        label="容量">
+      </el-table-column>
+      <el-table-column
+        prop="orderId"
+        header-align="center"
+        align="center"
+        label="订单id">
+      </el-table-column>
+      <el-table-column
+        prop="orderNumber"
+        header-align="center"
+        align="center"
+        label="订单数量">
+      </el-table-column>
+      <el-table-column
+        prop="repertoryNumber"
+        header-align="center"
+        align="center"
+        label="库存数量">
+      </el-table-column>
+      <el-table-column
+        prop="needNumber"
+        header-align="center"
+        align="center"
+        label="实际需求数量">
+      </el-table-column>
+      <el-table-column
+        prop="customerProductSytle"
+        header-align="center"
+        align="center"
+        label="客户样品 有 无">
+      </el-table-column>
+      <el-table-column
+        prop="bottleCapSuit"
+        header-align="center"
+        align="center"
+        label="瓶盖套装 有 无">
+      </el-table-column>
+      <el-table-column
+        prop="followUpProcess"
+        header-align="center"
+        align="center"
+        label="后续加工">
+      </el-table-column>
+      <el-table-column
+        prop="packRequire"
+        header-align="center"
+        align="center"
+        label="包装要求">
       </el-table-column>
       <el-table-column
         prop="boxId"
         header-align="center"
         align="center"
-        label="纸箱id">
+        label="纸箱编号">
       </el-table-column>
       <el-table-column
-        prop="boxNumber"
+        prop="customerRequire"
         header-align="center"
         align="center"
-        label="箱数">
+        label="客户要求">
       </el-table-column>
       <el-table-column
-        prop="productNumber"
+        prop="bottleHight"
         header-align="center"
         align="center"
-        label="入库数量">
+        label="瓶身总高度">
       </el-table-column>
       <el-table-column
-        prop="putInTime"
+        prop="bottleInDiameter"
         header-align="center"
         align="center"
-        label="入库时间">
+        label="瓶口内径">
+      </el-table-column>
+      <el-table-column
+        prop="headNeckHeight"
+        header-align="center"
+        align="center"
+        label="头径高度">
+      </el-table-column>
+      <el-table-column
+        prop="bottleOutDiameter"
+        header-align="center"
+        align="center"
+        label="瓶口外径">
+      </el-table-column>
+      <el-table-column
+        prop="facadeRequire"
+        header-align="center"
+        align="center"
+        label="外观">
       </el-table-column>
       <el-table-column
         prop="remark"
@@ -127,7 +217,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './productputinstorage-add-or-update'
+  import AddOrUpdate from './productplannotice-add-or-update'
   export default {
     data () {
       return {
@@ -154,7 +244,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/product/productputinstorage/list'),
+          url: this.$http.adornUrl('/product/productplannotice/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -205,7 +295,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/product/productputinstorage/delete'),
+            url: this.$http.adornUrl('/product/productplannotice/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

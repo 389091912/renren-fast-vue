@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('product:productbox:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:productbox:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -29,40 +29,46 @@
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="productId"
+        prop="boxNo"
         header-align="center"
         align="center"
-        label="产品ID">
+        label="纸箱编号">
       </el-table-column>
       <el-table-column
-        prop="zhiNumber"
+        prop="body"
         header-align="center"
         align="center"
-        label="只数">
+        label="箱体">
       </el-table-column>
       <el-table-column
-        prop="boxId"
+        prop="parry"
         header-align="center"
         align="center"
-        label="纸箱id">
+        label="格挡">
+      </el-table-column>
+      <el-table-column
+        prop="spacer"
+        header-align="center"
+        align="center"
+        label="垫片">
       </el-table-column>
       <el-table-column
         prop="boxNumber"
         header-align="center"
         align="center"
-        label="箱数">
+        label="数量">
       </el-table-column>
       <el-table-column
-        prop="productNumber"
+        prop="costomer"
         header-align="center"
         align="center"
-        label="入库数量">
+        label="客户">
       </el-table-column>
       <el-table-column
-        prop="putInTime"
+        prop="location"
         header-align="center"
         align="center"
-        label="入库时间">
+        label="位置">
       </el-table-column>
       <el-table-column
         prop="remark"
@@ -98,7 +104,13 @@
         prop="status"
         header-align="center"
         align="center"
-        label="0为启用,1为禁止">
+        label="0为开启，1为禁止">
+      </el-table-column>
+      <el-table-column
+        prop="leaveNumber"
+        header-align="center"
+        align="center"
+        label=" 出库数量">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -127,7 +139,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './productputinstorage-add-or-update'
+  import AddOrUpdate from './productbox-add-or-update'
   export default {
     data () {
       return {
@@ -154,7 +166,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/product/productputinstorage/list'),
+          url: this.$http.adornUrl('/product/productbox/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -205,7 +217,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/product/productputinstorage/delete'),
+            url: this.$http.adornUrl('/product/productbox/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

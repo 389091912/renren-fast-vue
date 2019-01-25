@@ -3,7 +3,7 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="130px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
     <el-form-item label="架号" prop="siteNo">
       <el-input v-model="dataForm.siteNo" placeholder="架号"></el-input>
     </el-form-item>
@@ -61,6 +61,21 @@
     <el-form-item label="备注" prop="modelRemark">
       <el-input v-model="dataForm.modelRemark" placeholder="备注"></el-input>
     </el-form-item>
+    <el-form-item label="" prop="createTime">
+      <el-input v-model="dataForm.createTime" placeholder=""></el-input>
+    </el-form-item>
+    <el-form-item label="" prop="createUser">
+      <el-input v-model="dataForm.createUser" placeholder=""></el-input>
+    </el-form-item>
+    <el-form-item label="" prop="updateTime">
+      <el-input v-model="dataForm.updateTime" placeholder=""></el-input>
+    </el-form-item>
+    <el-form-item label="" prop="updateUser">
+      <el-input v-model="dataForm.updateUser" placeholder=""></el-input>
+    </el-form-item>
+    <el-form-item label="0为启用，1为禁止" prop="status">
+      <el-input v-model="dataForm.status" placeholder="0为启用，1为禁止"></el-input>
+    </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -75,7 +90,7 @@
       return {
         visible: false,
         dataForm: {
-          modelId: 0,
+          id: 0,
           siteNo: '',
           modelNo: '',
           productName: '',
@@ -94,7 +109,12 @@
           modelReceiptTime: '',
           customerName: '',
           state: '',
-          modelRemark: ''
+          modelRemark: '',
+          createTime: '',
+          createUser: '',
+          updateTime: '',
+          updateUser: '',
+          status: ''
         },
         dataRule: {
           siteNo: [
@@ -153,19 +173,34 @@
           ],
           modelRemark: [
             { required: true, message: '备注不能为空', trigger: 'blur' }
+          ],
+          createTime: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+          createUser: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+          updateTime: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+          updateUser: [
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+          status: [
+            { required: true, message: '0为启用，1为禁止不能为空', trigger: 'blur' }
           ]
         }
       }
     },
     methods: {
       init (id) {
-        this.dataForm.modelId = id || 0
+        this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
-          if (this.dataForm.modelId) {
+          if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/product/productmodel/info/${this.dataForm.modelId}`),
+              url: this.$http.adornUrl(`/product/productmodel/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
@@ -189,6 +224,11 @@
                 this.dataForm.customerName = data.productmodel.customerName
                 this.dataForm.state = data.productmodel.state
                 this.dataForm.modelRemark = data.productmodel.modelRemark
+                this.dataForm.createTime = data.productmodel.createTime
+                this.dataForm.createUser = data.productmodel.createUser
+                this.dataForm.updateTime = data.productmodel.updateTime
+                this.dataForm.updateUser = data.productmodel.updateUser
+                this.dataForm.status = data.productmodel.status
               }
             })
           }
@@ -199,10 +239,10 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/product/productmodel/${!this.dataForm.modelId ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/product/productmodel/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'modelId': this.dataForm.modelId || undefined,
+                'id': this.dataForm.id || undefined,
                 'siteNo': this.dataForm.siteNo,
                 'modelNo': this.dataForm.modelNo,
                 'productName': this.dataForm.productName,
@@ -221,7 +261,12 @@
                 'modelReceiptTime': this.dataForm.modelReceiptTime,
                 'customerName': this.dataForm.customerName,
                 'state': this.dataForm.state,
-                'modelRemark': this.dataForm.modelRemark
+                'modelRemark': this.dataForm.modelRemark,
+                'createTime': this.dataForm.createTime,
+                'createUser': this.dataForm.createUser,
+                'updateTime': this.dataForm.updateTime,
+                'updateUser': this.dataForm.updateUser,
+                'status': this.dataForm.status
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

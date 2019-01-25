@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('product:productorder:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:productorder:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -26,49 +26,43 @@
         prop="id"
         header-align="center"
         align="center"
-        label="ID">
+        label="">
       </el-table-column>
       <el-table-column
-        prop="productId"
+        prop="orderNo"
         header-align="center"
         align="center"
-        label="产品ID">
+        label="订单编号">
       </el-table-column>
       <el-table-column
-        prop="zhiNumber"
+        prop="orderTime"
         header-align="center"
         align="center"
-        label="只数">
+        label="订单时间">
       </el-table-column>
       <el-table-column
-        prop="boxId"
+        prop="employeeId"
         header-align="center"
         align="center"
-        label="纸箱id">
+        label="员工id">
       </el-table-column>
       <el-table-column
-        prop="boxNumber"
+        prop="customer"
         header-align="center"
         align="center"
-        label="箱数">
+        label="客户">
       </el-table-column>
       <el-table-column
-        prop="productNumber"
+        prop="deliveryTime"
         header-align="center"
         align="center"
-        label="入库数量">
+        label="交货时间">
       </el-table-column>
       <el-table-column
-        prop="putInTime"
+        prop="createUser"
         header-align="center"
         align="center"
-        label="入库时间">
-      </el-table-column>
-      <el-table-column
-        prop="remark"
-        header-align="center"
-        align="center"
-        label="备注">
+        label="创建者">
       </el-table-column>
       <el-table-column
         prop="createTime"
@@ -77,10 +71,10 @@
         label="创建时间">
       </el-table-column>
       <el-table-column
-        prop="createUser"
+        prop="updateId"
         header-align="center"
         align="center"
-        label="创建人员id">
+        label="更新者">
       </el-table-column>
       <el-table-column
         prop="updateTime"
@@ -89,16 +83,16 @@
         label="更新时间">
       </el-table-column>
       <el-table-column
-        prop="updateUser"
-        header-align="center"
-        align="center"
-        label="更新人员id">
-      </el-table-column>
-      <el-table-column
         prop="status"
         header-align="center"
         align="center"
-        label="0为启用,1为禁止">
+        label="订单状态 0为正常订单正常生产，1为取消订单，2为订单加急，3为订单挂起">
+      </el-table-column>
+      <el-table-column
+        prop="remark"
+        header-align="center"
+        align="center"
+        label="备注">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -127,7 +121,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './productputinstorage-add-or-update'
+  import AddOrUpdate from './productorder-add-or-update'
   export default {
     data () {
       return {
@@ -154,7 +148,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/product/productputinstorage/list'),
+          url: this.$http.adornUrl('/product/productorder/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -205,7 +199,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/product/productputinstorage/delete'),
+            url: this.$http.adornUrl('/product/productorder/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

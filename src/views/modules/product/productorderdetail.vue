@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('product:productorderdetail:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:productorderdetail:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -29,40 +29,22 @@
         label="ID">
       </el-table-column>
       <el-table-column
+        prop="orderId"
+        header-align="center"
+        align="center"
+        label="订单id">
+      </el-table-column>
+      <el-table-column
         prop="productId"
         header-align="center"
         align="center"
         label="产品ID">
       </el-table-column>
       <el-table-column
-        prop="zhiNumber"
-        header-align="center"
-        align="center"
-        label="只数">
-      </el-table-column>
-      <el-table-column
-        prop="boxId"
-        header-align="center"
-        align="center"
-        label="纸箱id">
-      </el-table-column>
-      <el-table-column
-        prop="boxNumber"
-        header-align="center"
-        align="center"
-        label="箱数">
-      </el-table-column>
-      <el-table-column
         prop="productNumber"
         header-align="center"
         align="center"
-        label="入库数量">
-      </el-table-column>
-      <el-table-column
-        prop="putInTime"
-        header-align="center"
-        align="center"
-        label="入库时间">
+        label="订单数量">
       </el-table-column>
       <el-table-column
         prop="remark"
@@ -98,7 +80,7 @@
         prop="status"
         header-align="center"
         align="center"
-        label="0为启用,1为禁止">
+        label="0为等待生产，1为取消生产，2为生产中，3为生产完成。">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -127,7 +109,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './productputinstorage-add-or-update'
+  import AddOrUpdate from './productorderdetail-add-or-update'
   export default {
     data () {
       return {
@@ -154,7 +136,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/product/productputinstorage/list'),
+          url: this.$http.adornUrl('/product/productorderdetail/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -205,7 +187,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/product/productputinstorage/delete'),
+            url: this.$http.adornUrl('/product/productorderdetail/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

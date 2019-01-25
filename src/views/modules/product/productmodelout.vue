@@ -29,7 +29,7 @@
         label="模具ID">
       </el-table-column>
       <el-table-column
-        prop="modelId"
+        prop="modelNo"
         header-align="center"
         align="center"
         label="模具编号">
@@ -129,6 +129,36 @@
         header-align="center"
         align="center"
         label="收货日期">
+      </el-table-column>
+      <el-table-column
+        prop="createTime"
+        header-align="center"
+        align="center"
+        label="创建时间">
+      </el-table-column>
+      <el-table-column
+        prop="createUser"
+        header-align="center"
+        align="center"
+        label="创建人员">
+      </el-table-column>
+      <el-table-column
+        prop="updateTime"
+        header-align="center"
+        align="center"
+        label="更新时间">
+      </el-table-column>
+      <el-table-column
+        prop="updateUser"
+        header-align="center"
+        align="center"
+        label="更新人员">
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        header-align="center"
+        align="center"
+        label="0为启用，1为禁止">
       </el-table-column>
       <el-table-column
         fixed="right"

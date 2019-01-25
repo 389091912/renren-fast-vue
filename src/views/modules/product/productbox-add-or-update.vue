@@ -4,23 +4,26 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="产品ID" prop="productId">
-      <el-input v-model="dataForm.productId" placeholder="产品ID"></el-input>
+    <el-form-item label="纸箱编号" prop="boxNo">
+      <el-input v-model="dataForm.boxNo" placeholder="纸箱编号"></el-input>
     </el-form-item>
-    <el-form-item label="只数" prop="zhiNumber">
-      <el-input v-model="dataForm.zhiNumber" placeholder="只数"></el-input>
+    <el-form-item label="箱体" prop="body">
+      <el-input v-model="dataForm.body" placeholder="箱体"></el-input>
     </el-form-item>
-    <el-form-item label="纸箱id" prop="boxId">
-      <el-input v-model="dataForm.boxId" placeholder="纸箱id"></el-input>
+    <el-form-item label="格挡" prop="parry">
+      <el-input v-model="dataForm.parry" placeholder="格挡"></el-input>
     </el-form-item>
-    <el-form-item label="箱数" prop="boxNumber">
-      <el-input v-model="dataForm.boxNumber" placeholder="箱数"></el-input>
+    <el-form-item label="垫片" prop="spacer">
+      <el-input v-model="dataForm.spacer" placeholder="垫片"></el-input>
     </el-form-item>
-    <el-form-item label="入库数量" prop="productNumber">
-      <el-input v-model="dataForm.productNumber" placeholder="入库数量"></el-input>
+    <el-form-item label="数量" prop="boxNumber">
+      <el-input v-model="dataForm.boxNumber" placeholder="数量"></el-input>
     </el-form-item>
-    <el-form-item label="入库时间" prop="putInTime">
-      <el-input v-model="dataForm.putInTime" placeholder="入库时间"></el-input>
+    <el-form-item label="客户" prop="costomer">
+      <el-input v-model="dataForm.costomer" placeholder="客户"></el-input>
+    </el-form-item>
+    <el-form-item label="位置" prop="location">
+      <el-input v-model="dataForm.location" placeholder="位置"></el-input>
     </el-form-item>
     <el-form-item label="备注" prop="remark">
       <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
@@ -37,8 +40,11 @@
     <el-form-item label="更新人员id" prop="updateUser">
       <el-input v-model="dataForm.updateUser" placeholder="更新人员id"></el-input>
     </el-form-item>
-    <el-form-item label="0为启用,1为禁止" prop="status">
-      <el-input v-model="dataForm.status" placeholder="0为启用,1为禁止"></el-input>
+    <el-form-item label="0为开启，1为禁止" prop="status">
+      <el-input v-model="dataForm.status" placeholder="0为开启，1为禁止"></el-input>
+    </el-form-item>
+    <el-form-item label=" 出库数量" prop="leaveNumber">
+      <el-input v-model="dataForm.leaveNumber" placeholder=" 出库数量"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -55,37 +61,42 @@
         visible: false,
         dataForm: {
           id: 0,
-          productId: '',
-          zhiNumber: '',
-          boxId: '',
+          boxNo: '',
+          body: '',
+          parry: '',
+          spacer: '',
           boxNumber: '',
-          productNumber: '',
-          putInTime: '',
+          costomer: '',
+          location: '',
           remark: '',
           createTime: '',
           createUser: '',
           updateTime: '',
           updateUser: '',
-          status: ''
+          status: '',
+          leaveNumber: ''
         },
         dataRule: {
-          productId: [
-            { required: true, message: '产品ID不能为空', trigger: 'blur' }
+          boxNo: [
+            { required: true, message: '纸箱编号不能为空', trigger: 'blur' }
           ],
-          zhiNumber: [
-            { required: true, message: '只数不能为空', trigger: 'blur' }
+          body: [
+            { required: true, message: '箱体不能为空', trigger: 'blur' }
           ],
-          boxId: [
-            { required: true, message: '纸箱id不能为空', trigger: 'blur' }
+          parry: [
+            { required: true, message: '格挡不能为空', trigger: 'blur' }
+          ],
+          spacer: [
+            { required: true, message: '垫片不能为空', trigger: 'blur' }
           ],
           boxNumber: [
-            { required: true, message: '箱数不能为空', trigger: 'blur' }
+            { required: true, message: '数量不能为空', trigger: 'blur' }
           ],
-          productNumber: [
-            { required: true, message: '入库数量不能为空', trigger: 'blur' }
+          costomer: [
+            { required: true, message: '客户不能为空', trigger: 'blur' }
           ],
-          putInTime: [
-            { required: true, message: '入库时间不能为空', trigger: 'blur' }
+          location: [
+            { required: true, message: '位置不能为空', trigger: 'blur' }
           ],
           remark: [
             { required: true, message: '备注不能为空', trigger: 'blur' }
@@ -103,7 +114,10 @@
             { required: true, message: '更新人员id不能为空', trigger: 'blur' }
           ],
           status: [
-            { required: true, message: '0为启用,1为禁止不能为空', trigger: 'blur' }
+            { required: true, message: '0为开启，1为禁止不能为空', trigger: 'blur' }
+          ],
+          leaveNumber: [
+            { required: true, message: ' 出库数量不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -116,23 +130,25 @@
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/product/productputinstorage/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/product/productbox/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.productId = data.productputinstorage.productId
-                this.dataForm.zhiNumber = data.productputinstorage.zhiNumber
-                this.dataForm.boxId = data.productputinstorage.boxId
-                this.dataForm.boxNumber = data.productputinstorage.boxNumber
-                this.dataForm.productNumber = data.productputinstorage.productNumber
-                this.dataForm.putInTime = data.productputinstorage.putInTime
-                this.dataForm.remark = data.productputinstorage.remark
-                this.dataForm.createTime = data.productputinstorage.createTime
-                this.dataForm.createUser = data.productputinstorage.createUser
-                this.dataForm.updateTime = data.productputinstorage.updateTime
-                this.dataForm.updateUser = data.productputinstorage.updateUser
-                this.dataForm.status = data.productputinstorage.status
+                this.dataForm.boxNo = data.productbox.boxNo
+                this.dataForm.body = data.productbox.body
+                this.dataForm.parry = data.productbox.parry
+                this.dataForm.spacer = data.productbox.spacer
+                this.dataForm.boxNumber = data.productbox.boxNumber
+                this.dataForm.costomer = data.productbox.costomer
+                this.dataForm.location = data.productbox.location
+                this.dataForm.remark = data.productbox.remark
+                this.dataForm.createTime = data.productbox.createTime
+                this.dataForm.createUser = data.productbox.createUser
+                this.dataForm.updateTime = data.productbox.updateTime
+                this.dataForm.updateUser = data.productbox.updateUser
+                this.dataForm.status = data.productbox.status
+                this.dataForm.leaveNumber = data.productbox.leaveNumber
               }
             })
           }
@@ -143,22 +159,24 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/product/productputinstorage/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/product/productbox/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'productId': this.dataForm.productId,
-                'zhiNumber': this.dataForm.zhiNumber,
-                'boxId': this.dataForm.boxId,
+                'boxNo': this.dataForm.boxNo,
+                'body': this.dataForm.body,
+                'parry': this.dataForm.parry,
+                'spacer': this.dataForm.spacer,
                 'boxNumber': this.dataForm.boxNumber,
-                'productNumber': this.dataForm.productNumber,
-                'putInTime': this.dataForm.putInTime,
+                'costomer': this.dataForm.costomer,
+                'location': this.dataForm.location,
                 'remark': this.dataForm.remark,
                 'createTime': this.dataForm.createTime,
                 'createUser': this.dataForm.createUser,
                 'updateTime': this.dataForm.updateTime,
                 'updateUser': this.dataForm.updateUser,
-                'status': this.dataForm.status
+                'status': this.dataForm.status,
+                'leaveNumber': this.dataForm.leaveNumber
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

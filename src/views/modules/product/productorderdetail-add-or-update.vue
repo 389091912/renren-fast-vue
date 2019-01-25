@@ -4,23 +4,14 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+    <el-form-item label="订单id" prop="orderId">
+      <el-input v-model="dataForm.orderId" placeholder="订单id"></el-input>
+    </el-form-item>
     <el-form-item label="产品ID" prop="productId">
       <el-input v-model="dataForm.productId" placeholder="产品ID"></el-input>
     </el-form-item>
-    <el-form-item label="只数" prop="zhiNumber">
-      <el-input v-model="dataForm.zhiNumber" placeholder="只数"></el-input>
-    </el-form-item>
-    <el-form-item label="纸箱id" prop="boxId">
-      <el-input v-model="dataForm.boxId" placeholder="纸箱id"></el-input>
-    </el-form-item>
-    <el-form-item label="箱数" prop="boxNumber">
-      <el-input v-model="dataForm.boxNumber" placeholder="箱数"></el-input>
-    </el-form-item>
-    <el-form-item label="入库数量" prop="productNumber">
-      <el-input v-model="dataForm.productNumber" placeholder="入库数量"></el-input>
-    </el-form-item>
-    <el-form-item label="入库时间" prop="putInTime">
-      <el-input v-model="dataForm.putInTime" placeholder="入库时间"></el-input>
+    <el-form-item label="订单数量" prop="productNumber">
+      <el-input v-model="dataForm.productNumber" placeholder="订单数量"></el-input>
     </el-form-item>
     <el-form-item label="备注" prop="remark">
       <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
@@ -37,8 +28,8 @@
     <el-form-item label="更新人员id" prop="updateUser">
       <el-input v-model="dataForm.updateUser" placeholder="更新人员id"></el-input>
     </el-form-item>
-    <el-form-item label="0为启用,1为禁止" prop="status">
-      <el-input v-model="dataForm.status" placeholder="0为启用,1为禁止"></el-input>
+    <el-form-item label="0为等待生产，1为取消生产，2为生产中，3为生产完成。" prop="status">
+      <el-input v-model="dataForm.status" placeholder="0为等待生产，1为取消生产，2为生产中，3为生产完成。"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -55,12 +46,9 @@
         visible: false,
         dataForm: {
           id: 0,
+          orderId: '',
           productId: '',
-          zhiNumber: '',
-          boxId: '',
-          boxNumber: '',
           productNumber: '',
-          putInTime: '',
           remark: '',
           createTime: '',
           createUser: '',
@@ -69,23 +57,14 @@
           status: ''
         },
         dataRule: {
+          orderId: [
+            { required: true, message: '订单id不能为空', trigger: 'blur' }
+          ],
           productId: [
             { required: true, message: '产品ID不能为空', trigger: 'blur' }
           ],
-          zhiNumber: [
-            { required: true, message: '只数不能为空', trigger: 'blur' }
-          ],
-          boxId: [
-            { required: true, message: '纸箱id不能为空', trigger: 'blur' }
-          ],
-          boxNumber: [
-            { required: true, message: '箱数不能为空', trigger: 'blur' }
-          ],
           productNumber: [
-            { required: true, message: '入库数量不能为空', trigger: 'blur' }
-          ],
-          putInTime: [
-            { required: true, message: '入库时间不能为空', trigger: 'blur' }
+            { required: true, message: '订单数量不能为空', trigger: 'blur' }
           ],
           remark: [
             { required: true, message: '备注不能为空', trigger: 'blur' }
@@ -103,7 +82,7 @@
             { required: true, message: '更新人员id不能为空', trigger: 'blur' }
           ],
           status: [
-            { required: true, message: '0为启用,1为禁止不能为空', trigger: 'blur' }
+            { required: true, message: '0为等待生产，1为取消生产，2为生产中，3为生产完成。不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -116,23 +95,20 @@
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/product/productputinstorage/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/product/productorderdetail/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.productId = data.productputinstorage.productId
-                this.dataForm.zhiNumber = data.productputinstorage.zhiNumber
-                this.dataForm.boxId = data.productputinstorage.boxId
-                this.dataForm.boxNumber = data.productputinstorage.boxNumber
-                this.dataForm.productNumber = data.productputinstorage.productNumber
-                this.dataForm.putInTime = data.productputinstorage.putInTime
-                this.dataForm.remark = data.productputinstorage.remark
-                this.dataForm.createTime = data.productputinstorage.createTime
-                this.dataForm.createUser = data.productputinstorage.createUser
-                this.dataForm.updateTime = data.productputinstorage.updateTime
-                this.dataForm.updateUser = data.productputinstorage.updateUser
-                this.dataForm.status = data.productputinstorage.status
+                this.dataForm.orderId = data.productorderdetail.orderId
+                this.dataForm.productId = data.productorderdetail.productId
+                this.dataForm.productNumber = data.productorderdetail.productNumber
+                this.dataForm.remark = data.productorderdetail.remark
+                this.dataForm.createTime = data.productorderdetail.createTime
+                this.dataForm.createUser = data.productorderdetail.createUser
+                this.dataForm.updateTime = data.productorderdetail.updateTime
+                this.dataForm.updateUser = data.productorderdetail.updateUser
+                this.dataForm.status = data.productorderdetail.status
               }
             })
           }
@@ -143,16 +119,13 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/product/productputinstorage/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/product/productorderdetail/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
+                'orderId': this.dataForm.orderId,
                 'productId': this.dataForm.productId,
-                'zhiNumber': this.dataForm.zhiNumber,
-                'boxId': this.dataForm.boxId,
-                'boxNumber': this.dataForm.boxNumber,
                 'productNumber': this.dataForm.productNumber,
-                'putInTime': this.dataForm.putInTime,
                 'remark': this.dataForm.remark,
                 'createTime': this.dataForm.createTime,
                 'createUser': this.dataForm.createUser,

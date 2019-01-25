@@ -65,22 +65,22 @@
         label="产品克数">
       </el-table-column>
       <el-table-column
-        prop="productImage"
+        prop="productVolume"
+        header-align="center"
+        align="center"
+        label="产品容量">
+      </el-table-column>
+      <el-table-column
+        prop="productImageId"
         header-align="center"
         align="center"
         label="产品图片">
       </el-table-column>
       <el-table-column
-        prop="productDrawing"
+        prop="productDrawingId"
         header-align="center"
         align="center"
         label="产品图纸">
-      </el-table-column>
-      <el-table-column
-        prop="productVolume"
-        header-align="center"
-        align="center"
-        label="产品容量">
       </el-table-column>
       <el-table-column
         prop="productBatch"
@@ -123,6 +123,36 @@
         header-align="center"
         align="center"
         label="产品分类">
+      </el-table-column>
+      <el-table-column
+        prop="createTime"
+        header-align="center"
+        align="center"
+        label="创建日期">
+      </el-table-column>
+      <el-table-column
+        prop="createUser"
+        header-align="center"
+        align="center"
+        label="创建时间">
+      </el-table-column>
+      <el-table-column
+        prop="updateTime"
+        header-align="center"
+        align="center"
+        label="更新时间">
+      </el-table-column>
+      <el-table-column
+        prop="updateUser"
+        header-align="center"
+        align="center"
+        label="更新人员">
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        header-align="center"
+        align="center"
+        label="0为启用，1为禁止">
       </el-table-column>
       <el-table-column
         fixed="right"

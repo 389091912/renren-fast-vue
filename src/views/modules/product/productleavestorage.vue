@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('product:productputinstorage:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('product:productleavestorage:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:productleavestorage:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -26,19 +26,19 @@
         prop="id"
         header-align="center"
         align="center"
-        label="ID">
+        label="">
       </el-table-column>
       <el-table-column
         prop="productId"
         header-align="center"
         align="center"
-        label="产品ID">
+        label="产品id">
       </el-table-column>
       <el-table-column
-        prop="zhiNumber"
+        prop="productOutNumber"
         header-align="center"
         align="center"
-        label="只数">
+        label="出库数量">
       </el-table-column>
       <el-table-column
         prop="boxId"
@@ -50,25 +50,31 @@
         prop="boxNumber"
         header-align="center"
         align="center"
-        label="箱数">
+        label="箱子数">
       </el-table-column>
       <el-table-column
-        prop="productNumber"
+        prop="orderId"
         header-align="center"
         align="center"
-        label="入库数量">
+        label="订单编号">
       </el-table-column>
       <el-table-column
-        prop="putInTime"
+        prop="outTime"
         header-align="center"
         align="center"
-        label="入库时间">
+        label="出库时间">
       </el-table-column>
       <el-table-column
-        prop="remark"
+        prop="signTime"
         header-align="center"
         align="center"
-        label="备注">
+        label="签收时间">
+      </el-table-column>
+      <el-table-column
+        prop="createUser"
+        header-align="center"
+        align="center"
+        label="">
       </el-table-column>
       <el-table-column
         prop="createTime"
@@ -77,28 +83,28 @@
         label="创建时间">
       </el-table-column>
       <el-table-column
-        prop="createUser"
+        prop="updateUser"
         header-align="center"
         align="center"
-        label="创建人员id">
+        label="">
+      </el-table-column>
+      <el-table-column
+        prop="remark"
+        header-align="center"
+        align="center"
+        label="备注">
       </el-table-column>
       <el-table-column
         prop="updateTime"
         header-align="center"
         align="center"
-        label="更新时间">
-      </el-table-column>
-      <el-table-column
-        prop="updateUser"
-        header-align="center"
-        align="center"
-        label="更新人员id">
+        label="">
       </el-table-column>
       <el-table-column
         prop="status"
         header-align="center"
         align="center"
-        label="0为启用,1为禁止">
+        label="0为正常，1为禁用">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -127,7 +133,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './productputinstorage-add-or-update'
+  import AddOrUpdate from './productleavestorage-add-or-update'
   export default {
     data () {
       return {
@@ -154,7 +160,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/product/productputinstorage/list'),
+          url: this.$http.adornUrl('/product/productleavestorage/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -205,7 +211,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/product/productputinstorage/delete'),
+            url: this.$http.adornUrl('/product/productleavestorage/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

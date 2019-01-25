@@ -3,7 +3,7 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="130px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
     <el-form-item label="产品名称" prop="productName">
       <el-input v-model="dataForm.productName" placeholder="产品名称"></el-input>
     </el-form-item>
@@ -22,48 +22,50 @@
     <el-form-item label="产品克数" prop="productWeight">
       <el-input v-model="dataForm.productWeight" placeholder="产品克数"></el-input>
     </el-form-item>
-    <el-form-item label="产品图片" prop="productImage">
-     <el-upload
-      class="avatar-uploader"
-      action="https://jsonplaceholder.typicode.com/posts/"
-      :show-file-list="false"
-      :on-success="handleAvatarSuccess"
-      :before-upload="beforeAvatarUpload">
-      <img v-if="imageUrl" :src="imageUrl" class="avatar">
-      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-    </el-upload>
-    </el-form-item>
-    <el-form-item label="产品图纸" prop="productDrawing">
-      <el-upload
-        class="upload-demo"
-        drag
-        action="https://jsonplaceholder.typicode.com/posts/"
-        multiple>
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-      </el-upload>
-    </el-form-item>
     <el-form-item label="产品容量" prop="productVolume">
       <el-input v-model="dataForm.productVolume" placeholder="产品容量"></el-input>
+    </el-form-item>
+    <el-form-item label="产品图片" prop="productImageId">
+      <el-input v-model="dataForm.productImageId" placeholder="产品图片"></el-input>
+    </el-form-item>
+    <el-form-item label="产品图纸" prop="productDrawingId">
+      <el-input v-model="dataForm.productDrawingId" placeholder="产品图纸"></el-input>
     </el-form-item>
     <el-form-item label="产品批次" prop="productBatch">
       <el-input v-model="dataForm.productBatch" placeholder="产品批次"></el-input>
     </el-form-item>
     <el-form-item label="产品问题" prop="productQuestion">
-      <el-input v-model="dataForm.productQuestion" type="textarea" placeholder="产品问题"></el-input>
+      <el-input v-model="dataForm.productQuestion" placeholder="产品问题"></el-input>
     </el-form-item>
     <el-form-item label="产品组合套" prop="productAssort">
       <el-input v-model="dataForm.productAssort" placeholder="产品组合套"></el-input>
     </el-form-item>
     <el-form-item label="产品后续加工" prop="productTrailingProcess">
-      <el-input v-model="dataForm.productTrailingProcess" type="textarea" placeholder="产品后续加工"></el-input>
+      <el-input v-model="dataForm.productTrailingProcess" placeholder="产品后续加工"></el-input>
     </el-form-item>
     <el-form-item label="产品备注" prop="productRemark">
-      <el-input v-model="dataForm.productRemark" placeholder="产品备注" type="textarea"></el-input>
+      <el-input v-model="dataForm.productRemark" placeholder="产品备注"></el-input>
     </el-form-item>
     <el-form-item label="产品成品率" prop="yield">
-      <el-input v-model="dataForm.yield"  placeholder="产品成品率"></el-input>
+      <el-input v-model="dataForm.yield" placeholder="产品成品率"></el-input>
+    </el-form-item>
+    <el-form-item label="产品分类" prop="productCategory">
+      <el-input v-model="dataForm.productCategory" placeholder="产品分类"></el-input>
+    </el-form-item>
+    <el-form-item label="创建日期" prop="createTime">
+      <el-input v-model="dataForm.createTime" placeholder="创建日期"></el-input>
+    </el-form-item>
+    <el-form-item label="创建时间" prop="createUser">
+      <el-input v-model="dataForm.createUser" placeholder="创建时间"></el-input>
+    </el-form-item>
+    <el-form-item label="更新时间" prop="updateTime">
+      <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>
+    </el-form-item>
+    <el-form-item label="更新人员" prop="updateUser">
+      <el-input v-model="dataForm.updateUser" placeholder="更新人员"></el-input>
+    </el-form-item>
+    <el-form-item label="0为启用，1为禁止" prop="status">
+      <el-input v-model="dataForm.status" placeholder="0为启用，1为禁止"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -72,34 +74,6 @@
     </span>
   </el-dialog>
 </template>
-
-<style>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-</style>
-
-
 
 <script>
   export default {
@@ -114,16 +88,21 @@
           cartonId: '',
           productNum: '',
           productWeight: '',
-          productImage: '',
-          productDrawing: '',
           productVolume: '',
+          productImageId: '',
+          productDrawingId: '',
           productBatch: '',
           productQuestion: '',
           productAssort: '',
           productTrailingProcess: '',
           productRemark: '',
           yield: '',
-          productCategory: ''
+          productCategory: '',
+          createTime: '',
+          createUser: '',
+          updateTime: '',
+          updateUser: '',
+          status: ''
         },
         dataRule: {
           productName: [
@@ -144,15 +123,51 @@
           productWeight: [
             { required: true, message: '产品克数不能为空', trigger: 'blur' }
           ],
-          productImage: [
-            { required: true, message: '产品图片不能为空', trigger: 'blur' }
-          ],
-          productDrawing: [
-            { required: true, message: '产品图纸不能为空', trigger: 'blur' }
-          ],
           productVolume: [
             { required: true, message: '产品容量不能为空', trigger: 'blur' }
           ],
+          productImageId: [
+            { required: true, message: '产品图片不能为空', trigger: 'blur' }
+          ],
+          productDrawingId: [
+            { required: true, message: '产品图纸不能为空', trigger: 'blur' }
+          ],
+          productBatch: [
+            { required: true, message: '产品批次不能为空', trigger: 'blur' }
+          ],
+          productQuestion: [
+            { required: true, message: '产品问题不能为空', trigger: 'blur' }
+          ],
+          productAssort: [
+            { required: true, message: '产品组合套不能为空', trigger: 'blur' }
+          ],
+          productTrailingProcess: [
+            { required: true, message: '产品后续加工不能为空', trigger: 'blur' }
+          ],
+          productRemark: [
+            { required: true, message: '产品备注不能为空', trigger: 'blur' }
+          ],
+          yield: [
+            { required: true, message: '产品成品率不能为空', trigger: 'blur' }
+          ],
+          productCategory: [
+            { required: true, message: '产品分类不能为空', trigger: 'blur' }
+          ],
+          createTime: [
+            { required: true, message: '创建日期不能为空', trigger: 'blur' }
+          ],
+          createUser: [
+            { required: true, message: '创建时间不能为空', trigger: 'blur' }
+          ],
+          updateTime: [
+            { required: true, message: '更新时间不能为空', trigger: 'blur' }
+          ],
+          updateUser: [
+            { required: true, message: '更新人员不能为空', trigger: 'blur' }
+          ],
+          status: [
+            { required: true, message: '0为启用，1为禁止不能为空', trigger: 'blur' }
+          ]
         }
       }
     },
@@ -175,9 +190,9 @@
                 this.dataForm.cartonId = data.productinfo.cartonId
                 this.dataForm.productNum = data.productinfo.productNum
                 this.dataForm.productWeight = data.productinfo.productWeight
-                this.dataForm.productImage = data.productinfo.productImage
-                this.dataForm.productDrawing = data.productinfo.productDrawing
                 this.dataForm.productVolume = data.productinfo.productVolume
+                this.dataForm.productImageId = data.productinfo.productImageId
+                this.dataForm.productDrawingId = data.productinfo.productDrawingId
                 this.dataForm.productBatch = data.productinfo.productBatch
                 this.dataForm.productQuestion = data.productinfo.productQuestion
                 this.dataForm.productAssort = data.productinfo.productAssort
@@ -185,6 +200,11 @@
                 this.dataForm.productRemark = data.productinfo.productRemark
                 this.dataForm.yield = data.productinfo.yield
                 this.dataForm.productCategory = data.productinfo.productCategory
+                this.dataForm.createTime = data.productinfo.createTime
+                this.dataForm.createUser = data.productinfo.createUser
+                this.dataForm.updateTime = data.productinfo.updateTime
+                this.dataForm.updateUser = data.productinfo.updateUser
+                this.dataForm.status = data.productinfo.status
               }
             })
           }
@@ -205,16 +225,21 @@
                 'cartonId': this.dataForm.cartonId,
                 'productNum': this.dataForm.productNum,
                 'productWeight': this.dataForm.productWeight,
-                'productImage': this.dataForm.productImage,
-                'productDrawing': this.dataForm.productDrawing,
                 'productVolume': this.dataForm.productVolume,
+                'productImageId': this.dataForm.productImageId,
+                'productDrawingId': this.dataForm.productDrawingId,
                 'productBatch': this.dataForm.productBatch,
                 'productQuestion': this.dataForm.productQuestion,
                 'productAssort': this.dataForm.productAssort,
                 'productTrailingProcess': this.dataForm.productTrailingProcess,
                 'productRemark': this.dataForm.productRemark,
                 'yield': this.dataForm.yield,
-                'productCategory': this.dataForm.productCategory
+                'productCategory': this.dataForm.productCategory,
+                'createTime': this.dataForm.createTime,
+                'createUser': this.dataForm.createUser,
+                'updateTime': this.dataForm.updateTime,
+                'updateUser': this.dataForm.updateUser,
+                'status': this.dataForm.status
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
@@ -233,23 +258,7 @@
             })
           }
         })
-      },
-       handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
-      },
-    
+      }
     }
   }
 </script>
