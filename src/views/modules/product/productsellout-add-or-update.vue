@@ -44,11 +44,7 @@
           <el-tag type="primary">产品库存数量：123</el-tag>
         </el-form-item>
         <el-form-item label="纸箱数" prop="boxNumber">
-          <el-input
-            v-model="product.boxNumber"
-            placeholder="纸箱数"
-            style="width:200px"
-          ></el-input>
+          <el-input v-model="product.boxNumber" placeholder="纸箱数" style="width:200px"></el-input>
           <el-tag type="primary">纸箱库存数量：123</el-tag>
           <el-tag type="primary">纸箱库存数量：123</el-tag>
         </el-form-item>
@@ -188,10 +184,6 @@ export default {
               this.dataForm.boxNumber = data.productsellout.boxNumber;
               this.dataForm.outNumber = data.productsellout.outNumber;
               this.dataForm.remark = data.productsellout.remark;
-              this.dataForm.createTime = data.productsellout.createTime;
-              this.dataForm.createUser = data.productsellout.createUser;
-              this.dataForm.updateTime = data.productsellout.updateTime;
-              this.dataForm.updateUser = data.productsellout.updateUser;
             }
           });
         }
@@ -212,11 +204,7 @@ export default {
               zhiNumber: this.dataForm.zhiNumber,
               boxNumber: this.dataForm.boxNumber,
               outNumber: this.dataForm.outNumber,
-              remark: this.dataForm.remark,
-              createTime: this.dataForm.createTime,
-              createUser: this.dataForm.createUser,
-              updateTime: this.dataForm.updateTime,
-              updateUser: this.dataForm.updateUser
+              remark: this.dataForm.remark
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
