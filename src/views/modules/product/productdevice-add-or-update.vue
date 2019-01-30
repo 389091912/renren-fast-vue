@@ -57,8 +57,8 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.deciveName = data.productdevice.deciveName;
-              this.dataForm.remark = data.productdevice.remark;
+              this.dataForm.deciveName = data.productDevice.deciveName;
+              this.dataForm.remark = data.productDevice.remark;
             }
           });
         }

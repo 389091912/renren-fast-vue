@@ -9,88 +9,73 @@
       :rules="dataRule"
       ref="dataForm"
       @keyup.enter.native="dataFormSubmit()"
-      label-width="80px"
+      label-width="130px"
     >
       <el-form-item label="设备编号" prop="deviceId">
-        <el-input v-model="dataForm.deviceId" placeholder="设备编号"></el-input>
+        <el-input v-model="dataForm.deviceId" placeholder="设备编号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品编号" prop="productId">
-        <el-input v-model="dataForm.productId" placeholder="产品编号"></el-input>
+        <el-input v-model="dataForm.productId" placeholder="产品编号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="模具编号" prop="modelId">
-        <el-input v-model="dataForm.modelId" placeholder="模具编号"></el-input>
+        <el-input v-model="dataForm.modelId" placeholder="模具编号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="客户编号" prop="customerProductNo">
-        <el-input v-model="dataForm.customerProductNo" placeholder="客户编号"></el-input>
+        <el-input v-model="dataForm.customerProductNo" placeholder="客户编号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="料重" prop="materialWeight">
-        <el-input v-model="dataForm.materialWeight" placeholder="料重"></el-input>
+        <el-input v-model="dataForm.materialWeight" placeholder="料重" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="容量" prop="volume">
-        <el-input v-model="dataForm.volume" placeholder="容量"></el-input>
+        <el-input v-model="dataForm.volume" placeholder="容量" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="订单id" prop="orderId">
-        <el-input v-model="dataForm.orderId" placeholder="订单id"></el-input>
+        <el-input v-model="dataForm.orderId" placeholder="订单id" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="订单数量" prop="orderNumber">
-        <el-input v-model="dataForm.orderNumber" placeholder="订单数量"></el-input>
+        <el-input v-model="dataForm.orderNumber" placeholder="订单数量" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="库存数量" prop="repertoryNumber">
-        <el-input v-model="dataForm.repertoryNumber" placeholder="库存数量"></el-input>
+        <el-input v-model="dataForm.repertoryNumber" placeholder="库存数量" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="实际需求数量" prop="needNumber">
-        <el-input v-model="dataForm.needNumber" placeholder="实际需求数量"></el-input>
+        <el-input v-model="dataForm.needNumber" placeholder="实际需求数量" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="客户样品 有 无" prop="customerProductSytle">
-        <el-input v-model="dataForm.customerProductSytle" placeholder="客户样品 有 无"></el-input>
+        <el-input v-model="dataForm.customerProductSytle" placeholder="客户样品 有 无" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="瓶盖套装 有 无" prop="bottleCapSuit">
-        <el-input v-model="dataForm.bottleCapSuit" placeholder="瓶盖套装 有 无"></el-input>
+        <el-input v-model="dataForm.bottleCapSuit" placeholder="瓶盖套装 有 无" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="后续加工" prop="followUpProcess">
-        <el-input v-model="dataForm.followUpProcess" placeholder="后续加工"></el-input>
+        <el-input v-model="dataForm.followUpProcess" placeholder="后续加工" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="包装要求" prop="packRequire">
-        <el-input v-model="dataForm.packRequire" placeholder="包装要求"></el-input>
+        <el-input v-model="dataForm.packRequire" placeholder="包装要求" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="纸箱编号" prop="boxId">
-        <el-input v-model="dataForm.boxId" placeholder="纸箱编号"></el-input>
+        <el-input v-model="dataForm.boxId" placeholder="纸箱编号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="客户要求" prop="customerRequire">
-        <el-input v-model="dataForm.customerRequire" placeholder="客户要求"></el-input>
+        <el-input v-model="dataForm.customerRequire" placeholder="客户要求" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="瓶身总高度" prop="bottleHight">
-        <el-input v-model="dataForm.bottleHight" placeholder="瓶身总高度"></el-input>
+        <el-input v-model="dataForm.bottleHight" placeholder="瓶身总高度" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="瓶口内径" prop="bottleInDiameter">
-        <el-input v-model="dataForm.bottleInDiameter" placeholder="瓶口内径"></el-input>
+        <el-input v-model="dataForm.bottleInDiameter" placeholder="瓶口内径" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="头径高度" prop="headNeckHeight">
-        <el-input v-model="dataForm.headNeckHeight" placeholder="头径高度"></el-input>
+        <el-input v-model="dataForm.headNeckHeight" placeholder="头径高度" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="瓶口外径" prop="bottleOutDiameter">
-        <el-input v-model="dataForm.bottleOutDiameter" placeholder="瓶口外径"></el-input>
+        <el-input v-model="dataForm.bottleOutDiameter" placeholder="瓶口外径" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="外观" prop="facadeRequire">
-        <el-input v-model="dataForm.facadeRequire" placeholder="外观"></el-input>
+        <el-input v-model="dataForm.facadeRequire" placeholder="外观" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
-      </el-form-item>
-      <el-form-item label="创建人员id" prop="createUser">
-        <el-input v-model="dataForm.createUser" placeholder="创建人员id"></el-input>
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updateTime">
-        <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>
-      </el-form-item>
-      <el-form-item label="更新人员id" prop="updateUser">
-        <el-input v-model="dataForm.updateUser" placeholder="更新人员id"></el-input>
-      </el-form-item>
-      <el-form-item label="0为启用,1为禁止" prop="status">
-        <el-input v-model="dataForm.status" placeholder="0为启用,1为禁止"></el-input>
+        <el-input v-model="dataForm.remark" placeholder="备注" style="width:260px"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -129,10 +114,6 @@ export default {
         bottleOutDiameter: "",
         facadeRequire: "",
         remark: "",
-        createTime: "",
-        createUser: "",
-        updateTime: "",
-        updateUser: "",
         status: ""
       },
       dataRule: {
@@ -197,26 +178,6 @@ export default {
         facadeRequire: [
           { required: true, message: "外观不能为空", trigger: "blur" }
         ],
-        remark: [{ required: true, message: "备注不能为空", trigger: "blur" }],
-        createTime: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
-        ],
-        createUser: [
-          { required: true, message: "创建人员id不能为空", trigger: "blur" }
-        ],
-        updateTime: [
-          { required: true, message: "更新时间不能为空", trigger: "blur" }
-        ],
-        updateUser: [
-          { required: true, message: "更新人员id不能为空", trigger: "blur" }
-        ],
-        status: [
-          {
-            required: true,
-            message: "0为启用,1为禁止不能为空",
-            trigger: "blur"
-          }
-        ]
       }
     };
   },
@@ -235,44 +196,33 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.deviceId = data.productplannotice.deviceId;
-              this.dataForm.productId = data.productplannotice.productId;
-              this.dataForm.modelId = data.productplannotice.modelId;
-              this.dataForm.customerProductNo =
-                data.productplannotice.customerProductNo;
-              this.dataForm.materialWeight =
-                data.productplannotice.materialWeight;
-              this.dataForm.volume = data.productplannotice.volume;
-              this.dataForm.orderId = data.productplannotice.orderId;
-              this.dataForm.orderNumber = data.productplannotice.orderNumber;
-              this.dataForm.repertoryNumber =
-                data.productplannotice.repertoryNumber;
-              this.dataForm.needNumber = data.productplannotice.needNumber;
-              this.dataForm.customerProductSytle =
-                data.productplannotice.customerProductSytle;
-              this.dataForm.bottleCapSuit =
-                data.productplannotice.bottleCapSuit;
-              this.dataForm.followUpProcess =
-                data.productplannotice.followUpProcess;
-              this.dataForm.packRequire = data.productplannotice.packRequire;
-              this.dataForm.boxId = data.productplannotice.boxId;
-              this.dataForm.customerRequire =
-                data.productplannotice.customerRequire;
-              this.dataForm.bottleHight = data.productplannotice.bottleHight;
-              this.dataForm.bottleInDiameter =
-                data.productplannotice.bottleInDiameter;
-              this.dataForm.headNeckHeight =
-                data.productplannotice.headNeckHeight;
-              this.dataForm.bottleOutDiameter =
-                data.productplannotice.bottleOutDiameter;
-              this.dataForm.facadeRequire =
-                data.productplannotice.facadeRequire;
-              this.dataForm.remark = data.productplannotice.remark;
-              this.dataForm.createTime = data.productplannotice.createTime;
-              this.dataForm.createUser = data.productplannotice.createUser;
-              this.dataForm.updateTime = data.productplannotice.updateTime;
-              this.dataForm.updateUser = data.productplannotice.updateUser;
-              this.dataForm.status = data.productplannotice.status;
+              this.dataForm.deviceId = data.productPlanNotice.deviceId;
+              this.dataForm.productId = data.productPlanNotice.productId;
+              this.dataForm.modelId = data.productPlanNotice.modelId;
+              this.dataForm.customerProductNo =data.productPlanNotice.customerProductNo;
+              this.dataForm.materialWeight = data.productPlanNotice.materialWeight;
+              this.dataForm.volume = data.productPlanNotice.volume;
+              this.dataForm.orderId = data.productPlanNotice.orderId;
+              this.dataForm.orderNumber = data.productPlanNotice.orderNumber;
+              this.dataForm.repertoryNumber =data.productPlanNotice.repertoryNumber;
+              this.dataForm.needNumber = data.productPlanNotice.needNumber;
+              this.dataForm.customerProductSytle = data.productPlanNotice.customerProductSytle;
+              this.dataForm.bottleCapSuit = data.productPlanNotice.bottleCapSuit;
+              this.dataForm.followUpProcess =data.productPlanNotice.followUpProcess;
+              this.dataForm.packRequire = data.productPlanNotice.packRequire;
+              this.dataForm.boxId = data.productPlanNotice.boxId;
+              this.dataForm.customerRequire = data.productPlanNotice.customerRequire;
+              this.dataForm.bottleHight = data.productPlanNotice.bottleHight;
+              this.dataForm.bottleInDiameter =data.productPlanNotice.bottleInDiameter;
+              this.dataForm.headNeckHeight =data.productPlanNotice.headNeckHeight;
+              this.dataForm.bottleOutDiameter =data.productPlanNotice.bottleOutDiameter;
+              this.dataForm.facadeRequire = data.productPlanNotice.facadeRequire;
+              this.dataForm.remark = data.productPlanNotice.remark;
+              this.dataForm.createTime = data.productPlanNotice.createTime;
+              this.dataForm.createUser = data.productPlanNotice.createUser;
+              this.dataForm.updateTime = data.productPlanNotice.updateTime;
+              this.dataForm.updateUser = data.productPlanNotice.updateUser;
+              this.dataForm.status = data.productPlanNotice.status;
             }
           });
         }

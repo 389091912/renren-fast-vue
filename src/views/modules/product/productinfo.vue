@@ -38,7 +38,7 @@
       <el-table-column prop="productImageId" header-align="center" align="center" label="产品图片">
            <template slot-scope="scope">
              <a href="http://www.baidu.com" target="_blank">{{scope.row.productImageId}}</a>
-        </template>
+          </template>
       </el-table-column>
       <el-table-column prop="productDrawingId" header-align="center" align="center" label="产品图纸"></el-table-column>
       <el-table-column prop="productBatch" header-align="center" align="center" label="产品批次"></el-table-column>

@@ -9,34 +9,20 @@
       :rules="dataRule"
       ref="dataForm"
       @keyup.enter.native="dataFormSubmit()"
-      label-width="80px"
+      label-width="130px"
     >
       <el-form-item label="订单id" prop="orderId">
-        <el-input v-model="dataForm.orderId" placeholder="订单id"></el-input>
+        <el-input v-model="dataForm.orderId" placeholder="订单id" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品ID" prop="productId">
-        <el-input v-model="dataForm.productId" placeholder="产品ID"></el-input>
+        <el-input v-model="dataForm.productId" placeholder="产品ID" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="订单数量" prop="productNumber">
-        <el-input v-model="dataForm.productNumber" placeholder="订单数量"></el-input>
+        <el-input v-model="dataForm.productNumber" placeholder="订单数量" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
-      </el-form-item>
-      <el-form-item label="创建人员id" prop="createUser">
-        <el-input v-model="dataForm.createUser" placeholder="创建人员id"></el-input>
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updateTime">
-        <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>
-      </el-form-item>
-      <el-form-item label="更新人员id" prop="updateUser">
-        <el-input v-model="dataForm.updateUser" placeholder="更新人员id"></el-input>
-      </el-form-item>
-      <el-form-item label="0为等待生产，1为取消生产，2为生产中，3为生产完成。" prop="status">
-        <el-input v-model="dataForm.status" placeholder="0为等待生产，1为取消生产，2为生产中，3为生产完成。"></el-input>
+      <el-form-item label="订单生产状态" prop="status">
+        <!-- 0为等待生产，1为取消生产，2为生产中，3为生产完成。 -->
+        <el-input v-model="dataForm.status" placeholder="0为等待生产，1为取消生产，2为生产中，3为生产完成。" style="width:260px"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -73,27 +59,6 @@ export default {
         productNumber: [
           { required: true, message: "订单数量不能为空", trigger: "blur" }
         ],
-        remark: [{ required: true, message: "备注不能为空", trigger: "blur" }],
-        createTime: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
-        ],
-        createUser: [
-          { required: true, message: "创建人员id不能为空", trigger: "blur" }
-        ],
-        updateTime: [
-          { required: true, message: "更新时间不能为空", trigger: "blur" }
-        ],
-        updateUser: [
-          { required: true, message: "更新人员id不能为空", trigger: "blur" }
-        ],
-        status: [
-          {
-            required: true,
-            message:
-              "0为等待生产，1为取消生产，2为生产中，3为生产完成。不能为空",
-            trigger: "blur"
-          }
-        ]
       }
     };
   },
@@ -112,16 +77,15 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.orderId = data.productorderdetail.orderId;
-              this.dataForm.productId = data.productorderdetail.productId;
-              this.dataForm.productNumber =
-                data.productorderdetail.productNumber;
-              this.dataForm.remark = data.productorderdetail.remark;
-              this.dataForm.createTime = data.productorderdetail.createTime;
-              this.dataForm.createUser = data.productorderdetail.createUser;
-              this.dataForm.updateTime = data.productorderdetail.updateTime;
-              this.dataForm.updateUser = data.productorderdetail.updateUser;
-              this.dataForm.status = data.productorderdetail.status;
+              this.dataForm.orderId = data.productOrderDetail.orderId;
+              this.dataForm.productId = data.productOrderDetail.productId;
+              this.dataForm.productNumber = data.productOrderDetail.productNumber;
+              this.dataForm.remark = data.productOrderDetail.remark;
+              this.dataForm.createTime = data.productOrderDetail.createTime;
+              this.dataForm.createUser = data.productOrderDetail.createUser;
+              this.dataForm.updateTime = data.productOrderDetail.updateTime;
+              this.dataForm.updateUser = data.productOrderDetail.updateUser;
+              this.dataForm.status = data.productOrderDetail.status;
             }
           });
         }

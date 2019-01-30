@@ -12,25 +12,39 @@
       label-width="130px"
     >
       <el-form-item label="产品id" prop="productId">
-        <el-input v-model="dataForm.productId" placeholder="产品id"></el-input>
+        <el-input v-model="dataForm.productId" placeholder="产品id" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="出库数量" prop="productOutNumber">
-        <el-input v-model="dataForm.productOutNumber" placeholder="出库数量"></el-input>
+        <el-input v-model="dataForm.productOutNumber" placeholder="出库数量" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="纸箱id" prop="boxId">
-        <el-input v-model="dataForm.boxId" placeholder="纸箱id"></el-input>
+        <el-input v-model="dataForm.boxId" placeholder="纸箱id" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="箱子数" prop="boxNumber">
-        <el-input v-model="dataForm.boxNumber" placeholder="箱子数"></el-input>
+        <el-input v-model="dataForm.boxNumber" placeholder="箱子数" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="订单编号" prop="orderId">
-        <el-input v-model="dataForm.orderId" placeholder="订单编号"></el-input>
+        <el-input v-model="dataForm.orderId" placeholder="订单编号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="出库时间" prop="outTime">
-        <el-input v-model="dataForm.outTime" placeholder="出库时间"></el-input>
+        <el-date-picker
+          v-model="dataForm.outTime"
+          type="date"
+          style="width:260px"
+          placeholder="出库时间"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label="签收时间" prop="signTime">
-        <el-input v-model="dataForm.signTime" placeholder="签收时间"></el-input>
+        <el-date-picker
+          v-model="dataForm.signTime"
+          type="date"
+          style="width:260px"
+          placeholder="签收时间"
+        ></el-date-picker>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -80,9 +94,7 @@ export default {
         ],
         signTime: [
           { required: true, message: "签收时间不能为空", trigger: "blur" }
-        ],
-  
-      
+        ]
       }
     };
   },
@@ -101,20 +113,19 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.productId = data.productleavestorage.productId;
-              this.dataForm.productOutNumber =
-                data.productleavestorage.productOutNumber;
-              this.dataForm.boxId = data.productleavestorage.boxId;
-              this.dataForm.boxNumber = data.productleavestorage.boxNumber;
-              this.dataForm.orderId = data.productleavestorage.orderId;
-              this.dataForm.outTime = data.productleavestorage.outTime;
-              this.dataForm.signTime = data.productleavestorage.signTime;
-              this.dataForm.createUser = data.productleavestorage.createUser;
-              this.dataForm.createTime = data.productleavestorage.createTime;
-              this.dataForm.updateUser = data.productleavestorage.updateUser;
-              this.dataForm.remark = data.productleavestorage.remark;
-              this.dataForm.updateTime = data.productleavestorage.updateTime;
-              this.dataForm.status = data.productleavestorage.status;
+              this.dataForm.productId = data.productLeaveStorage.productId;
+              this.dataForm.productOutNumber =data.productLeaveStorage.productOutNumber;
+              this.dataForm.boxId = data.productLeaveStorage.boxId;
+              this.dataForm.boxNumber = data.productLeaveStorage.boxNumber;
+              this.dataForm.orderId = data.productLeaveStorage.orderId;
+              this.dataForm.outTime = data.productLeaveStorage.outTime;
+              this.dataForm.signTime = data.productLeaveStorage.signTime;
+              this.dataForm.createUser = data.productLeaveStorage.createUser;
+              this.dataForm.createTime = data.productLeaveStorage.createTime;
+              this.dataForm.updateUser = data.productLeaveStorage.updateUser;
+              this.dataForm.remark = data.productLeaveStorage.remark;
+              this.dataForm.updateTime = data.productLeaveStorage.updateTime;
+              this.dataForm.status = data.productLeaveStorage.status;
             }
           });
         }

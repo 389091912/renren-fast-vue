@@ -50,11 +50,6 @@
       <el-table-column prop="modelRemark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column prop="modelDeliveryTime" header-align="center" align="center" label="发货日期"></el-table-column>
       <el-table-column prop="modelReceiptTime" header-align="center" align="center" label="收货日期"></el-table-column>
-      <el-table-column prop="createTime" header-align="center" align="center" label="创建时间"></el-table-column>
-      <el-table-column prop="createUser" header-align="center" align="center" label="创建人员"></el-table-column>
-      <el-table-column prop="updateTime" header-align="center" align="center" label="更新时间"></el-table-column>
-      <el-table-column prop="updateUser" header-align="center" align="center" label="更新人员"></el-table-column>
-      <el-table-column prop="status" header-align="center" align="center" label="0为启用，1为禁止"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>

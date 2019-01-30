@@ -15,28 +15,38 @@
         <el-input v-model="dataForm.boxNo" placeholder="纸箱编号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="箱体" prop="body">
-        <el-input v-model="dataForm.body" placeholder="箱体"  style="width:260px"></el-input>
+        <el-input v-model="dataForm.body" placeholder="箱体" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="格挡" prop="parry">
-        <el-input v-model="dataForm.parry" placeholder="格挡"  style="width:260px"></el-input>
+        <el-input v-model="dataForm.parry" placeholder="格挡" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="垫片" prop="spacer">
-        <el-input v-model="dataForm.spacer" placeholder="垫片"  style="width:260px"></el-input>
+        <el-input v-model="dataForm.spacer" placeholder="垫片" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="库存数量" prop="boxNumber">
-        <el-input v-model.number="dataForm.boxNumber" placeholder="数量"  style="width:260px"></el-input>
+        <el-input v-model.number="dataForm.boxNumber" placeholder="数量" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="客户" prop="costomer">
-        <el-input v-model="dataForm.costomer" placeholder="客户"  style="width:260px"></el-input>
+        <el-input v-model="dataForm.costomer" placeholder="客户" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="位置" prop="location">
-        <el-input v-model="dataForm.location" placeholder="位置"  style="width:260px"></el-input>
+        <el-input v-model="dataForm.location" placeholder="位置" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label=" 出库数量" prop="leaveNumber">
-        <el-input v-model.number="dataForm.leaveNumber" placeholder=" 出库数量"  style="width:260px"></el-input>
+        <el-input v-model.number="dataForm.leaveNumber" placeholder=" 出库数量" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
+        <el-input v-model="dataForm.remark" placeholder="备注" style="width:260px"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -100,15 +110,15 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.boxNo = data.productbox.boxNo;
-              this.dataForm.body = data.productbox.body;
-              this.dataForm.parry = data.productbox.parry;
-              this.dataForm.spacer = data.productbox.spacer;
-              this.dataForm.boxNumber = data.productbox.boxNumber;
-              this.dataForm.costomer = data.productbox.costomer;
-              this.dataForm.location = data.productbox.location;
-              this.dataForm.remark = data.productbox.remark;
-              this.dataForm.leaveNumber = data.productbox.leaveNumber;
+              this.dataForm.boxNo = data.productBox.boxNo;
+              this.dataForm.body = data.productBox.body;
+              this.dataForm.parry = data.productBox.parry;
+              this.dataForm.spacer = data.productBox.spacer;
+              this.dataForm.boxNumber = data.productBox.boxNumber;
+              this.dataForm.costomer = data.productBox.costomer;
+              this.dataForm.location = data.productBox.location;
+              this.dataForm.remark = data.productBox.remark;
+              this.dataForm.leaveNumber = data.productBox.leaveNumber;
             }
           });
         }

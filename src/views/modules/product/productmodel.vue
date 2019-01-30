@@ -47,11 +47,6 @@
       <el-table-column prop="customerName" header-align="center" align="center" label="客户名称"></el-table-column>
       <el-table-column prop="state" header-align="center" align="center" label="是否在库"></el-table-column>
       <el-table-column prop="modelRemark" header-align="center" align="center" label="备注"></el-table-column>
-      <el-table-column prop="createTime" header-align="center" align="center" label></el-table-column>
-      <el-table-column prop="createUser" header-align="center" align="center" label></el-table-column>
-      <el-table-column prop="updateTime" header-align="center" align="center" label></el-table-column>
-      <el-table-column prop="updateUser" header-align="center" align="center" label></el-table-column>
-      <el-table-column prop="status" header-align="center" align="center" label="0为启用，1为禁止"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>

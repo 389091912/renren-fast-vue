@@ -9,80 +9,96 @@
       :rules="dataRule"
       ref="dataForm"
       @keyup.enter.native="dataFormSubmit()"
-      label-width="80px"
+      label-width="130px"
     >
       <el-form-item label="架号" prop="siteNo">
-        <el-input v-model="dataForm.siteNo" placeholder="架号"></el-input>
+        <el-input v-model="dataForm.siteNo" placeholder="架号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="模具编号" prop="modelNo">
-        <el-input v-model="dataForm.modelNo" placeholder="模具编号"></el-input>
+        <el-input v-model="dataForm.modelNo" placeholder="模具编号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品名称" prop="productName">
-        <el-input v-model="dataForm.productName" placeholder="产品名称"></el-input>
+        <el-input v-model="dataForm.productName" placeholder="产品名称" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="成模" prop="modelSuccessMo">
-        <el-input v-model="dataForm.modelSuccessMo" placeholder="成模"></el-input>
+        <el-input v-model="dataForm.modelSuccessMo" placeholder="成模" style="width:260px">
+            <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="初模" prop="modelPrimaryMo">
-        <el-input v-model="dataForm.modelPrimaryMo" placeholder="初模"></el-input>
+        <el-input v-model="dataForm.modelPrimaryMo" placeholder="初模" style="width:260px">
+            <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="口模" prop="modelMouthMo">
-        <el-input v-model="dataForm.modelMouthMo" placeholder="口模"></el-input>
+        <el-input v-model="dataForm.modelMouthMo" placeholder="口模" style="width:260px">
+            <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="闷头" prop="modelMenTou">
-        <el-input v-model="dataForm.modelMenTou" placeholder="闷头"></el-input>
+        <el-input v-model="dataForm.modelMenTou" placeholder="闷头 " style="width:260px">
+            <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="漏斗" prop="modelFunnel">
-        <el-input v-model="dataForm.modelFunnel" placeholder="漏斗"></el-input>
+        <el-input v-model="dataForm.modelFunnel" placeholder="漏斗" style="width:260px">
+            <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="芯子" prop="modelCore">
-        <el-input v-model="dataForm.modelCore" placeholder="芯子"></el-input>
+        <el-input v-model="dataForm.modelCore" placeholder="芯子" style="width:260px">
+            <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="气头" prop="modelAirTou">
-        <el-input v-model="dataForm.modelAirTou" placeholder="气头"></el-input>
+        <el-input v-model="dataForm.modelAirTou" placeholder="气头" style="width:260px">
+            <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="冷却" prop="modelCooling">
-        <el-input v-model="dataForm.modelCooling" placeholder="冷却"></el-input>
+        <el-input v-model="dataForm.modelCooling" placeholder="冷却" style="width:260px">
+            <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="钳片" prop="modelClamp">
-        <el-input v-model="dataForm.modelClamp" placeholder="钳片"></el-input>
+        <el-input v-model="dataForm.modelClamp" placeholder="钳片" style="width:260px">
+            <template slot="append">件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="容量" prop="modelVolume">
-        <el-input v-model="dataForm.modelVolume" placeholder="容量"></el-input>
+        <el-input v-model="dataForm.modelVolume" placeholder="容量" style="width:260px">
+            <template slot="append">毫升</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="经手人" prop="modelHandlingPeople">
-        <el-input v-model="dataForm.modelHandlingPeople" placeholder="经手人"></el-input>
+        <el-input v-model="dataForm.modelHandlingPeople" placeholder="经手人" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="发货日期" prop="modelDeliveryTime">
-        <el-input v-model="dataForm.modelDeliveryTime" placeholder="发货日期"></el-input>
+        <el-date-picker
+          v-model="dataForm.modelDeliveryTime"
+          type="date"
+          style="width:260px"
+          placeholder="发货日期"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label="收货日期" prop="modelReceiptTime">
-        <el-input v-model="dataForm.modelReceiptTime" placeholder="收货日期"></el-input>
+         <el-date-picker
+          v-model="dataForm.modelReceiptTime"
+          type="date"
+          style="width:260px"
+          placeholder="收货日期"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label="客户名称" prop="customerName">
-        <el-input v-model="dataForm.customerName" placeholder="客户名称"></el-input>
+        <el-input v-model="dataForm.customerName" placeholder="客户名称" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="是否在库" prop="state">
-        <el-input v-model="dataForm.state" placeholder="是否在库"></el-input>
+        <el-input v-model="dataForm.state" placeholder="是否在库" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="modelRemark">
-        <el-input v-model="dataForm.modelRemark" placeholder="备注"></el-input>
+        <el-input v-model="dataForm.modelRemark" placeholder="备注" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label prop="createTime">
-        <el-input v-model="dataForm.createTime" placeholder></el-input>
-      </el-form-item>
-      <el-form-item label prop="createUser">
-        <el-input v-model="dataForm.createUser" placeholder></el-input>
-      </el-form-item>
-      <el-form-item label prop="updateTime">
-        <el-input v-model="dataForm.updateTime" placeholder></el-input>
-      </el-form-item>
-      <el-form-item label prop="updateUser">
-        <el-input v-model="dataForm.updateUser" placeholder></el-input>
-      </el-form-item>
-      <el-form-item label="0为启用，1为禁止" prop="status">
-        <el-input v-model="dataForm.status" placeholder="0为启用，1为禁止"></el-input>
-      </el-form-item>
+      
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -208,33 +224,30 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.siteNo = data.productmodel.siteNo;
-              this.dataForm.modelNo = data.productmodel.modelNo;
-              this.dataForm.productName = data.productmodel.productName;
-              this.dataForm.modelSuccessMo = data.productmodel.modelSuccessMo;
-              this.dataForm.modelPrimaryMo = data.productmodel.modelPrimaryMo;
-              this.dataForm.modelMouthMo = data.productmodel.modelMouthMo;
-              this.dataForm.modelMenTou = data.productmodel.modelMenTou;
-              this.dataForm.modelFunnel = data.productmodel.modelFunnel;
-              this.dataForm.modelCore = data.productmodel.modelCore;
-              this.dataForm.modelAirTou = data.productmodel.modelAirTou;
-              this.dataForm.modelCooling = data.productmodel.modelCooling;
-              this.dataForm.modelClamp = data.productmodel.modelClamp;
-              this.dataForm.modelVolume = data.productmodel.modelVolume;
-              this.dataForm.modelHandlingPeople =
-                data.productmodel.modelHandlingPeople;
-              this.dataForm.modelDeliveryTime =
-                data.productmodel.modelDeliveryTime;
-              this.dataForm.modelReceiptTime =
-                data.productmodel.modelReceiptTime;
-              this.dataForm.customerName = data.productmodel.customerName;
-              this.dataForm.state = data.productmodel.state;
-              this.dataForm.modelRemark = data.productmodel.modelRemark;
-              this.dataForm.createTime = data.productmodel.createTime;
-              this.dataForm.createUser = data.productmodel.createUser;
-              this.dataForm.updateTime = data.productmodel.updateTime;
-              this.dataForm.updateUser = data.productmodel.updateUser;
-              this.dataForm.status = data.productmodel.status;
+              this.dataForm.siteNo = data.productModel.siteNo;
+              this.dataForm.modelNo = data.productModel.modelNo;
+              this.dataForm.productName = data.productModel.productName;
+              this.dataForm.modelSuccessMo = data.productModel.modelSuccessMo;
+              this.dataForm.modelPrimaryMo = data.productModel.modelPrimaryMo;
+              this.dataForm.modelMouthMo = data.productModel.modelMouthMo;
+              this.dataForm.modelMenTou = data.productModel.modelMenTou;
+              this.dataForm.modelFunnel = data.productModel.modelFunnel;
+              this.dataForm.modelCore = data.productModel.modelCore;
+              this.dataForm.modelAirTou = data.productModel.modelAirTou;
+              this.dataForm.modelCooling = data.productModel.modelCooling;
+              this.dataForm.modelClamp = data.productModel.modelClamp;
+              this.dataForm.modelVolume = data.productModel.modelVolume;
+              this.dataForm.modelHandlingPeople = data.productModel.modelHandlingPeople;
+              this.dataForm.modelDeliveryTime = data.productModel.modelDeliveryTime;
+              this.dataForm.modelReceiptTime = data.productModel.modelReceiptTime;
+              this.dataForm.customerName = data.productModel.customerName;
+              this.dataForm.state = data.productModel.state;
+              this.dataForm.modelRemark = data.productModel.modelRemark;
+              this.dataForm.createTime = data.productModel.createTime;
+              this.dataForm.createUser = data.productModel.createUser;
+              this.dataForm.updateTime = data.productModel.updateTime;
+              this.dataForm.updateUser = data.productModel.updateUser;
+              this.dataForm.status = data.productModel.status;
             }
           });
         }

@@ -27,21 +27,16 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label></el-table-column>
       <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
       <el-table-column prop="orderTime" header-align="center" align="center" label="订单时间"></el-table-column>
-      <el-table-column prop="employeeId" header-align="center" align="center" label="员工id"></el-table-column>
+      <el-table-column prop="employeeId" header-align="center" align="center" label="员工"></el-table-column>
       <el-table-column prop="customer" header-align="center" align="center" label="客户"></el-table-column>
       <el-table-column prop="deliveryTime" header-align="center" align="center" label="交货时间"></el-table-column>
-      <el-table-column prop="createUser" header-align="center" align="center" label="创建者"></el-table-column>
-      <el-table-column prop="createTime" header-align="center" align="center" label="创建时间"></el-table-column>
-      <el-table-column prop="updateId" header-align="center" align="center" label="更新者"></el-table-column>
-      <el-table-column prop="updateTime" header-align="center" align="center" label="更新时间"></el-table-column>
       <el-table-column
         prop="status"
         header-align="center"
         align="center"
-        label="订单状态 0为正常订单正常生产，1为取消订单，2为订单加急，3为订单挂起"
+        label="订单状态"
       ></el-table-column>
       <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">

@@ -9,43 +9,33 @@
       :rules="dataRule"
       ref="dataForm"
       @keyup.enter.native="dataFormSubmit()"
-      label-width="80px"
+      label-width="130px"
     >
       <el-form-item label="产品ID" prop="productId">
-        <el-input v-model="dataForm.productId" placeholder="产品ID"></el-input>
+        <el-input v-model="dataForm.productId" placeholder="产品ID" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="只数" prop="zhiNumber">
-        <el-input v-model="dataForm.zhiNumber" placeholder="只数"></el-input>
+        <el-input v-model="dataForm.zhiNumber" placeholder="只数" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="纸箱id" prop="boxId">
-        <el-input v-model="dataForm.boxId" placeholder="纸箱id"></el-input>
+        <el-input v-model="dataForm.boxId" placeholder="纸箱id" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="箱数" prop="boxNumber">
-        <el-input v-model="dataForm.boxNumber" placeholder="箱数"></el-input>
+        <el-input v-model="dataForm.boxNumber" placeholder="箱数" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="入库数量" prop="productNumber">
-        <el-input v-model="dataForm.productNumber" placeholder="入库数量"></el-input>
+        <el-input v-model="dataForm.productNumber" placeholder="入库数量" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="入库时间" prop="putInTime">
-        <el-input v-model="dataForm.putInTime" placeholder="入库时间"></el-input>
+         <el-date-picker
+          v-model="dataForm.putInTime"
+          type="date"
+          style="width:260px"
+          placeholder="入库时间">
+        </el-date-picker>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
-      </el-form-item>
-      <el-form-item label="创建人员id" prop="createUser">
-        <el-input v-model="dataForm.createUser" placeholder="创建人员id"></el-input>
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updateTime">
-        <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>
-      </el-form-item>
-      <el-form-item label="更新人员id" prop="updateUser">
-        <el-input v-model="dataForm.updateUser" placeholder="更新人员id"></el-input>
-      </el-form-item>
-      <el-form-item label="0为启用,1为禁止" prop="status">
-        <el-input v-model="dataForm.status" placeholder="0为启用,1为禁止"></el-input>
+        <el-input v-model="dataForm.remark" placeholder="备注" style="width:260px"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -69,11 +59,7 @@ export default {
         productNumber: "",
         putInTime: "",
         remark: "",
-        createTime: "",
-        createUser: "",
-        updateTime: "",
-        updateUser: "",
-        status: ""
+      
       },
       dataRule: {
         productId: [
@@ -92,26 +78,7 @@ export default {
         putInTime: [
           { required: true, message: "入库时间不能为空", trigger: "blur" }
         ],
-        remark: [{ required: true, message: "备注不能为空", trigger: "blur" }],
-        createTime: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
-        ],
-        createUser: [
-          { required: true, message: "创建人员id不能为空", trigger: "blur" }
-        ],
-        updateTime: [
-          { required: true, message: "更新时间不能为空", trigger: "blur" }
-        ],
-        updateUser: [
-          { required: true, message: "更新人员id不能为空", trigger: "blur" }
-        ],
-        status: [
-          {
-            required: true,
-            message: "0为启用,1为禁止不能为空",
-            trigger: "blur"
-          }
-        ]
+      
       }
     };
   },
@@ -130,19 +97,13 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.productId = data.productputinstorage.productId;
-              this.dataForm.zhiNumber = data.productputinstorage.zhiNumber;
-              this.dataForm.boxId = data.productputinstorage.boxId;
-              this.dataForm.boxNumber = data.productputinstorage.boxNumber;
-              this.dataForm.productNumber =
-                data.productputinstorage.productNumber;
-              this.dataForm.putInTime = data.productputinstorage.putInTime;
-              this.dataForm.remark = data.productputinstorage.remark;
-              this.dataForm.createTime = data.productputinstorage.createTime;
-              this.dataForm.createUser = data.productputinstorage.createUser;
-              this.dataForm.updateTime = data.productputinstorage.updateTime;
-              this.dataForm.updateUser = data.productputinstorage.updateUser;
-              this.dataForm.status = data.productputinstorage.status;
+              this.dataForm.productId = data.productPutInStorage.productId;
+              this.dataForm.zhiNumber = data.productPutInStorage.zhiNumber;
+              this.dataForm.boxId = data.productPutInStorage.boxId;
+              this.dataForm.boxNumber = data.productPutInStorage.boxNumber;
+              this.dataForm.productNumber = data.productPutInStorage.productNumber;
+              this.dataForm.putInTime = data.productPutInStorage.putInTime;
+              this.dataForm.remark = data.productPutInStorage.remark;
             }
           });
         }

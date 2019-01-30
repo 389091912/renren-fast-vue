@@ -9,40 +9,72 @@
       :rules="dataRule"
       ref="dataForm"
       @keyup.enter.native="dataFormSubmit()"
-      label-width="80px"
+      label-width="130px"
     >
       <el-form-item label="订单编号" prop="orderNo">
-        <el-input v-model="dataForm.orderNo" placeholder="订单编号"></el-input>
+        <el-input v-model="dataForm.orderNo" placeholder="订单编号" style="width:260px"></el-input>
+        <el-button type="success" style="margin-left:50px;margin-bommon:-30px" @click="addDomain">添加产品</el-button>
       </el-form-item>
+        
+      <div
+        v-for="(product, index) in dynamicValidateForm.domains"
+        :key="product.key"
+        :prop="'product.' + index + '.value'"
+        ref="domain"
+      >
+        <el-form-item :label="(index+1)+'、产品ID'" prop="productId">
+
+          <el-select v-model="product.productId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item  style="margin-left:300px;margin-top:-55px"
+                  label="数量"
+                  prop="zhiNumber"
+                  :rules="[{ required: true, message: '请输入数量', trigger: 'blur' },  ]">
+                  <el-input
+                    v-model.number="product.zhiNumber"
+                    placeholder="数量"
+                    maxlength="10"
+                    style="width:200px">
+                  </el-input>
+          <el-button type="danger" style="margin-left:50px;" v-if="index!='0'"   @click.prevent="removeDomain(index)">删除</el-button>
+          </el-form-item>
+      </div>
       <el-form-item label="订单时间" prop="orderTime">
-        <el-input v-model="dataForm.orderTime" placeholder="订单时间"></el-input>
+        <el-date-picker
+          v-model="dataForm.orderTime"
+          type="date"
+          style="width:260px"
+          placeholder="订单时间">
+        </el-date-picker>
       </el-form-item>
-      <el-form-item label="员工id" prop="employeeId">
+      <!-- <el-form-item label="员工id" prop="employeeId">
         <el-input v-model="dataForm.employeeId" placeholder="员工id"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="客户" prop="customer">
-        <el-input v-model="dataForm.customer" placeholder="客户"></el-input>
+        <el-input v-model="dataForm.customer" placeholder="客户" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="交货时间" prop="deliveryTime">
-        <el-input v-model="dataForm.deliveryTime" placeholder="交货时间"></el-input>
+        <el-date-picker
+          v-model="dataForm.deliveryTime"
+          type="date"
+          style="width:260px"
+          placeholder="交货时间">
+        </el-date-picker>
       </el-form-item>
-      <el-form-item label="创建者" prop="createUser">
-        <el-input v-model="dataForm.createUser" placeholder="创建者"></el-input>
+    
+      <el-form-item label="订单状态" prop="status">
+        <el-input v-model="dataForm.status" placeholder=" 0为正常，1为取消订单，2为订单加急，3为订单挂起" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="创建时间" prop="createTime">
-        <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
-      </el-form-item>
-      <el-form-item label="更新者" prop="updateId">
-        <el-input v-model="dataForm.updateId" placeholder="更新者"></el-input>
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updateTime">
-        <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>
-      </el-form-item>
-      <el-form-item label="订单状态 0为正常订单正常生产，1为取消订单，2为订单加急，3为订单挂起" prop="status">
-        <el-input v-model="dataForm.status" placeholder="订单状态 0为正常订单正常生产，1为取消订单，2为订单加急，3为订单挂起"></el-input>
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
+       <el-form-item label="备注" prop="remark">
+        <el-input type="textarea" v-model="dataForm.remark" placeholder="备注" style="width:260px"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -57,6 +89,44 @@ export default {
   data() {
     return {
       visible: false,
+      dynamicValidateForm: {
+        domains: [
+          {
+            value: "",
+            productId: "",
+            zhiNumber: "",
+            boxNumber: "",
+            outNumber: "",
+            remark: "",
+            createTime: "",
+            createUser: "",
+            updateTime: "",
+            updateUser: ""
+          }
+        ]
+      },
+      options: [
+        {
+          value: "选项1",
+          label: "黄金糕"
+        },
+        {
+          value: "选项2",
+          label: "双皮奶"
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎"
+        },
+        {
+          value: "选项4",
+          label: "龙须面"
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭"
+        }
+      ],
       dataForm: {
         id: 0,
         orderNo: "",
@@ -126,17 +196,17 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.orderNo = data.productorder.orderNo;
-              this.dataForm.orderTime = data.productorder.orderTime;
-              this.dataForm.employeeId = data.productorder.employeeId;
-              this.dataForm.customer = data.productorder.customer;
-              this.dataForm.deliveryTime = data.productorder.deliveryTime;
-              this.dataForm.createUser = data.productorder.createUser;
-              this.dataForm.createTime = data.productorder.createTime;
-              this.dataForm.updateId = data.productorder.updateId;
-              this.dataForm.updateTime = data.productorder.updateTime;
-              this.dataForm.status = data.productorder.status;
-              this.dataForm.remark = data.productorder.remark;
+              this.dataForm.orderNo = data.productOrder.orderNo;
+              this.dataForm.orderTime = data.productOrder.orderTime;
+              this.dataForm.employeeId = data.productOrder.employeeId;
+              this.dataForm.customer = data.productOrder.customer;
+              this.dataForm.deliveryTime = data.productOrder.deliveryTime;
+              this.dataForm.createUser = data.productOrder.createUser;
+              this.dataForm.createTime = data.productOrder.createTime;
+              this.dataForm.updateId = data.productOrder.updateId;
+              this.dataForm.updateTime = data.productOrder.updateTime;
+              this.dataForm.status = data.productOrder.status;
+              this.dataForm.remark = data.productOrder.remark;
             }
           });
         }
@@ -182,7 +252,20 @@ export default {
           });
         }
       });
+    },
+    removeDomain(index) {
+    //var index = this.dynamicValidateForm.domains.indexOf(item);
+    if (index !== -1) {
+      this.dynamicValidateForm.domains.splice(index, 1);
     }
+  },
+  addDomain() {
+    this.dynamicValidateForm.domains.push({
+      value: "",
+      key: Date.now()
+    });
+  }
+
   }
 };
 </script>

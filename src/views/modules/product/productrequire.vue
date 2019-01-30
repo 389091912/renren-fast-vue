@@ -7,12 +7,12 @@
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button
-          v-if="isAuth('product:productorderdetail:save')"
+          v-if="isAuth('product:productrequire:save')"
           type="primary"
           @click="addOrUpdateHandle()"
         >新增</el-button>
         <el-button
-          v-if="isAuth('product:productorderdetail:delete')"
+          v-if="isAuth('product:productrequire:delete')"
           type="danger"
           @click="deleteHandle()"
           :disabled="dataListSelections.length <= 0"
@@ -27,19 +27,31 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="ID"></el-table-column>
+      <el-table-column prop="id" header-align="center" align="center" label="id"></el-table-column>
+      <el-table-column prop="productId" header-align="center" align="center" label="产品id"></el-table-column>
       <el-table-column prop="orderId" header-align="center" align="center" label="订单id"></el-table-column>
-      <el-table-column prop="productId" header-align="center" align="center" label="产品ID"></el-table-column>
-      <el-table-column prop="productNumber" header-align="center" align="center" label="订单数量"></el-table-column>
-      <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column
-        prop="status"
+        prop="productRequireNumber"
         header-align="center"
         align="center"
-        label="生产状态 "
-      >
-      <!-- 0为等待生产，1为取消生产，2为生产中，3为生产完成 -->
-      </el-table-column>
+        label="产品实际需求数量"
+      ></el-table-column>
+      <el-table-column prop="boxId" header-align="center" align="center" label="纸箱id"></el-table-column>
+      <el-table-column
+        prop="boxRequireNumber"
+        header-align="center"
+        align="center"
+        label="纸箱实际需求数量"
+      ></el-table-column>
+      <el-table-column prop="modelId" header-align="center" align="center" label="模具id"></el-table-column>
+      <el-table-column
+        prop="modelRequireNumber"
+        header-align="center"
+        align="center"
+        label="准备模具数量"
+      ></el-table-column>
+      <el-table-column prop="productStatus" header-align="center" align="center" label="产品生产状态"></el-table-column>
+      <el-table-column prop="orderStatus" header-align="center" align="center" label="订单的状态"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
@@ -62,7 +74,7 @@
 </template>
 
 <script>
-import AddOrUpdate from "./productorderdetail-add-or-update";
+import AddOrUpdate from "./productrequire-add-or-update";
 export default {
   data() {
     return {
@@ -89,7 +101,7 @@ export default {
     getDataList() {
       this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl("/product/productorderdetail/list"),
+        url: this.$http.adornUrl("/product/productrequire/list"),
         method: "get",
         params: this.$http.adornParams({
           page: this.pageIndex,
@@ -146,7 +158,7 @@ export default {
         }
       ).then(() => {
         this.$http({
-          url: this.$http.adornUrl("/product/productorderdetail/delete"),
+          url: this.$http.adornUrl("/product/productrequire/delete"),
           method: "post",
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {

@@ -9,7 +9,7 @@
       :rules="dataRule"
       ref="dataForm"
       @keyup.enter.native="dataFormSubmit()"
-      label-width="80px"
+      label-width="130px"
     >
       <el-form-item label="产品名称" prop="productName">
         <el-input v-model="dataForm.productName" placeholder="产品名称"  style="width:260px"></el-input>
@@ -24,43 +24,75 @@
         <el-input v-model="dataForm.cartonId" placeholder="纸箱编号"  style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="库存数量" prop="productNum">
-        <el-input v-model.number="dataForm.productNum" placeholder="库存数量"  style="width:260px"></el-input>
+        <el-input v-model.number="dataForm.productNum" placeholder="库存数量"  style="width:260px">
+           <template slot="append">件</template>
+        </el-input>
       </el-form-item>
-      <el-form-item label="产品克数" prop="productWeight"  style="width:260px">
-        <el-input v-model.number="dataForm.productWeight" placeholder="产品克数"></el-input>
+      <el-form-item label="产品克数" prop="productWeight"  >
+        <el-input v-model.number="dataForm.productWeight" placeholder="产品克数" style="width:260px">
+           <template slot="append">克</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="产品容量" prop="productVolume">
-        <el-input v-model.number="dataForm.productVolume" placeholder="产品容量"  style="width:260px"></el-input>
+        <el-input v-model.number="dataForm.productVolume" placeholder="产品容量"  style="width:260px">
+             <template slot="append">毫升</template>
+        </el-input>
       </el-form-item>
 
       <el-form-item label="产品图片" prop="productImageId">
-        <el-input v-model="dataForm.productImageId" placeholder="产品图片"  style="width:260px"></el-input>
+        <el-upload
+          :action="uploadImageUrl"
+          list-type="picture-card"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handleRemove">
+          <i class="el-icon-plus"></i>
+        </el-upload>
+        <!-- <el-upload
+          class="avatar-uploader"
+          :action="url"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload> -->
+        <el-dialog :visible.sync="dialogVisible">
+        <img width="100%" :src="dialogImageUrl" alt="">
+      </el-dialog>
+        <!-- <el-input v-model="dataForm.productImageId" placeholder="产品图片"  style="width:260px"></el-input> -->
       </el-form-item>
 
       <el-form-item label="产品图纸" prop="productDrawingId">
-        <el-input v-model="dataForm.productDrawingId" placeholder="产品图纸"></el-input>
+      <el-upload
+        class="upload-demo"
+        drag
+        :action="uploadDesignUrl"
+        multiple>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
       </el-form-item>
-      
+
       <el-form-item label="产品批次" prop="productBatch">
-        <el-input v-model="dataForm.productBatch" placeholder="产品批次"></el-input>
+        <el-input v-model="dataForm.productBatch" placeholder="产品批次" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品问题" prop="productQuestion">
-        <el-input v-model="dataForm.productQuestion" placeholder="产品问题"></el-input>
+        <el-input v-model="dataForm.productQuestion" type="textarea" size='medium' placeholder="产品问题" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品组合套" prop="productAssort">
-        <el-input v-model="dataForm.productAssort" placeholder="产品组合套"></el-input>
+        <el-input v-model="dataForm.productAssort" placeholder="产品组合套" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品后续加工" prop="productTrailingProcess">
-        <el-input v-model="dataForm.productTrailingProcess" placeholder="产品后续加工"></el-input>
+        <el-input v-model="dataForm.productTrailingProcess" placeholder="产品后续加工" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品备注" prop="productRemark">
-        <el-input v-model="dataForm.productRemark" placeholder="产品备注"></el-input>
+        <el-input v-model="dataForm.productRemark" type="textarea" size='small' placeholder="产品备注" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品成品率" prop="yield">
-        <el-input v-model="dataForm.yield" placeholder="产品成品率"></el-input>
-      </el-form-item>
-      <el-form-item label="产品分类" prop="productCategory">
-        <el-input v-model="dataForm.productCategory" placeholder="产品分类"></el-input>
+        <el-input v-model="dataForm.yield" placeholder="产品成品率" style="width:260px">
+             <template slot="append">%</template>
+        </el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -70,11 +102,47 @@
   </el-dialog>
 </template>
 
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+ .el-textarea__inner{
+    height: 99px;
+  }
+  .el-upload-dragger{
+    width: 260px;
+  }
+</style>
+
+
 <script>
 export default {
   data() {
     return {
       visible: false,
+      dialogImageUrl: '',
+      dialogVisible: false,
+      url:"",
       dataForm: {
         id: 0,
         productName: "",
@@ -93,7 +161,6 @@ export default {
         productRemark: "",
         yield: "",
         productCategory: "",
-    
       },
       dataRule: {
         productName: [
@@ -141,14 +208,36 @@ export default {
         yield: [
           { required: true, message: "产品成品率不能为空", trigger: "blur" }
         ],
-        productCategory: [
-          { required: true, message: "产品分类不能为空", trigger: "blur" }
-        ]
       }
     };
   },
   methods: {
+
+     handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+      },
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      },
     init(id) {
+      this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadImage?token=${this.$cookie.get('token')}`)
+      this.uploadDesignUrl = this.$http.adornUrl(`/sys/oss/uploadDesignFile?token=${this.$cookie.get('token')}`)
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -162,25 +251,21 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.productName = data.productinfo.productName;
-              this.dataForm.modelNo = data.productinfo.modelNo;
-              this.dataForm.customerProductNo =
-                data.productinfo.customerProductNo;
-              this.dataForm.cartonId = data.productinfo.cartonId;
-              this.dataForm.productNum = data.productinfo.productNum;
-              this.dataForm.productWeight = data.productinfo.productWeight;
-              this.dataForm.productVolume = data.productinfo.productVolume;
-              this.dataForm.productImageId = data.productinfo.productImageId;
-              this.dataForm.productDrawingId =
-                data.productinfo.productDrawingId;
-              this.dataForm.productBatch = data.productinfo.productBatch;
-              this.dataForm.productQuestion = data.productinfo.productQuestion;
-              this.dataForm.productAssort = data.productinfo.productAssort;
-              this.dataForm.productTrailingProcess =
-                data.productinfo.productTrailingProcess;
-              this.dataForm.productRemark = data.productinfo.productRemark;
-              this.dataForm.yield = data.productinfo.yield;
-              this.dataForm.productCategory = data.productinfo.productCategory;
+              this.dataForm.productName = data.productInfo.productName;
+              this.dataForm.modelNo = data.productInfo.modelNo;
+              this.dataForm.customerProductNo = data.productInfo.customerProductNo;
+              this.dataForm.cartonId = data.productInfo.cartonId;
+              this.dataForm.productNum = data.productInfo.productNum;
+              this.dataForm.productWeight = data.productInfo.productWeight;
+              this.dataForm.productVolume = data.productInfo.productVolume;
+              this.dataForm.productImageId = data.productInfo.productImageId;
+              this.dataForm.productDrawingId = data.productInfo.productDrawingId;
+              this.dataForm.productBatch = data.productInfo.productBatch;
+              this.dataForm.productQuestion = data.productInfo.productQuestion;
+              this.dataForm.productAssort = data.productInfo.productAssort;
+              this.dataForm.productTrailingProcess = data.productInfo.productTrailingProcess;
+              this.dataForm.productRemark = data.productInfo.productRemark;
+              this.dataForm.yield = data.productInfo.yield;
             }
           });
         }
@@ -212,7 +297,6 @@ export default {
               productTrailingProcess: this.dataForm.productTrailingProcess,
               productRemark: this.dataForm.productRemark,
               yield: this.dataForm.yield,
-              productCategory: this.dataForm.productCategory,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -233,5 +317,5 @@ export default {
       });
     }
   }
-};
+}
 </script>
