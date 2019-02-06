@@ -11,12 +11,68 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="130px"
     >
-      <el-form-item label="模具编号" prop="modelNo" >
-        <el-input v-model="dataForm.modelNo" placeholder="模具编号" style="width:260px"></el-input>
+
+   
+      <el-form-item  label="类别" prop="modelType">
+         <template v-if="dataForm.id||dataForm.id==0" >
+          <el-radio-group v-model="dataForm.modelType">
+            <el-radio v-model="dataForm.modelType" label="0">入库登记</el-radio>
+            <el-radio v-model="dataForm.modelType" label="1">模具拉出</el-radio>
+            <el-radio v-model="dataForm.modelType" label="2">新品打样</el-radio>
+            <el-radio v-model="dataForm.modelType" label="3">返厂维修</el-radio>
+            <el-radio v-model="dataForm.modelType" label="4">外来加工</el-radio>
+          </el-radio-group>
+          </template>
+           <!-- <template v-else >
+          <el-radio-group v-model="dataForm.modelType">
+            <el-radio :label="0">入库登记</el-radio>
+            <el-radio :label="1">模具拉出</el-radio>
+            <el-radio :label="2">新品打样</el-radio>
+            <el-radio :label="3">返厂维修</el-radio>
+            <el-radio :label="4">外来加工</el-radio>
+          </el-radio-group>
+          </template> -->
       </el-form-item>
+    
+
+      <template v-if="dataForm.modelType=='0'">
+        <el-form-item label="仓库位置" prop="siteNo">
+          <el-radio-group v-model="dataForm.siteNo">
+            <el-radio :label="1">新第一仓库</el-radio>
+            <el-radio :label="2">第二仓库</el-radio>
+            <el-radio :label="3">第三仓库</el-radio>
+            <el-radio :label="4">老第一仓库</el-radio>
+          </el-radio-group>     
+        </el-form-item>
+      </template>
+
+    <template v-if="dataForm.modelType=='0'||dataForm.modelType=='1'" >
+      <el-form-item label="模具编号" prop="modelNo">
+        <el-select v-model="dataForm.modelNo" 
+        default-first-option
+        style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item in modelList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+       </el-form-item>
+    
+         <el-form-item label="客户模具编号" prop="customerModelNo">
+        <el-input v-model="dataForm.customerModelNo" placeholder="客户模具编号" style="width:260px"></el-input>
+      </el-form-item> 
+    </template>
+     <template v-if="dataForm.modelType=='2'" >
+      <el-form-item label="模具编号" prop="modelNo">
+          <el-input v-model="dataForm.modelNo" placeholder="模具编号" style="width:260px"></el-input>
+       </el-form-item>
       <el-form-item label="产品名称" prop="productName">
-        <el-input v-model="dataForm.productName" placeholder="产品名称" style="width:260px"></el-input>
-      </el-form-item>
+        <el-input v-model="dataForm.productName" placeholder="可选填产品名称" style="width:260px"></el-input>
+      </el-form-item> 
+    </template>
+      
       <el-form-item label="成模" prop="modelSuccessMo">
         <el-input v-model="dataForm.modelSuccessMo" placeholder="成模" style="width:260px">
                    <template slot="append">件</template>
@@ -61,6 +117,13 @@
         <el-input v-model="dataForm.modelClamp" placeholder="钳片" style="width:260px">
                    <template slot="append">件</template>
         </el-input>
+      
+      </el-form-item>
+
+       <el-form-item label="瓶重" prop="bottleWeight">
+        <el-input v-model="dataForm.bottleWeight" placeholder="瓶重"  style="width:260px">
+            <template slot="append">克</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="出库数量" prop="modelAllNumber">
         <el-input v-model="dataForm.modelAllNumber" placeholder="出库数量" style="width:260px">
@@ -81,6 +144,7 @@
           v-model="dataForm.modelDeliveryTime"
           type="date"
           style="width:260px"
+           value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="发货日期"
         ></el-date-picker>
       </el-form-item>
@@ -89,8 +153,13 @@
           v-model="dataForm.modelReceiptTime"
           type="date"
           style="width:260px"
+           value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="收货日期"
         ></el-date-picker>
+      </el-form-item>
+   
+      <el-form-item label="退货原因" prop="reasonReturn">
+        <el-input v-model="dataForm.reasonReturn" placeholder="退货原因"  style="width:260px"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -99,6 +168,13 @@
     </span>
   </el-dialog>
 </template>
+<style>
+  .el-select-dropdown__list{
+   
+    max-height: 150px;
+   
+  } 
+</style>
 
 <script>
 export default {
@@ -108,6 +184,7 @@ export default {
       dataForm: {
         id: 0,
         modelNo: "",
+        customerModelNo:'',
         productName: "",
         modelSuccessMo: "",
         modelPrimaryMo: "",
@@ -128,14 +205,17 @@ export default {
         createUser: "",
         updateTime: "",
         updateUser: "",
-        status: ""
+        status: "",
+        modelType: '',
+        bottleWeight: '',
+        reasonReturn: ''
+        
       },
+    
+      modelList:[],
       dataRule: {
         modelNo: [
           { required: true, message: "模具编号不能为空", trigger: "blur" }
-        ],
-        productName: [
-          { required: true, message: "产品名称不能为空", trigger: "blur" }
         ],
         modelSuccessMo: [
           { required: true, message: "成模不能为空", trigger: "blur" }
@@ -173,38 +253,56 @@ export default {
         customerName: [
           { required: true, message: "提货人名称不能为空", trigger: "blur" }
         ],
-        modelRemark: [
-          { required: true, message: "备注不能为空", trigger: "blur" }
-        ],
-        modelDeliveryTime: [
-          { required: true, message: "发货日期不能为空", trigger: "blur" }
-        ],
-        modelReceiptTime: [
-          { required: true, message: "收货日期不能为空", trigger: "blur" }
-        ],
-        createTime: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
-        ],
-        createUser: [
-          { required: true, message: "创建人员不能为空", trigger: "blur" }
-        ],
-        updateTime: [
-          { required: true, message: "更新时间不能为空", trigger: "blur" }
-        ],
-        updateUser: [
-          { required: true, message: "更新人员不能为空", trigger: "blur" }
-        ],
-        status: [
-          {
-            required: true,
-            message: "0为启用，1为禁止不能为空",
-            trigger: "blur"
-          }
-        ]
       }
     };
   },
+  created() {
+  
+    this.getModelListInfo()
+  },
   methods: {
+    clearndataForm(){
+        this.dataForm.modelNo='';
+        this.dataForm.customerModelNo='';
+        this.dataForm.productName='';
+        this.dataForm.modelSuccessMo='';
+        this.dataForm.modelPrimaryMo='';
+        this.dataForm.modelMenTou='';
+        this.dataForm.modelMouthMo='';
+        this.dataForm.modelFunnel='';
+        this.dataForm.modelCore='';
+        this.dataForm.modelAirTou='';
+        this.dataForm.modelCooling='';
+        this.dataForm.modelClamp='';
+        this.dataForm.modelAllNumber='';
+        this.dataForm.modelHandlingPeople='';
+        this.dataForm.customerName='';
+    
+    },
+    getModelListInfo(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productmodel/getModelVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.modelList=data.modelVoList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
+      getProductName(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getProductName/${this.dataForm.modelNo}`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+           this.dataForm.productName=data.productName;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
     init(id) {
       this.dataForm.id = id || 0;
       this.visible = true;
@@ -236,11 +334,10 @@ export default {
               this.dataForm.modelRemark = data.productModelOut.modelRemark;
               this.dataForm.modelDeliveryTime = data.productModelOut.modelDeliveryTime;
               this.dataForm.modelReceiptTime = data.productModelOut.modelReceiptTime;
-              this.dataForm.createTime = data.productModelOut.createTime;
-              this.dataForm.createUser = data.productModelOut.createUser;
-              this.dataForm.updateTime = data.productModelOut.updateTime;
-              this.dataForm.updateUser = data.productModelOut.updateUser;
-              this.dataForm.status = data.productModelOut.status;
+               this.dataForm.status = data.productModelOut.status;
+              this.dataForm.modelType = data.productModelOut.modelType
+              this.dataForm.bottleWeight = data.productModelOut.bottleWeight
+              this.dataForm.reasonReturn = data.productModelOut.reasonReturn
             }
           });
         }
@@ -280,7 +377,10 @@ export default {
               createUser: this.dataForm.createUser,
               updateTime: this.dataForm.updateTime,
               updateUser: this.dataForm.updateUser,
-              status: this.dataForm.status
+              status: this.dataForm.status,
+              modelType: this.dataForm.modelType,
+              bottleWeight: this.dataForm.bottleWeight,
+              reasonReturn: this.dataForm.reasonReturn,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -300,6 +400,16 @@ export default {
         }
       });
     }
+  },
+  watch:{
+     "dataForm.modelNo" (){
+       this.getProductName();
+        //console.log("111")
+      },
+      "dataForm.modelType" (){
+        
+        this.clearndataForm();
+      }
   }
 };
 </script>

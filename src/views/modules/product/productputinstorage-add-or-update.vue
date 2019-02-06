@@ -11,14 +11,33 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="130px"
     >
-      <el-form-item label="产品ID" prop="productId">
-        <el-input v-model="dataForm.productId" placeholder="产品ID" style="width:260px"></el-input>
+      <el-form-item label="产品ID" prop="productId" >
+           <el-select v-model="dataForm.productId" filterable placeholder="请选择"  style="width:260px">
+            <el-option
+              v-for="item in productList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+      </el-select>
+        <!-- <el-input v-model="dataForm.productId" placeholder="产品ID" style="width:260px"></el-input> -->
       </el-form-item>
       <el-form-item label="只数" prop="zhiNumber">
         <el-input v-model="dataForm.zhiNumber" placeholder="只数" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="纸箱id" prop="boxId">
-        <el-input v-model="dataForm.boxId" placeholder="纸箱id" style="width:260px"></el-input>
+      <!-- <el-form-item label="纸箱id" prop="boxId"> -->
+      <el-form-item label="纸箱编号" prop="boxNo">
+            <!-- <el-select v-model="dataForm.boxId" 
+            default-first-option
+            style="width:260px" readonly filterable placeholder="请选择">
+              <el-option
+                v-for="item in productBoxList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select> -->
+        <el-input v-model="boxNo" disabled placeholder="纸箱编号" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="箱数" prop="boxNumber">
         <el-input v-model="dataForm.boxNumber" placeholder="箱数" style="width:260px"></el-input>
@@ -31,6 +50,7 @@
           v-model="dataForm.putInTime"
           type="date"
           style="width:260px"
+           value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="入库时间">
         </el-date-picker>
       </el-form-item>
@@ -44,12 +64,20 @@
     </span>
   </el-dialog>
 </template>
+<style>
+  .el-select-dropdown__list{
+    max-height: 150px;
+  }   
 
+</style>
 <script>
 export default {
   data() {
     return {
       visible: false,
+      productBoxList:[],
+      productList:[],
+      boxNo:"",
       dataForm: {
         id: 0,
         productId: "",
@@ -83,7 +111,43 @@ export default {
     };
   },
   methods: {
+    //获取纸箱编号
+    getProductBoxNo(){
+
+          let _url=this.$http.adornUrl(`/product/productinfo/infoTwo/${this.dataForm.productId}`);
+          if(this.dataForm.productId ==''){
+           _url=this.$http.adornUrl(`/product/productinfo/infoTwo/0`)
+          }
+            this.$http({
+            url:_url,
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            console.log(data.productInfo.cartonId);
+            console.log(data.productInfo.boxNo);
+            this.dataForm.boxId=data.productInfo.cartonId;
+            this.boxNo=data.productInfo.boxNo;
+          //  alert(data.productBoxList);
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+    },
+  //获取所有的产品
+     getProductList(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getAllProductVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.productList=data.productList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
     init(id) {
+      this.getProductList();
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -109,6 +173,7 @@ export default {
         }
       });
     },
+    
     // 表单提交
     dataFormSubmit() {
       this.$refs["dataForm"].validate(valid => {
@@ -153,6 +218,15 @@ export default {
         }
       });
     }
+  },
+   watch:{
+     "dataForm.productId" (){
+       this.getProductBoxNo();
+        //console.log("111")
+      },
+     
   }
+
+
 };
 </script>

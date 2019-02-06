@@ -17,40 +17,67 @@
       </el-form-item>
         
       <div
-        v-for="(product, index) in dynamicValidateForm.domains"
-        :key="product.key"
+        v-for="(product, index) in ProductDetailVo"
+        :key="index"
         :prop="'product.' + index + '.value'"
         ref="domain"
       >
-        <el-form-item :label="(index+1)+'、产品ID'" prop="productId">
+        <el-form-item :label="(index+1)+'、产品'" prop="productId">
 
           <el-select v-model="product.productId" filterable placeholder="请选择">
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in productList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item  style="margin-left:300px;margin-top:-55px"
+        <el-form-item  style="margin-left:250px;margin-top:-60px"
                   label="数量"
-                  prop="zhiNumber"
-                  :rules="[{ required: true, message: '请输入数量', trigger: 'blur' },  ]">
-                  <el-input
-                    v-model.number="product.zhiNumber"
-                    placeholder="数量"
-                    maxlength="10"
-                    style="width:200px">
-                  </el-input>
-          <el-button type="danger" style="margin-left:50px;" v-if="index!='0'"   @click.prevent="removeDomain(index)">删除</el-button>
+                  prop="productNumber"
+                >
+          <el-input
+            v-model.number="product.productNumber"
+            placeholder="数量"
+            maxlength="10"
+            style="width:150px">
+            <template slot="append">件</template>
+          </el-input>
+
           </el-form-item>
+           <el-form-item  style="margin-left:460px;margin-top:-55px"
+                  label="克数"
+                  prop="productWeight"
+                >
+           <el-input
+            v-model.number="product.productWeight"
+            placeholder="克数"
+            maxlength="10"
+            style="width:150px">
+            <template slot="append">克</template>
+          </el-input>
+           </el-form-item>
+
+
+           <el-form-item  style="margin-left:660px;margin-top:-60px"
+                  label="纸箱"
+                  prop="productNumber"
+                >
+              <el-radio-group v-model="product.boxSupplyWay" style="width:140px">
+              <el-radio :label="0">客供</el-radio>
+              <el-radio :label="1">自供</el-radio>
+            </el-radio-group>
+             <el-button type="danger" style="margin-left:10px;" v-if="index!='0'"   @click.prevent="removeDomain(index)">删除</el-button>  
+           </el-form-item>
+        
       </div>
       <el-form-item label="订单时间" prop="orderTime">
         <el-date-picker
           v-model="dataForm.orderTime"
           type="date"
+           value-format="yyyy-MM-dd HH:mm:ss"
           style="width:260px"
           placeholder="订单时间">
         </el-date-picker>
@@ -66,12 +93,21 @@
           v-model="dataForm.deliveryTime"
           type="date"
           style="width:260px"
+           value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="交货时间">
         </el-date-picker>
       </el-form-item>
     
       <el-form-item label="订单状态" prop="status">
-        <el-input v-model="dataForm.status" placeholder=" 0为正常，1为取消订单，2为订单加急，3为订单挂起" style="width:260px"></el-input>
+        <template>
+          <el-radio-group v-model="dataForm.status">
+            <el-radio :label="0">正常订单</el-radio>
+            <el-radio :label="1">订单加急</el-radio>
+            <el-radio :label="2">订单挂起</el-radio>
+            <el-radio :label="3">取消订单</el-radio>
+          </el-radio-group>
+        </template>
+        <!-- <el-input v-model="dataForm.status" placeholder=" 0为正常，1为取消订单，2为订单加急，3为订单挂起" style="width:260px"></el-input> -->
       </el-form-item>
        <el-form-item label="备注" prop="remark">
         <el-input type="textarea" v-model="dataForm.remark" placeholder="备注" style="width:260px"></el-input>
@@ -89,44 +125,19 @@ export default {
   data() {
     return {
       visible: false,
-      dynamicValidateForm: {
-        domains: [
+    
+      ProductDetailVo: [
           {
-            value: "",
+            
             productId: "",
-            zhiNumber: "",
-            boxNumber: "",
-            outNumber: "",
-            remark: "",
-            createTime: "",
-            createUser: "",
-            updateTime: "",
-            updateUser: ""
+            productNumber: "",
+            productWeight: "",
+            boxSupplyWay: "",
+            remark: null
+  
           }
-        ]
-      },
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
+        ], 
+      productList:[],
       dataForm: {
         id: 0,
         orderNo: "",
@@ -134,10 +145,6 @@ export default {
         employeeId: "",
         customer: "",
         deliveryTime: "",
-        createUser: "",
-        createTime: "",
-        updateId: "",
-        updateTime: "",
         status: "",
         remark: ""
       },
@@ -157,31 +164,36 @@ export default {
         deliveryTime: [
           { required: true, message: "交货时间不能为空", trigger: "blur" }
         ],
-        createUser: [
-          { required: true, message: "创建者不能为空", trigger: "blur" }
-        ],
-        createTime: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
-        ],
-        updateId: [
-          { required: true, message: "更新者不能为空", trigger: "blur" }
-        ],
-        updateTime: [
-          { required: true, message: "更新时间不能为空", trigger: "blur" }
-        ],
+      
         status: [
           {
             required: true,
             message:
-              "订单状态 0为正常订单正常生产，1为取消订单，2为订单加急，3为订单挂起不能为空",
+              "订单状态 0为正常订单正常生产，1为订单加急，2为订单挂起不能为空,3为取消订单，",
             trigger: "blur"
           }
         ],
-        remark: [{ required: true, message: "备注不能为空", trigger: "blur" }]
+  
       }
     };
   },
+   created() {
+  
+    this.getProductList();
+  },
   methods: {
+     getProductList(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getAllProductVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.productList=data.productList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
     init(id) {
       this.dataForm.id = id || 0;
       this.visible = true;
@@ -201,13 +213,12 @@ export default {
               this.dataForm.employeeId = data.productOrder.employeeId;
               this.dataForm.customer = data.productOrder.customer;
               this.dataForm.deliveryTime = data.productOrder.deliveryTime;
-              this.dataForm.createUser = data.productOrder.createUser;
-              this.dataForm.createTime = data.productOrder.createTime;
-              this.dataForm.updateId = data.productOrder.updateId;
-              this.dataForm.updateTime = data.productOrder.updateTime;
               this.dataForm.status = data.productOrder.status;
               this.dataForm.remark = data.productOrder.remark;
+            //  console.log(data.productOrder.productOrderDetailList);
+           this.ProductDetailVo = data.productOrder.productOrderDetailList;
             }
+          
           });
         }
       });
@@ -228,12 +239,9 @@ export default {
               employeeId: this.dataForm.employeeId,
               customer: this.dataForm.customer,
               deliveryTime: this.dataForm.deliveryTime,
-              createUser: this.dataForm.createUser,
-              createTime: this.dataForm.createTime,
-              updateId: this.dataForm.updateId,
-              updateTime: this.dataForm.updateTime,
               status: this.dataForm.status,
-              remark: this.dataForm.remark
+              remark: this.dataForm.remark,
+              productList:JSON.stringify(this.ProductDetailVo) ,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -256,13 +264,16 @@ export default {
     removeDomain(index) {
     //var index = this.dynamicValidateForm.domains.indexOf(item);
     if (index !== -1) {
-      this.dynamicValidateForm.domains.splice(index, 1);
+      this.ProductDetailVo.splice(index, 1);
     }
   },
   addDomain() {
-    this.dynamicValidateForm.domains.push({
-      value: "",
-      key: Date.now()
+    this.ProductDetailVo.push({
+            productId: "",
+            productNumber: "",
+            productWeight: "",
+            boxSupplyWay: "",
+            remark: null
     });
   }
 

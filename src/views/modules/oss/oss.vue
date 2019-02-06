@@ -20,8 +20,11 @@
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" width="80" label="ID"></el-table-column>
-      <el-table-column prop="originalName" header-align="center" align="center" width="80" label="文件名称"></el-table-column>
-      
+      <el-table-column prop="originalName" header-align="center" align="center" width="80" label="文件名称">
+       <template slot-scope="scope">
+              <a :href="imageUrl+scope.row.url+ '?token='+token" :download="scope.row.originalName" >{{scope.row.originalName}}</a>
+            </template>
+      </el-table-column>
       
        <el-table-column header-align="center" align="center" label="图片" width="80px">
           <template slot-scope="scope">
@@ -29,11 +32,9 @@
               placement="right"
               title=""
               trigger="hover">
-              <img :src="imageUrl+scope.row.url+ '?token='+token" />
-              <img slot="reference" :src="imageUrl+scope.row.url+ '?token='+token" alt="图片未加载成功" style="max-height: 50px;max-width: 50px">
+              <img :src="imageUrl+scope.row.url+ '?token='+token" style='height: 650px;width: 650px' />
+              <img slot="reference" :src="imageUrl+scope.row.url+ '?token='+token" alt="" style="max-height: 50px;max-width: 50px">
             </el-popover>
-            <!-- <img slot="reference"  :src="'http://127.0.0.1:8080/renren-fast/pub'+scope.row.url+ '?token='+token" style="width:30px;height:30px"> -->
-             <!-- <a :href="'http://127.0.0.1:8080/renren-fast/pub'+scope.row.url+ '?token='+token" target="_blank">{{scope.row.originalName}}</a> -->
           </template>
       </el-table-column>
       <el-table-column prop="url" header-align="center" align="center" label="URL地址"></el-table-column>

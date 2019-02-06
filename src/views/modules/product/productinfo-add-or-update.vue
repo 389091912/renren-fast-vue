@@ -11,17 +11,38 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="130px"
     >
+      <el-form-item label="瓶子序号" prop="productNo">
+        <el-input v-model="dataForm.productNo" placeholder="瓶子序号"  style="width:260px"></el-input>
+      </el-form-item>
       <el-form-item label="产品名称" prop="productName">
         <el-input v-model="dataForm.productName" placeholder="产品名称"  style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="模具编号" prop="modelNo">
-        <el-input v-model="dataForm.modelNo" placeholder="模具编号"  style="width:260px"></el-input>
+       <el-select v-model="dataForm.modelNo" 
+        default-first-option
+        style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item in modelList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="客户产品编号" prop="customerProductNo">
-        <el-input v-model="dataForm.customerProductNo" placeholder="客户产品编号"  style="width:260px"></el-input>
+      <el-form-item label="客户编号" prop="customerProductNo">
+        <el-input v-model="dataForm.customerProductNo" placeholder="客户产品(模具)编号"  style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="纸箱编号" prop="cartonId">
-        <el-input v-model="dataForm.cartonId" placeholder="纸箱编号"  style="width:260px"></el-input>
+         <el-select v-model="dataForm.cartonId" 
+        default-first-option
+        style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item in productBoxList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="库存数量" prop="productNum">
         <el-input v-model.number="dataForm.productNum" placeholder="库存数量"  style="width:260px">
@@ -41,55 +62,62 @@
 
       <el-form-item label="产品图片" prop="productImageId">
         <el-upload
+          class="avatar-uploader"  
           :action="uploadImageUrl"
-          list-type="picture-card"
-          :on-preview="handlePictureCardPreview"
-          :on-remove="handleRemove">
-          <i class="el-icon-plus"></i>
-        </el-upload>
-        <!-- <el-upload
-          class="avatar-uploader"
-          :action="url"
+          :on-remove="handleRemove"
+          :on-success="handleImageSuccess"
+          :before-upload="beforeImageUpload"
           :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload> -->
+          >
+          
+         <img v-if="imageUrl" :src="imageUrl" class="avatar">
+         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
         <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="dialogImageUrl" alt="">
-      </el-dialog>
-        <!-- <el-input v-model="dataForm.productImageId" placeholder="产品图片"  style="width:260px"></el-input> -->
+        <img width="100%" :src="imageUrl" alt="">
+        </el-dialog>
+        
       </el-form-item>
 
       <el-form-item label="产品图纸" prop="productDrawingId">
       <el-upload
+        ref="upload"
         class="upload-demo"
         drag
         :action="uploadDesignUrl"
-        multiple>
+        :on-success="handleDesignSuccess"
+        :before-upload="beforeDesignUpload"
+        :file-list="fileList"
+        >
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+        <div class="el-upload__tip" slot="tip">只能上传PDF/DWG文件，且不超过10MB</div>
       </el-upload>
       </el-form-item>
 
-      <el-form-item label="产品批次" prop="productBatch">
+      <el-form-item label="生产批次" prop="productBatch">
+        <el-date-picker style="width:260px"
+          v-model="dataForm.productBatch"
+          type="date"
+          placeholder="请选择产品批次(按照日期)"
+          value-format="yyyyMMdd">
+        </el-date-picker>
+        
         <el-input v-model="dataForm.productBatch" placeholder="产品批次" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品问题" prop="productQuestion">
         <el-input v-model="dataForm.productQuestion" type="textarea" size='medium' placeholder="产品问题" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="产品组合套" prop="productAssort">
-        <el-input v-model="dataForm.productAssort" placeholder="产品组合套" style="width:260px"></el-input>
+      <el-form-item label="组合套" prop="productAssort">
+        <el-input v-model="dataForm.productAssort" placeholder="产品组合套" style="width:260px" ></el-input>
       </el-form-item>
-      <el-form-item label="产品后续加工" prop="productTrailingProcess">
+      <el-form-item label="后续加工" prop="productTrailingProcess">
         <el-input v-model="dataForm.productTrailingProcess" placeholder="产品后续加工" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="产品备注" prop="productRemark">
+      <el-form-item label="备注" prop="productRemark">
         <el-input v-model="dataForm.productRemark" type="textarea" size='small' placeholder="产品备注" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="产品成品率" prop="yield">
+      <el-form-item label="成品率" prop="yield">
         <el-input v-model="dataForm.yield" placeholder="产品成品率" style="width:260px">
              <template slot="append">%</template>
         </el-input>
@@ -116,14 +144,14 @@
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
+    width: 260px;
+    height: 260px;
+    line-height: 260px;
     text-align: center;
   }
   .avatar {
-    width: 178px;
-    height: 178px;
+    width: 260px;
+    height: 260px;
     display: block;
   }
  .el-textarea__inner{
@@ -132,6 +160,13 @@
   .el-upload-dragger{
     width: 260px;
   }
+  .el-select-dropdown__list{
+   
+    max-height: 150px;
+   
+  }   
+</style>
+
 </style>
 
 
@@ -142,9 +177,18 @@ export default {
       visible: false,
       dialogImageUrl: '',
       dialogVisible: false,
-      url:"",
+      uploadDesignUrl: '',
+      uploadImageUrl: '',
+      imageUrl: "",
+      oldImageUrl: "",
+      designFileUrl:'',
+      oldDesignFileUrl:'',
+      fileList:[],
+      modelList:[],
+      productBoxList:[],
       dataForm: {
         id: 0,
+        productNo: "",
         productName: "",
         modelNo: "",
         customerProductNo: "",
@@ -163,81 +207,160 @@ export default {
         productCategory: "",
       },
       dataRule: {
+        productNo: [
+          { required: true, message: "瓶子序号不能为空", trigger: "blur" }
+        ],
         productName: [
           { required: true, message: "产品名称不能为空", trigger: "blur" }
         ],
         modelNo: [
           { required: true, message: "模具编号不能为空", trigger: "blur" }
         ],
-        customerProductNo: [
-          { required: true, message: "客户产品编号不能为空", trigger: "blur" }
-        ],
-        cartonId: [
-          { required: true, message: "纸箱编号不能为空", trigger: "blur" }
-        ],
-        productNum: [
-          { required: true, message: "库存数量不能为空", trigger: "blur" }
-        ],
+        // cartonId: [
+        //   { required: true, message: "纸箱编号不能为空", trigger: "blur" }
+        // ],
         productWeight: [
           { required: true, message: "产品克数不能为空", trigger: "blur" }
         ],
         productVolume: [
           { required: true, message: "产品容量不能为空", trigger: "blur" }
         ],
-        productImageId: [
-          { required: true, message: "产品图片不能为空", trigger: "blur" }
-        ],
-        productDrawingId: [
-          { required: true, message: "产品图纸不能为空", trigger: "blur" }
-        ],
+        // productImageId: [
+        //   { required: true, message: "产品图片不能为空", trigger: "blur" }
+        // ],
+        // productDrawingId: [
+        //   { required: true, message: "产品图纸不能为空", trigger: "blur" }
+        // ],
         productBatch: [
           { required: true, message: "产品批次不能为空", trigger: "blur" }
-        ],
-        productQuestion: [
-          { required: true, message: "产品问题不能为空", trigger: "blur" }
         ],
         productAssort: [
           { required: true, message: "产品组合套不能为空", trigger: "blur" }
         ],
-        productTrailingProcess: [
-          { required: true, message: "产品后续加工不能为空", trigger: "blur" }
-        ],
-        productRemark: [
-          { required: true, message: "产品备注不能为空", trigger: "blur" }
-        ],
-        yield: [
-          { required: true, message: "产品成品率不能为空", trigger: "blur" }
-        ],
       }
     };
   },
+   created() {
+  
+    // this.getModelListInfo();
+    // this.getAllProductBoxList();
+  },
   methods: {
-
+  getModelListInfo(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productmodel/getModelVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.modelList=data.modelVoList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
+   getCustomerModelNo(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productmodel/getCustomerModelNo/${this.dataForm.modelNo}`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.dataForm.customerProductNo=data.customerModelNo;
+         
+        }else {
+             this.$message.error(data.msg);
+         }
+      })
+    },
+    getAllProductBoxList(){
+          this.$http({
+          url:this.$http.adornUrl(`/product/productbox/getAllProductBoxList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.productBoxList=data.productBoxList;
+        //  alert(data.productBoxList);
+        }else {
+             this.$message.error(data.msg);
+         }
+      })
+    },
      handleRemove(file, fileList) {
+        this.imageUrl=this.oldImageUrl;
         console.log(file, fileList);
       },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
-      },
-      handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
+      // handlePictureCardPreview(file) {
+      //   this.dialogImageUrl = file.url;
+      //   this.dialogVisible = true;
+      // },
 
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
+      handleImageSuccess(res, file) {
+         this.imageUrl = URL.createObjectURL(file.raw);
+         this.dataForm.productImageId = res.imageId;
+         console.log(this.dataForm.productImageId);
       },
+      beforeImageUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isPNG = file.type === 'image/png';
+        const isLt5M = file.size / 1024 / 1024 <5;
+
+        if (!(isJPG||isPNG)) {
+          this.$message.error('上传头像图片只能是 JPG 和 PNG 格式!');
+        }
+        if (!isLt5M) {
+          this.$message.error('上传头像图片大小不能超过 5MB!');
+        }
+        return (isJPG||isPNG) && isLt5M;
+      },
+      handleDesignSuccess(res, file){
+         this.dataForm.productDrawingId = res.drawingId;
+         console.log(this.dataForm.productDrawingId);
+      },
+      beforeDesignUpload(file) {
+        console.log(file);
+        const isPDF = file.type === 'application/pdf';
+        const isJPG = file.type === 'image/jpeg';
+        const isPNG = file.type === 'image/png';
+    
+        const isLt10M = file.size / 1024 / 1024 <10;
+
+      if (!(isJPG||isPNG||isPDF)) {
+         this.$message.error('上传文件只能是PDF、 JPG 和 PNG 格式!');
+       }
+
+       if (!isLt10M) {
+        this.$message.error('上传文件大小不能超过 10MB!');
+       }
+      
+      return (isJPG||isPNG||isPDF) && isLt10M;
+
+    },
     init(id) {
-      this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadImage?token=${this.$cookie.get('token')}`)
-      this.uploadDesignUrl = this.$http.adornUrl(`/sys/oss/uploadDesignFile?token=${this.$cookie.get('token')}`)
+    this.getModelListInfo();
+    this.getAllProductBoxList();
+      this.imageUrl='';
+      this.fileList=[];
+      this.dataForm={
+        id: 0,
+        productNo: "",
+        productName: "",
+        modelNo: "",
+        customerProductNo: "",
+        cartonId: "",
+        productNum: "",
+        productWeight: "",
+        productVolume: "",
+        productImageId: "",
+        productDrawingId: "",
+        productBatch: "",
+        productQuestion: "",
+        productAssort: "",
+        productTrailingProcess: "",
+        productRemark: "",
+        yield: "",
+        productCategory: "",
+      },
+      this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadImage?token=${this.$cookie.get('token')}`);
+      this.uploadDesignUrl = this.$http.adornUrl(`/sys/oss/uploadDesignFile?token=${this.$cookie.get('token')}`);
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -251,6 +374,7 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
+              this.dataForm.productNo = data.productInfo.productNo;
               this.dataForm.productName = data.productInfo.productName;
               this.dataForm.modelNo = data.productInfo.modelNo;
               this.dataForm.customerProductNo = data.productInfo.customerProductNo;
@@ -266,6 +390,23 @@ export default {
               this.dataForm.productTrailingProcess = data.productInfo.productTrailingProcess;
               this.dataForm.productRemark = data.productInfo.productRemark;
               this.dataForm.yield = data.productInfo.yield;
+              if(data.productInfo.productImageUrl||data.productInfo.productImageUrl!=''){
+                this.oldImageUrl=window.SITE_CONFIG.baseUrl+'/pub'+data.productInfo.productImageUrl+'?token='+this.$cookie.get('token');
+                this.imageUrl=window.SITE_CONFIG.baseUrl+'/pub'+data.productInfo.productImageUrl+'?token='+this.$cookie.get('token');
+             }else{
+        
+               this.imageUrl='';
+             }
+             
+            if(data.fileName!=''){
+              this.fileList=[{
+                name:'',
+                url:''
+              }];
+            this.fileList[0].name=data.fileName;
+            }else{
+              this.fileList=[];
+            }
             }
           });
         }
@@ -282,6 +423,7 @@ export default {
             method: "post",
             data: this.$http.adornData({
               id: this.dataForm.id || undefined,
+              productNo: this.dataForm.productNo,
               productName: this.dataForm.productName,
               modelNo: this.dataForm.modelNo,
               customerProductNo: this.dataForm.customerProductNo,
@@ -316,6 +458,13 @@ export default {
         }
       });
     }
+  },
+   watch:{
+     "dataForm.modelNo" (){
+       this.getCustomerModelNo();
+        //console.log("111")
+      },
+     
   }
 }
 </script>

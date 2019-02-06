@@ -50,6 +50,9 @@
       <el-table-column prop="modelRemark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column prop="modelDeliveryTime" header-align="center" align="center" label="发货日期"></el-table-column>
       <el-table-column prop="modelReceiptTime" header-align="center" align="center" label="收货日期"></el-table-column>
+      <el-table-column prop="modelType" header-align="center" align="center" label="类型"></el-table-column>
+      <el-table-column prop="bottleWeight" header-align="center" align="center" label="瓶重"></el-table-column>
+      <el-table-column prop="reasonReturn" header-align="center" align="center" label="退货原因"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>

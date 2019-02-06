@@ -2,10 +2,20 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+        <el-input v-model="dataForm.key" placeholder="输入名称" style="width:260px" clearable></el-input>
+      </el-form-item>
+       <el-form-item>
+       <el-date-picker
+          v-model="range"
+          type="daterange"
+          value-format="yyyyMMdd"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()" style="width:90px">查询</el-button>
         <el-button
           v-if="isAuth('product:productinfo:save')"
           type="primary"
@@ -26,34 +36,53 @@
       @selection-change="selectionChangeHandle"
       style="width: 100%;"
     >
-      <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="ID"></el-table-column>
+      <el-table-column type="selection" header-align="center" align="center" width="30"></el-table-column>
+      <el-table-column prop="productNo" header-align="center" align="center" label="瓶子序号"></el-table-column>
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
+      <el-table-column prop="productImageId" header-align="center" align="center" label="产品图片">
+      <template slot-scope="scope">
+          <el-popover
+            placement="right"
+            title=""
+            trigger="hover">
+            <img :src="imageUrl+scope.row.productImageUrl+ '?token='+token" style="height:600px;width:600px" />
+            <img slot="reference" :src="imageUrl+scope.row.productImageUrl+ '?token='+token" alt="图片未加载成功" style="height: 50px;width: 50px">
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column prop="modelNo" header-align="center" align="center" label="模具编号"></el-table-column>
-      <el-table-column prop="customerProductNo" header-align="center" align="center" label="客户产品编号"></el-table-column>
+      <el-table-column prop="customerProductNo" header-align="center" align="center" label="客户编号"></el-table-column>
       <el-table-column prop="cartonId" header-align="center" align="center" label="纸箱编号"></el-table-column>
       <el-table-column prop="productNum" header-align="center" align="center" label="库存数量"></el-table-column>
-      <el-table-column prop="productWeight" header-align="center" align="center" label="产品克数"></el-table-column>
-      <el-table-column prop="productVolume" header-align="center" align="center" label="产品容量"></el-table-column>
-      <el-table-column prop="productImageId" header-align="center" align="center" label="产品图片">
-           <template slot-scope="scope">
-             <a href="http://www.baidu.com" target="_blank">{{scope.row.productImageId}}</a>
-          </template>
-      </el-table-column>
-      <el-table-column prop="productDrawingId" header-align="center" align="center" label="产品图纸"></el-table-column>
-      <el-table-column prop="productBatch" header-align="center" align="center" label="产品批次"></el-table-column>
+      <el-table-column prop="productWeight" header-align="center" align="center" label="克数"></el-table-column>
+      <el-table-column prop="productVolume" header-align="center" align="center" label="容量"></el-table-column>
+      <el-table-column prop="productBatch" header-align="center" align="center" label="生产批次"></el-table-column>
       <el-table-column prop="productQuestion" header-align="center" align="center" label="产品问题"></el-table-column>
-      <el-table-column prop="productAssort" header-align="center" align="center" label="产品组合套"></el-table-column>
+      <el-table-column prop="productAssort" header-align="center" align="center" label="组合套"></el-table-column>
       <el-table-column
         prop="productTrailingProcess"
         header-align="center"
         align="center"
-        label="产品后续加工"
+        label="后续加工"
       ></el-table-column>
-      <el-table-column prop="productRemark" header-align="center" align="center" label="产品备注"></el-table-column>
-      <el-table-column prop="yield" header-align="center" align="center" label="产品成品率"></el-table-column>
+      <el-table-column prop="productRemark" header-align="center" align="center" label="备注"></el-table-column>
+      <el-table-column prop="yield" header-align="center" align="center" label="成品率"></el-table-column>
+      
+      <el-table-column prop="productDrawingId" header-align="center" align="center" label="产品图纸">
+           <template slot-scope="scope">
+             <div v-if="scope.row.productDrawingId">
+                <a :href="imageUrl+scope.row.productDrawingUrl+'?token='+token" target="_bank" >查看图纸</a>
+             </div>
+              <div v-if="!scope.row.productDrawingId">
+                  无图纸
+             </div>
+            </template>
+      </el-table-column>
+      
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
+           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">出库详情</el-button>
+            <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">入库详情</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
@@ -79,15 +108,20 @@ export default {
   data() {
     return {
       dataForm: {
-        key: ""
+        key: "",
+        rangeBefore:'',
+        rangeAfter:''        
       },
+      range:"",
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
-      addOrUpdateVisible: false
+      addOrUpdateVisible: false,
+      token:null,
+      imageUrl:null
     };
   },
   components: {
@@ -99,14 +133,26 @@ export default {
   methods: {
     // 获取数据列表
     getDataList() {
+      this.imageUrl=window.SITE_CONFIG.baseUrl+'/pub';
+      this.token=this.$cookie.get('token');
       this.dataListLoading = true;
+      if(this.range instanceof Array){
+        this.dataForm.rangeBefore=this.range[0];
+        this.dataForm.rangeAfter=this.range[1];
+      }
+      else{
+        this.dataForm.rangeBefore='';
+        this.dataForm.rangeAfter='';
+      }
       this.$http({
         url: this.$http.adornUrl("/product/productinfo/list"),
         method: "get",
         params: this.$http.adornParams({
           page: this.pageIndex,
           limit: this.pageSize,
-          key: this.dataForm.key
+          key: this.dataForm.key,
+          rangeBefore: this.dataForm.rangeBefore,
+          rangeAfter: this.dataForm.rangeAfter,
         })
       }).then(({ data }) => {
         if (data && data.code === 0) {

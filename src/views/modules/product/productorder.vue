@@ -37,7 +37,15 @@
         header-align="center"
         align="center"
         label="订单状态"
-      ></el-table-column>
+      >
+       <template slot-scope="scope">
+        
+         <el-tag type="success" v-if="scope.row.status=='0'">正常订单</el-tag>
+         <el-tag type="warning"  v-if="scope.row.status=='1'">订单加急</el-tag>
+         <el-tag type="info" v-if="scope.row.status=='2'">订单挂起</el-tag>
+         <el-tag type="danger" v-if="scope.row.status=='3'">取消订单</el-tag>
+       </template>
+      </el-table-column>
       <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">

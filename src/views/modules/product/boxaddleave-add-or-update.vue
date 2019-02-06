@@ -11,8 +11,25 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="130px"
     >
-      <el-form-item label="纸箱编号" prop="boxNo">
-        <el-input v-model="dataForm.boxNo" placeholder="纸箱编号" style="width:260px"></el-input>
+    <template>
+      <el-form-item label="类型" prop="type">
+        <el-radio-group v-model="type">
+          <el-radio-button label="1">入库</el-radio-button>
+          <el-radio-button label="2">出库</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+    </template>
+     <el-form-item label="纸箱编号" prop="boxNo">
+         <el-select v-model="dataForm.boxNo" 
+        default-first-option
+        style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item in productBoxList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="箱体数量" prop="bodyNumber">
         <el-input v-model="dataForm.bodyNumber" placeholder="箱体数量"  style="width:260px"></el-input>
@@ -23,12 +40,16 @@
       <el-form-item label="垫片数量" prop="spacerNumber">
         <el-input v-model="dataForm.spacerNumber" placeholder="垫片数量"  style="width:260px"></el-input>
       </el-form-item>
+      <template v-if="type=='1'">
       <el-form-item label="成品入库数量" prop="addBoxNumber">
         <el-input v-model="dataForm.addBoxNumber" placeholder="成品入库数量"  style="width:260px"></el-input>
       </el-form-item>
+      </template>
+      <template v-if="type=='2'">
       <el-form-item label="成品出库数量" prop="outBoxNumber">
         <el-input v-model="dataForm.outBoxNumber" placeholder="成品出库数量"  style="width:260px"></el-input>
       </el-form-item>
+      </template>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -36,12 +57,21 @@
     </span>
   </el-dialog>
 </template>
+<style>
+  .el-select-dropdown__list{
+   
+    max-height: 150px;
+   
+  }   
 
+</style>
 <script>
   export default {
     data () {
       return {
         visible: false,
+       productBoxList:[],
+       type:"1",
         dataForm: {
           id: 0,
           boxNo: '',
@@ -69,17 +99,27 @@
           spacerNumber: [
             { required: true, message: '垫片数量不能为空', trigger: 'blur' }
           ],
-          addBoxNumber: [
-            { required: true, message: '成品入库数量不能为空', trigger: 'blur' }
-          ],
-          outBoxNumber: [
-            { required: true, message: '成品出库数量不能为空', trigger: 'blur' }
-          ],
-      
+         
         }
       }
     },
+    created() {
+      this.getAllProductBoxList();
+  },
     methods: {
+          getAllProductBoxList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/productbox/getAllProductBoxList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.productBoxList=data.productBoxList;
+          //  alert(data.productBoxList);
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
       init (id) {
         this.dataForm.id = id || 0
         this.visible = true

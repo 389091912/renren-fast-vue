@@ -32,7 +32,10 @@
       <el-table-column prop="body" header-align="center" align="center" label="箱体"></el-table-column>
       <el-table-column prop="parry" header-align="center" align="center" label="格挡"></el-table-column>
       <el-table-column prop="spacer" header-align="center" align="center" label="垫片"></el-table-column>
-      <el-table-column prop="boxNumber" header-align="center" align="center" label="数量"></el-table-column>
+      <el-table-column prop="zhiShu" header-align="center" align="center" label="每箱只数"></el-table-column>
+      <el-table-column prop="boxNumber" header-align="center" align="center" label="箱数"></el-table-column>
+      <el-table-column prop="boxPrice" header-align="center" align="center" label="纸箱价格"></el-table-column>
+
       <el-table-column prop="costomer" header-align="center" align="center" label="客户"></el-table-column>
       <el-table-column prop="location" header-align="center" align="center" label="位置"></el-table-column>
       <el-table-column prop="leaveNumber" header-align="center" align="center" label=" 出库数量"> </el-table-column>

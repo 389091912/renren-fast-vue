@@ -29,8 +29,18 @@
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="库存数量" prop="boxNumber">
-        <el-input v-model.number="dataForm.boxNumber" placeholder="数量" style="width:260px">
+       <el-form-item label="每箱只数" prop="zhiShu">
+        <el-input v-model.number="dataForm.zhiShu" placeholder="只数" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="箱数" prop="boxNumber">
+        <el-input v-model.number="dataForm.boxNumber" placeholder="箱数" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
+      </el-form-item>
+        <el-form-item label="纸箱价格" prop="boxPrice">
+        <el-input v-model.number="dataForm.boxPrice" placeholder="纸箱价格" style="width:260px">
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
@@ -68,6 +78,8 @@ export default {
         parry: "",
         spacer: "",
         boxNumber: "",
+        zhiShu:'',
+        boxPrice:'',
         costomer: "",
         location: "",
         remark: "",
@@ -85,8 +97,9 @@ export default {
         body: [{ required: true, message: "箱体不能为空", trigger: "blur" }],
         parry: [{ required: true, message: "格挡不能为空", trigger: "blur" }],
         spacer: [{ required: true, message: "垫片不能为空", trigger: "blur" }],
+        zhiShu: [{ required: true, message: "每箱只数不能为空", trigger: "blur" }],
         boxNumber: [
-          { required: true, message: "数量不能为空", trigger: "blur" }
+          { required: true, message: "库存数量不能为空", trigger: "blur" }
         ],
         costomer: [
           { required: true, message: "客户不能为空", trigger: "blur" }
@@ -115,10 +128,12 @@ export default {
               this.dataForm.parry = data.productBox.parry;
               this.dataForm.spacer = data.productBox.spacer;
               this.dataForm.boxNumber = data.productBox.boxNumber;
+              this.dataForm.zhiShu = data.productBox.zhiShu;
               this.dataForm.costomer = data.productBox.costomer;
               this.dataForm.location = data.productBox.location;
               this.dataForm.remark = data.productBox.remark;
               this.dataForm.leaveNumber = data.productBox.leaveNumber;
+              this.dataForm.boxPrice = data.productBox.boxPrice;
             }
           });
         }
@@ -140,6 +155,7 @@ export default {
               parry: this.dataForm.parry,
               spacer: this.dataForm.spacer,
               boxNumber: this.dataForm.boxNumber,
+              zhiShu: this.dataForm.zhiShu,
               costomer: this.dataForm.costomer,
               location: this.dataForm.location,
               remark: this.dataForm.remark,
@@ -148,7 +164,8 @@ export default {
               updateTime: this.dataForm.updateTime,
               updateUser: this.dataForm.updateUser,
               status: this.dataForm.status,
-              leaveNumber: this.dataForm.leaveNumber
+              leaveNumber: this.dataForm.leaveNumber,
+              boxPrice: this.dataForm.boxPrice
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {

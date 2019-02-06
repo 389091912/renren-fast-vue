@@ -28,8 +28,9 @@
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="id"></el-table-column>
-      <el-table-column prop="productId" header-align="center" align="center" label="产品id"></el-table-column>
-      <el-table-column prop="orderId" header-align="center" align="center" label="订单id"></el-table-column>
+      <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
+      <el-table-column prop="orderCount" header-align="center" align="center" label="订单份数"></el-table-column>
+      <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
       <el-table-column
         prop="productRequireNumber"
         header-align="center"
