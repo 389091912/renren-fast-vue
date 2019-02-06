@@ -23,7 +23,7 @@
       </el-form-item>
      </template>
 
-      <template v-if="dataForm.modelType=='0'">
+      <template v-if="dataForm.modelType=='0'||dataForm.modelType=='1'">
         <el-form-item label="仓库号" prop="depotId">
           <el-radio-group v-model="dataForm.depotId">
             <el-radio :label="1">新第一仓库</el-radio>
@@ -32,10 +32,11 @@
             <el-radio :label="4">老第一仓库</el-radio>
           </el-radio-group>     
         </el-form-item>
-      </template>
         <el-form-item label="架号" prop="siteNo">
         <el-input v-model="dataForm.siteNo" placeholder="架号" style="width:260px"></el-input>
       </el-form-item>
+      </template>
+     
       <el-form-item label="模具编号" prop="modelNo">
         <el-input v-model="dataForm.modelNo" placeholder="模具编号" style="width:260px"></el-input>
       </el-form-item>
@@ -130,6 +131,9 @@
       <el-form-item label="客户名称" prop="customerName">
         <el-input v-model="dataForm.customerName" placeholder="客户名称" style="width:260px"></el-input>
       </el-form-item>
+       <el-form-item label="厂商" prop="factory">
+        <el-input v-model="dataForm.factory" placeholder="厂商" style="width:260px"></el-input>
+      </el-form-item>
       <el-form-item label="是否在库" prop="state">
         <el-radio-group v-model="dataForm.state">
           <el-radio :label="0">是</el-radio>
@@ -175,6 +179,7 @@ export default {
       dataForm: {
         id: 0,
         siteNo: "",
+        depotId:'',
         modelNo: "",
         customerModelNo:"",
         productName: "",
@@ -201,7 +206,8 @@ export default {
         status: "",
         modelType: "",
         bottleWeight: "",
-        reasonReturn: ""
+        reasonReturn: "",
+        factory:''
       },
       dataRule: {
         siteNo: [{ required: true, message: "架号不能为空", trigger: "blur" }],
@@ -304,6 +310,8 @@ export default {
               this.dataForm.modelType = data.productModel.modelType;
               this.dataForm.bottleWeight = data.productModel.bottleWeight;
               this.dataForm.reasonReturn = data.productModel.reasonReturn;
+              this.dataForm.factory = data.productModel.factory;
+              this.dataForm.depotId = data.productModel.depotId;
             }
           });
         }
@@ -347,7 +355,9 @@ export default {
               status: this.dataForm.status,
               modelType: this.dataForm.modelType,
               bottleWeight: this.dataForm.bottleWeight,
-              reasonReturn: this.dataForm.reasonReturn
+              reasonReturn: this.dataForm.reasonReturn,
+              factory: this.dataForm.factory,
+              depotId: this.dataForm.depotId,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {

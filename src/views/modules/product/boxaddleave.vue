@@ -1,8 +1,32 @@
 <template>
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+       <el-form-item>
+       
+              <el-select v-model="dataForm.key" 
+              clearable
+              default-first-option
+              style="width:260px" filterable placeholder="输入名称">
+                <el-option
+                  v-for="item in boxAddLeaveList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+         
+
+        <!-- <el-input v-model="dataForm.key" placeholder="输入名称" style="width:260px" clearable></el-input> -->
+      </el-form-item>
+       <el-form-item>
+       <el-date-picker
+          v-model="range"
+          type="daterange"
+          value-format="yyyyMMdd"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -27,13 +51,28 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label></el-table-column>
-      <el-table-column prop="boxNo" header-align="center" align="center" label="纸箱编号"></el-table-column>
+      <el-table-column prop="boxNoName" header-align="center" align="center" label="纸箱编号"></el-table-column>
       <el-table-column prop="bodyNumber" header-align="center" align="center" label="箱体数量"></el-table-column>
       <el-table-column prop="parryNumber" header-align="center" align="center" label="格挡数量"></el-table-column>
       <el-table-column prop="spacerNumber" header-align="center" align="center" label="垫片数量"></el-table-column>
-      <el-table-column prop="addBoxNumber" header-align="center" align="center" label="成品入库数量"></el-table-column>
-      <el-table-column prop="outBoxNumber" header-align="center" align="center" label="成品出库数量"></el-table-column>
+      <el-table-column prop="addBoxNumber" header-align="center" align="center" label="成品入库数量">
+         <template slot-scope="scope">
+            <el-tag  type='success' v-if="scope.row.addBoxNumber">{{scope.row.addBoxNumber}}</el-tag>
+          </template>
+      </el-table-column>
+      <el-table-column prop="addBoxTime" header-align="center" align="center" label="入库时间"></el-table-column>
+      <el-table-column prop="outBoxNumber" header-align="center" align="center" label="成品出库数量">
+         <template slot-scope="scope">
+            <el-tag  type='danger' v-if="scope.row.outBoxNumber">{{scope.row.outBoxNumber}}</el-tag>
+          </template>
+      </el-table-column>
+      <el-table-column prop="outBoxTime" header-align="center" align="center" label="出库时间"></el-table-column>
+      <el-table-column prop="type" header-align="center" align="center" label="状态">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.type==1" type='success'>入库</el-tag>
+            <el-tag v-if='scope.row.type==0' type='danger'>出库</el-tag>
+          </template>
+      </el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
@@ -61,8 +100,12 @@ export default {
   data() {
     return {
       dataForm: {
-        key: ""
+        key: "",
+        rangeBefore:'',
+        rangeAfter:'' 
       },
+      boxAddLeaveList:[],
+      range:'',
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -79,8 +122,33 @@ export default {
     this.getDataList();
   },
   methods: {
+
+    getAllBoxAddLeave(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/boxaddleave/getAllBoxAddLeave`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.boxAddLeaveList=data.boxAddLeaveList;
+          //  alert(data.productBoxList);
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
+
     // 获取数据列表
     getDataList() {
+    
+      this.getAllBoxAddLeave();
+       if(this.range instanceof Array){
+        this.dataForm.rangeBefore=this.range[0];
+        this.dataForm.rangeAfter=this.range[1];
+      }
+      else{
+        this.dataForm.rangeBefore='';
+        this.dataForm.rangeAfter='';
+      }
       this.dataListLoading = true;
       this.$http({
         url: this.$http.adornUrl("/product/boxaddleave/list"),
@@ -88,7 +156,9 @@ export default {
         params: this.$http.adornParams({
           page: this.pageIndex,
           limit: this.pageSize,
-          key: this.dataForm.key
+          key: this.dataForm.key,
+          rangeBefore: this.dataForm.rangeBefore,
+          rangeAfter: this.dataForm.rangeAfter
         })
       }).then(({ data }) => {
         if (data && data.code === 0) {

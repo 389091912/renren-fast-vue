@@ -16,37 +16,29 @@
       <el-form-item  label="类别" prop="modelType">
          <template v-if="dataForm.id||dataForm.id==0" >
           <el-radio-group v-model="dataForm.modelType">
-            <el-radio v-model="dataForm.modelType" label="0">入库登记</el-radio>
-            <el-radio v-model="dataForm.modelType" label="1">模具拉出</el-radio>
-            <el-radio v-model="dataForm.modelType" label="2">新品打样</el-radio>
-            <el-radio v-model="dataForm.modelType" label="3">返厂维修</el-radio>
-            <el-radio v-model="dataForm.modelType" label="4">外来加工</el-radio>
+            <el-radio v-model="dataForm.modelType" :label="0">入库登记</el-radio>
+            <el-radio v-model="dataForm.modelType" :label="1">模具拉出</el-radio>
+            <el-radio v-model="dataForm.modelType" :label="2">新品打样</el-radio>
+            <el-radio v-model="dataForm.modelType" :label="3">返厂维修</el-radio>
+            <el-radio v-model="dataForm.modelType" :label="4">外来加工</el-radio>
           </el-radio-group>
           </template>
-           <!-- <template v-else >
-          <el-radio-group v-model="dataForm.modelType">
-            <el-radio :label="0">入库登记</el-radio>
-            <el-radio :label="1">模具拉出</el-radio>
-            <el-radio :label="2">新品打样</el-radio>
-            <el-radio :label="3">返厂维修</el-radio>
-            <el-radio :label="4">外来加工</el-radio>
-          </el-radio-group>
-          </template> -->
       </el-form-item>
     
 
-      <template v-if="dataForm.modelType=='0'">
-        <el-form-item label="仓库位置" prop="siteNo">
-          <el-radio-group v-model="dataForm.siteNo">
+
+    <template v-if="dataForm.modelType=='0'||dataForm.modelType=='1'" >
+       <el-form-item label="仓库位置" prop="de">
+          <el-radio-group v-model="dataForm.depotId">
             <el-radio :label="1">新第一仓库</el-radio>
             <el-radio :label="2">第二仓库</el-radio>
             <el-radio :label="3">第三仓库</el-radio>
             <el-radio :label="4">老第一仓库</el-radio>
           </el-radio-group>     
         </el-form-item>
-      </template>
-
-    <template v-if="dataForm.modelType=='0'||dataForm.modelType=='1'" >
+       <el-form-item label="架号" prop="siteNo">
+        <el-input v-model="dataForm.siteNo" placeholder="架号" style="width:260px"></el-input>
+       </el-form-item>
       <el-form-item label="模具编号" prop="modelNo">
         <el-select v-model="dataForm.modelNo" 
         default-first-option
@@ -125,21 +117,20 @@
             <template slot="append">克</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="出库数量" prop="modelAllNumber">
-        <el-input v-model="dataForm.modelAllNumber" placeholder="出库数量" style="width:260px">
-                   <template slot="append">件</template>
-        </el-input>
-      </el-form-item>
+  
       <el-form-item label="模具经手人" prop="modelHandlingPeople">
         <el-input v-model="dataForm.modelHandlingPeople" placeholder="模具经手人" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="提货人名称" prop="customerName">
         <el-input v-model="dataForm.customerName" placeholder="提货人名称" style="width:260px"></el-input>
       </el-form-item>
+       <el-form-item label="厂商" prop="factory">
+        <el-input v-model="dataForm.factory" placeholder="厂商" style="width:260px"></el-input>
+      </el-form-item>
       <el-form-item label="备注" prop="modelRemark">
         <el-input v-model="dataForm.modelRemark" placeholder="备注" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="发货日期" prop="modelDeliveryTime">
+      <el-form-item label="发货日期" prop="modelDeliveryTime" v-if="dataForm.modelType=='1'||dataForm.modelType=='3'">
         <el-date-picker
           v-model="dataForm.modelDeliveryTime"
           type="date"
@@ -148,7 +139,7 @@
           placeholder="发货日期"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="收货日期" prop="modelReceiptTime">
+      <el-form-item label="收货日期" prop="modelReceiptTime" v-if="dataForm.modelType=='3'">
           <el-date-picker
           v-model="dataForm.modelReceiptTime"
           type="date"
@@ -158,7 +149,7 @@
         ></el-date-picker>
       </el-form-item>
    
-      <el-form-item label="退货原因" prop="reasonReturn">
+      <el-form-item label="退货原因"  v-if="dataForm.modelType=='3'" prop="reasonReturn">
         <el-input v-model="dataForm.reasonReturn" placeholder="退货原因"  style="width:260px"></el-input>
       </el-form-item>
     </el-form>
@@ -184,6 +175,8 @@ export default {
       dataForm: {
         id: 0,
         modelNo: "",
+        depotId: "",
+        siteNo:'',
         customerModelNo:'',
         productName: "",
         modelSuccessMo: "",
@@ -195,7 +188,6 @@ export default {
         modelAirTou: "",
         modelCooling: "",
         modelClamp: "",
-        modelAllNumber: "",
         modelHandlingPeople: "",
         customerName: "",
         modelRemark: "",
@@ -208,7 +200,8 @@ export default {
         status: "",
         modelType: '',
         bottleWeight: '',
-        reasonReturn: ''
+        reasonReturn: '',
+        factory:''
         
       },
     
@@ -244,9 +237,6 @@ export default {
         modelClamp: [
           { required: true, message: "钳片不能为空", trigger: "blur" }
         ],
-        modelAllNumber: [
-          { required: true, message: "出库数量不能为空", trigger: "blur" }
-        ],
         modelHandlingPeople: [
           { required: true, message: "模具经手人不能为空", trigger: "blur" }
         ],
@@ -263,6 +253,7 @@ export default {
   methods: {
     clearndataForm(){
         this.dataForm.modelNo='';
+        this.dataForm.depotId='';
         this.dataForm.customerModelNo='';
         this.dataForm.productName='';
         this.dataForm.modelSuccessMo='';
@@ -274,9 +265,9 @@ export default {
         this.dataForm.modelAirTou='';
         this.dataForm.modelCooling='';
         this.dataForm.modelClamp='';
-        this.dataForm.modelAllNumber='';
         this.dataForm.modelHandlingPeople='';
         this.dataForm.customerName='';
+        this.dataForm.factory='';
     
     },
     getModelListInfo(){
@@ -291,18 +282,18 @@ export default {
          }
       })
     },
-      getProductName(){
-      this.$http({
-          url:this.$http.adornUrl(`/product/productinfo/getProductName/${this.dataForm.modelNo}`),
-          method: "get"
-      }).then(({data})=>{
-        if(data &&data.code==0){
-           this.dataForm.productName=data.productName;
-        }else {
-              this.$message.error(data.msg);
-         }
-      })
-    },
+    //   getProductName(){
+    //   this.$http({
+    //       url:this.$http.adornUrl(`/product/productinfo/getProductName/${this.dataForm.modelNo}`),
+    //       method: "get"
+    //   }).then(({data})=>{
+    //     if(data &&data.code==0){
+    //        this.dataForm.productName=data.productName;
+    //     }else {
+    //           this.$message.error(data.msg);
+    //      }
+    //   })
+    // },
     init(id) {
       this.dataForm.id = id || 0;
       this.visible = true;
@@ -328,16 +319,18 @@ export default {
               this.dataForm.modelAirTou = data.productModelOut.modelAirTou;
               this.dataForm.modelCooling = data.productModelOut.modelCooling;
               this.dataForm.modelClamp = data.productModelOut.modelClamp;
-              this.dataForm.modelAllNumber = data.productModelOut.modelAllNumber;
               this.dataForm.modelHandlingPeople =data.productModelOut.modelHandlingPeople;
               this.dataForm.customerName = data.productModelOut.customerName;
               this.dataForm.modelRemark = data.productModelOut.modelRemark;
               this.dataForm.modelDeliveryTime = data.productModelOut.modelDeliveryTime;
               this.dataForm.modelReceiptTime = data.productModelOut.modelReceiptTime;
                this.dataForm.status = data.productModelOut.status;
-              this.dataForm.modelType = data.productModelOut.modelType
-              this.dataForm.bottleWeight = data.productModelOut.bottleWeight
-              this.dataForm.reasonReturn = data.productModelOut.reasonReturn
+              this.dataForm.modelType = data.productModelOut.modelType;
+              this.dataForm.bottleWeight = data.productModelOut.bottleWeight;
+              this.dataForm.reasonReturn = data.productModelOut.reasonReturn;
+              this.dataForm.factory = data.productModelOut.factory;
+              this.dataForm.depotId = data.productModelOut.depotId;
+              this.dataForm.siteNo = data.productModelOut.siteNo;
             }
           });
         }
@@ -367,7 +360,6 @@ export default {
               modelAirTou: this.dataForm.modelAirTou,
               modelCooling: this.dataForm.modelCooling,
               modelClamp: this.dataForm.modelClamp,
-              modelAllNumber: this.dataForm.modelAllNumber,
               modelHandlingPeople: this.dataForm.modelHandlingPeople,
               customerName: this.dataForm.customerName,
               modelRemark: this.dataForm.modelRemark,
@@ -381,6 +373,9 @@ export default {
               modelType: this.dataForm.modelType,
               bottleWeight: this.dataForm.bottleWeight,
               reasonReturn: this.dataForm.reasonReturn,
+              factory: this.dataForm.factory,
+              depotId: this.dataForm.depotId,
+              siteNo: this.dataForm.siteNo,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -402,14 +397,14 @@ export default {
     }
   },
   watch:{
-     "dataForm.modelNo" (){
-       this.getProductName();
-        //console.log("111")
-      },
-      "dataForm.modelType" (){
+    //  "dataForm.modelNo" (){
+    //    this.getProductName();
+    //     //console.log("111")
+    //   },
+      // "dataForm.modelType" (){
         
-        this.clearndataForm();
-      }
+      //   this.clearndataForm();
+      // }
   }
 };
 </script>

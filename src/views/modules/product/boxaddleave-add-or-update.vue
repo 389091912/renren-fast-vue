@@ -11,11 +11,15 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="130px"
     >
-    <template>
+    <template >
       <el-form-item label="类型" prop="type">
-        <el-radio-group v-model="type">
+        <el-radio-group v-if="dataForm.id==''||dataForm.id==0" v-model="dataForm.type">
           <el-radio-button label="1">入库</el-radio-button>
-          <el-radio-button label="2">出库</el-radio-button>
+          <el-radio-button label="0">出库</el-radio-button>
+        </el-radio-group>
+         <el-radio-group v-if="dataForm.id!=''" v-model="dataForm.type">
+          <el-radio-button v-if="dataForm.type==1" label="1">入库</el-radio-button>
+          <el-radio-button v-if="dataForm.type==0" label="0">出库</el-radio-button>
         </el-radio-group>
       </el-form-item>
     </template>
@@ -40,14 +44,32 @@
       <el-form-item label="垫片数量" prop="spacerNumber">
         <el-input v-model="dataForm.spacerNumber" placeholder="垫片数量"  style="width:260px"></el-input>
       </el-form-item>
-      <template v-if="type=='1'">
-      <el-form-item label="成品入库数量" prop="addBoxNumber">
-        <el-input v-model="dataForm.addBoxNumber" placeholder="成品入库数量"  style="width:260px"></el-input>
+      <template v-if="dataForm.type=='1'">
+      <el-form-item label="纸箱入库数量" prop="addBoxNumber">
+        <el-input v-model="dataForm.addBoxNumber" placeholder="纸箱入库数量"  style="width:260px"></el-input>
+      </el-form-item>
+       <el-form-item label="入库时间" prop="addBoxTime">
+        <el-date-picker
+          v-model="dataForm.addBoxTime"
+          type="date"
+          style="width:260px"
+           value-format="yyyy-MM-dd HH:mm:ss"
+          placeholder="入库时间"
+        ></el-date-picker>
       </el-form-item>
       </template>
-      <template v-if="type=='2'">
-      <el-form-item label="成品出库数量" prop="outBoxNumber">
-        <el-input v-model="dataForm.outBoxNumber" placeholder="成品出库数量"  style="width:260px"></el-input>
+      <template v-if="dataForm.type=='0'">
+      <el-form-item label="纸箱出库数量" prop="outBoxNumber">
+        <el-input v-model="dataForm.outBoxNumber" placeholder="纸箱出库数量"  style="width:260px"></el-input>
+      </el-form-item>
+       <el-form-item label="出库时间" prop="outBoxTime">
+        <el-date-picker
+          v-model="dataForm.outBoxTime"
+          type="date"
+          style="width:260px"
+           value-format="yyyy-MM-dd HH:mm:ss"
+          placeholder="出库时间"
+        ></el-date-picker>
       </el-form-item>
       </template>
     </el-form>
@@ -70,8 +92,7 @@
     data () {
       return {
         visible: false,
-       productBoxList:[],
-       type:"1",
+       productBoxList:[],   
         dataForm: {
           id: 0,
           boxNo: '',
@@ -84,7 +105,10 @@
           createTime: '',
           updateUser: '',
           updateTime: '',
-          status: ''
+          status:'',
+          addBoxTime:'',
+          outBoxTime:'',
+          type:'1'
         },
         dataRule: {
           boxNo: [
@@ -121,6 +145,17 @@
         })
       },
       init (id) {
+        this.dataForm= {
+          boxNo: '',
+          bodyNumber: '',
+          parryNumber: '',
+          spacerNumber: '',
+          addBoxNumber: '',
+          outBoxNumber: '',
+          addBoxTime:'',
+          outBoxTime:'',
+          type:'1'
+        },
         this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
@@ -143,6 +178,9 @@
                 this.dataForm.updateUser = data.boxAddLeave.updateUser
                 this.dataForm.updateTime = data.boxAddLeave.updateTime
                 this.dataForm.status = data.boxAddLeave.status
+                this.dataForm.type = data.boxAddLeave.type
+                this.dataForm.addBoxTime = data.boxAddLeave.addBoxTime
+                this.dataForm.outBoxTime = data.boxAddLeave.outBoxTime
               }
             })
           }
@@ -167,7 +205,10 @@
                 'createTime': this.dataForm.createTime,
                 'updateUser': this.dataForm.updateUser,
                 'updateTime': this.dataForm.updateTime,
-                'status': this.dataForm.status
+                'outBoxTime': this.dataForm.outBoxTime,
+                'addBoxTime': this.dataForm.addBoxTime,
+                'status': this.dataForm.status,
+                'type': this.dataForm.type
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

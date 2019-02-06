@@ -28,6 +28,14 @@
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="模具ID"></el-table-column>
+       <el-table-column prop="depotId" header-align="center" align="center" label="仓库号"  width="120">
+       <template slot-scope="scope">
+              <el-tag v-if="scope.row.depotId=='1'">新第一仓库</el-tag>
+              <el-tag v-if="scope.row.depotId=='2'">第二仓库</el-tag>
+              <el-tag v-if="scope.row.depotId=='3'">第三仓库</el-tag>
+              <el-tag v-if="scope.row.depotId=='4'">老第一仓库</el-tag>
+          </template> 
+      </el-table-column>
       <el-table-column prop="siteNo" header-align="center" align="center" label="架号"></el-table-column>
       <el-table-column prop="modelNo" header-align="center" align="center" label="模具编号"></el-table-column>
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
@@ -45,9 +53,18 @@
       <el-table-column prop="modelDeliveryTime" header-align="center" align="center" label="发货日期"></el-table-column>
       <el-table-column prop="modelReceiptTime" header-align="center" align="center" label="收货日期"></el-table-column>
       <el-table-column prop="customerName" header-align="center" align="center" label="客户名称"></el-table-column>
+      <el-table-column prop="factory" header-align="center" align="center" label="厂商"></el-table-column>
       <el-table-column prop="state" header-align="center" align="center" label="是否在库"></el-table-column>
       <el-table-column prop="modelRemark" header-align="center" align="center" label="备注"></el-table-column>
-      <el-table-column prop="modelType" header-align="center" align="center" label="类型"></el-table-column>
+        <el-table-column prop="modelType" header-align="center" align="center" label="类型" width="120">
+        <template slot-scope="scope">
+              <el-tag v-if="scope.row.modelType=='0'">入库登记</el-tag>
+              <el-tag v-if="scope.row.modelType=='1'">模具拉出</el-tag>
+              <el-tag v-if="scope.row.modelType=='2'">新品打样</el-tag>
+              <el-tag v-if="scope.row.modelType=='3'">返厂维修</el-tag>
+              <el-tag v-if="scope.row.modelType=='4'">外来加工</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="bottleWeight" header-align="center" align="center" label="瓶重"></el-table-column>
       <el-table-column prop="reasonReturn" header-align="center" align="center" label="退货原因"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">

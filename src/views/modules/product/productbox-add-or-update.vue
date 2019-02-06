@@ -14,19 +14,19 @@
       <el-form-item label="纸箱编号" prop="boxNo">
         <el-input v-model="dataForm.boxNo" placeholder="纸箱编号" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="箱体" prop="body">
-        <el-input v-model="dataForm.body" placeholder="箱体" style="width:260px">
-          <template slot="append">件</template>
+      <el-form-item label="箱体尺寸" prop="body">
+        <el-input v-model="dataForm.body" placeholder="箱体规格" style="width:260px">
+          <template slot="append">规格</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="格挡" prop="parry">
-        <el-input v-model="dataForm.parry" placeholder="格挡" style="width:260px">
-          <template slot="append">件</template>
+      <el-form-item label="格挡尺寸" prop="parry">
+        <el-input v-model="dataForm.parry" placeholder="格挡规格" style="width:260px">
+          <template slot="append">规格</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="垫片" prop="spacer">
-        <el-input v-model="dataForm.spacer" placeholder="垫片" style="width:260px">
-          <template slot="append">件</template>
+      <el-form-item label="垫片尺寸" prop="spacer">
+        <el-input v-model="dataForm.spacer" placeholder="垫片规格" style="width:260px">
+          <template slot="append">规格</template>
         </el-input>
       </el-form-item>
        <el-form-item label="每箱只数" prop="zhiShu">
@@ -34,14 +34,14 @@
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="箱数" prop="boxNumber">
-        <el-input v-model.number="dataForm.boxNumber" placeholder="箱数" style="width:260px">
+      <el-form-item label="库存箱数" prop="boxNumber">
+        <el-input v-model.number="dataForm.boxNumber" placeholder="库存箱数" style="width:260px">
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
         <el-form-item label="纸箱价格" prop="boxPrice">
         <el-input v-model.number="dataForm.boxPrice" placeholder="纸箱价格" style="width:260px">
-          <template slot="append">件</template>
+          <template slot="append">元</template>
         </el-input>
       </el-form-item>
       <el-form-item label="客户" prop="costomer">
@@ -50,7 +50,7 @@
       <el-form-item label="位置" prop="location">
         <el-input v-model="dataForm.location" placeholder="位置" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label=" 出库数量" prop="leaveNumber">
+      <el-form-item label="出库数量" prop="leaveNumber">
         <el-input v-model.number="dataForm.leaveNumber" placeholder=" 出库数量" style="width:260px">
           <template slot="append">件</template>
         </el-input>

@@ -2,7 +2,17 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+         <el-select v-model="dataForm.key"
+          clearable 
+        default-first-option
+        style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item in productBoxList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -29,16 +39,26 @@
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="ID"></el-table-column>
       <el-table-column prop="boxNo" header-align="center" align="center" label="纸箱编号"></el-table-column>
-      <el-table-column prop="body" header-align="center" align="center" label="箱体"></el-table-column>
-      <el-table-column prop="parry" header-align="center" align="center" label="格挡"></el-table-column>
-      <el-table-column prop="spacer" header-align="center" align="center" label="垫片"></el-table-column>
+      <el-table-column prop="body" header-align="center" align="center" label="箱体尺寸"></el-table-column>
+      <el-table-column prop="bodyNumber" header-align="center" align="center" label="箱体数量"></el-table-column>
+      <el-table-column prop="parry" header-align="center" align="center" label="格挡尺寸"></el-table-column>
+      <el-table-column prop="parryNumber" header-align="center" align="center" label="格挡数量"></el-table-column>
+      <el-table-column prop="spacer" header-align="center" align="center" label="垫片尺寸"></el-table-column>
+      <el-table-column prop="spacerNumber" header-align="center" align="center" label="垫片数量"></el-table-column>
       <el-table-column prop="zhiShu" header-align="center" align="center" label="每箱只数"></el-table-column>
-      <el-table-column prop="boxNumber" header-align="center" align="center" label="箱数"></el-table-column>
+      <el-table-column prop="boxNumber" header-align="center" align="center" label="库存箱数">
+          <template slot-scope="scope">
+            <el-tag  type='success' v-if="scope.row.boxNumber">{{scope.row.boxNumber}}</el-tag>
+          </template>
+      </el-table-column>
       <el-table-column prop="boxPrice" header-align="center" align="center" label="纸箱价格"></el-table-column>
-
       <el-table-column prop="costomer" header-align="center" align="center" label="客户"></el-table-column>
       <el-table-column prop="location" header-align="center" align="center" label="位置"></el-table-column>
-      <el-table-column prop="leaveNumber" header-align="center" align="center" label=" 出库数量"> </el-table-column>
+      <el-table-column prop="leaveNumber" header-align="center" align="center" label=" 出库数量">
+         <template slot-scope="scope">
+            <el-tag  type='danger' v-if="scope.row.leaveNumber">{{scope.row.leaveNumber}}</el-tag>
+          </template>
+       </el-table-column>
        <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
@@ -69,6 +89,7 @@ export default {
       dataForm: {
         key: ""
       },
+      productBoxList:[],
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -85,8 +106,22 @@ export default {
     this.getDataList();
   },
   methods: {
+     getAllProductBoxList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/productbox/getAllProductBoxList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.productBoxList=data.productBoxList;
+          //  alert(data.productBoxList);
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
     // 获取数据列表
     getDataList() {
+      this.getAllProductBoxList();
       this.dataListLoading = true;
       this.$http({
         url: this.$http.adornUrl("/product/productbox/list"),
