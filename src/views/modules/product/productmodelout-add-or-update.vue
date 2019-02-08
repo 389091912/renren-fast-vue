@@ -16,8 +16,8 @@
       <el-form-item  label="类别" prop="modelType">
          <template v-if="dataForm.id||dataForm.id==0" >
           <el-radio-group v-model="dataForm.modelType">
-            <el-radio v-model="dataForm.modelType" :label="0">入库登记</el-radio>
-            <el-radio v-model="dataForm.modelType" :label="1">模具拉出</el-radio>
+            <el-radio v-model="dataForm.modelType" :label="0">模具拉出</el-radio>
+            <el-radio v-model="dataForm.modelType" :label="1">入库登记</el-radio>
             <el-radio v-model="dataForm.modelType" :label="2">新品打样</el-radio>
             <el-radio v-model="dataForm.modelType" :label="3">返厂维修</el-radio>
             <el-radio v-model="dataForm.modelType" :label="4">外来加工</el-radio>

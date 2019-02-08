@@ -63,8 +63,8 @@
       <el-table-column prop="modelReceiptTime" header-align="center" align="center" label="收货日期"></el-table-column>
       <el-table-column prop="modelType" header-align="center" align="center" label="类型" width="120">
         <template slot-scope="scope">
-              <el-tag v-if="scope.row.modelType=='0'">入库登记</el-tag>
-              <el-tag v-if="scope.row.modelType=='1'">模具拉出</el-tag>
+             <el-tag v-if="scope.row.modelType=='0'">模具拉出</el-tag>
+              <el-tag v-if="scope.row.modelType=='1'">入库登记</el-tag>
               <el-tag v-if="scope.row.modelType=='2'">新品打样</el-tag>
               <el-tag v-if="scope.row.modelType=='3'">返厂维修</el-tag>
               <el-tag v-if="scope.row.modelType=='4'">外来加工</el-tag>
