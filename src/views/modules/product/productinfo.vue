@@ -59,7 +59,11 @@
       <el-table-column prop="productVolume" header-align="center" align="center" label="容量"></el-table-column>
       <el-table-column prop="productBatch" header-align="center" align="center" label="生产批次"></el-table-column>
       <el-table-column prop="productQuestion" header-align="center" align="center" label="产品问题"></el-table-column>
-      <el-table-column prop="productAssort" header-align="center" align="center" label="组合套"></el-table-column>
+      <el-table-column prop="productAssort" header-align="center" align="center" label="配件套">
+        <template slot-scope="scope">
+          {{scope.row.productAssort==1?'有':'无'}}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="productTrailingProcess"
         header-align="center"

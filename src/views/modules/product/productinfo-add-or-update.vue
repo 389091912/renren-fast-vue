@@ -108,8 +108,11 @@
       <el-form-item label="产品问题" prop="productQuestion">
         <el-input v-model="dataForm.productQuestion" type="textarea" size='medium' placeholder="产品问题" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="组合套" prop="productAssort">
-        <el-input v-model="dataForm.productAssort" placeholder="产品组合套" style="width:260px" ></el-input>
+      <el-form-item label="配件套" prop="productAssort">
+         <el-radio-group v-model="dataForm.productAssort" style="width:260px">
+              <el-radio :label="1">有</el-radio>
+              <el-radio :label="0">无</el-radio>
+          </el-radio-group>
       </el-form-item>
       <el-form-item label="后续加工" prop="productTrailingProcess">
         <el-input v-model="dataForm.productTrailingProcess" placeholder="产品后续加工" style="width:260px"></el-input>

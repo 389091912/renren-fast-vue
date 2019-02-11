@@ -12,21 +12,28 @@
       label-width="130px"
     >
       <el-form-item label="产品ID" prop="productId" >
-           <el-select v-model="dataForm.productId" filterable placeholder="请选择"  style="width:260px">
+        <el-select v-model="dataForm.productId" clearable filterable placeholder="请选择"  style="width:260px">
             <el-option
               v-for="item in productList"
               :key="item.id"
               :label="item.name"
               :value="item.id"
             ></el-option>
-      </el-select>
+       </el-select>
         <!-- <el-input v-model="dataForm.productId" placeholder="产品ID" style="width:260px"></el-input> -->
       </el-form-item>
-      <el-form-item label="只数" prop="zhiNumber">
-        <el-input v-model="dataForm.zhiNumber" placeholder="只数" style="width:260px"></el-input>
+      <el-form-item label="每箱只数" prop="zhiNumber">
+        <el-input v-model.number="dataForm.zhiNumber" placeholder="每箱只数" style="width:260px"></el-input>
       </el-form-item>
       <!-- <el-form-item label="纸箱id" prop="boxId"> -->
-      <el-form-item label="纸箱编号" prop="boxNo">
+      <el-form-item label="纸箱供应方式" prop="boxSupplyWay">
+        <el-radio-group v-model="boxSupplyWay" style="width:260px">
+              <el-radio :label="1">自供</el-radio>
+              <el-radio :label="0">客供</el-radio>
+          </el-radio-group>
+      </el-form-item>
+        <template>
+          <el-form-item label="纸箱编号" prop="boxNo" v-if="boxSupplyWay==1">
             <!-- <el-select v-model="dataForm.boxId" 
             default-first-option
             style="width:260px" readonly filterable placeholder="请选择">
@@ -38,12 +45,16 @@
               </el-option>
             </el-select> -->
         <el-input v-model="boxNo" disabled placeholder="纸箱编号" style="width:260px"></el-input>
-      </el-form-item>
+         </el-form-item>
+        </template>
+  
       <el-form-item label="箱数" prop="boxNumber">
-        <el-input v-model="dataForm.boxNumber" placeholder="箱数" style="width:260px"></el-input>
+        <el-input v-model.number="dataForm.boxNumber" placeholder="箱数" style="width:260px"></el-input>
+  
       </el-form-item>
       <el-form-item label="入库数量" prop="productNumber">
-        <el-input v-model="dataForm.productNumber" placeholder="入库数量" style="width:260px"></el-input>
+        <el-tag>{{productNumber}}</el-tag> 
+        <!-- <el-input v-model="dataForm.productNumber" placeholder="入库数量" style="width:260px"> </el-input> -->
       </el-form-item>
       <el-form-item label="入库时间" prop="putInTime">
          <el-date-picker
@@ -77,13 +88,14 @@ export default {
       visible: false,
       productBoxList:[],
       productList:[],
+      boxSupplyWay:"",
       boxNo:"",
       dataForm: {
         id: 0,
         productId: "",
-        zhiNumber: "",
+        zhiNumber: 0,
         boxId: "",
-        boxNumber: "",
+        boxNumber: 0,
         productNumber: "",
         putInTime: "",
         remark: "",
@@ -100,9 +112,7 @@ export default {
         boxNumber: [
           { required: true, message: "箱数不能为空", trigger: "blur" }
         ],
-        productNumber: [
-          { required: true, message: "入库数量不能为空", trigger: "blur" }
-        ],
+        
         putInTime: [
           { required: true, message: "入库时间不能为空", trigger: "blur" }
         ],
@@ -123,8 +133,7 @@ export default {
             method: "get"
         }).then(({data})=>{
           if(data &&data.code==0){
-            console.log(data.productInfo.cartonId);
-            console.log(data.productInfo.boxNo);
+        
             this.dataForm.boxId=data.productInfo.cartonId;
             this.boxNo=data.productInfo.boxNo;
           //  alert(data.productBoxList);
@@ -176,8 +185,12 @@ export default {
     
     // 表单提交
     dataFormSubmit() {
+
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
+          if(this.boxSupplyWay==0){
+             this.dataForm.boxId='';
+          }
           this.$http({
             url: this.$http.adornUrl(
               `/product/productputinstorage/${
@@ -191,7 +204,7 @@ export default {
               zhiNumber: this.dataForm.zhiNumber,
               boxId: this.dataForm.boxId,
               boxNumber: this.dataForm.boxNumber,
-              productNumber: this.dataForm.productNumber,
+              productNumber: this.productNumber,
               putInTime: this.dataForm.putInTime,
               remark: this.dataForm.remark,
               createTime: this.dataForm.createTime,
@@ -225,7 +238,13 @@ export default {
         //console.log("111")
       },
      
+  },
+  computed:{
+    productNumber:function(){
+      return this.dataForm.zhiNumber*this.dataForm.boxNumber;
+    }
   }
+
 
 
 };

@@ -12,22 +12,54 @@
       label-width="130px"
     >
       <el-form-item label="产品id" prop="productId">
-        <el-input v-model="dataForm.productId" placeholder="产品id" style="width:260px"></el-input>
-      </el-form-item>
+        <el-select v-model="dataForm.productId" clearable filterable placeholder="请选择"  style="width:260px">
+            <el-option
+              v-for="item in productList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+         </el-select> 
+       </el-form-item>
        <el-form-item label="订单编号" prop="orderId">
-        <el-input v-model="dataForm.orderId" placeholder="订单编号" style="width:260px"></el-input>
+          <el-select v-model="dataForm.orderId" clearable filterable placeholder="请选择"  style="width:260px">
+            <el-option
+              v-for="item in orderList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+         </el-select> 
+        <!-- <el-input v-model="dataForm.orderId" placeholder="订单编号" style="width:260px"></el-input> -->
       </el-form-item>
       <el-form-item label="出库数量" prop="productOutNumber">
         <el-input v-model="dataForm.productOutNumber" placeholder="出库数量" style="width:260px">
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
-      
-      <el-form-item label="纸箱id" prop="boxId">
+    <template>
+      <el-form-item  label="纸箱供应方式">
+          <!-- <el-radio-group v-if="boxSupplyWay==1"  v-model="boxSupplyWay">
+         <el-radio  border  :label="1">自供</el-radio>
+         <el-radio   border disabled :label="0">客供</el-radio>
+          </el-radio-group>
+          <el-radio-group v-if="boxSupplyWay==0"  v-model="boxSupplyWay">
+         <el-radio  border disabled :label="1">自供</el-radio>
+         <el-radio   border  :label="0">客供</el-radio>
+          </el-radio-group> -->
+          
+           <el-radio-group  v-model="boxSupplyWay">
+         <el-radio  border  :label="1">自供</el-radio>
+         <el-radio   border  :label="0">客供</el-radio>
+          </el-radio-group>
+      </el-form-item>
+
+    </template>
+      <el-form-item v-if="boxSupplyWay==1" label="纸箱id" prop="boxId">
         <el-input v-model="dataForm.boxId" placeholder="纸箱id" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="箱子数" prop="boxNumber">
-        <el-input v-model="dataForm.boxNumber" placeholder="箱子数" style="width:260px">
+      <el-form-item label="箱数" prop="boxNumber">
+        <el-input v-model="dataForm.boxNumber" placeholder="箱数" style="width:260px">
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
@@ -61,6 +93,9 @@ export default {
   data() {
     return {
       visible: false,
+      productList:[],
+      orderList:[],
+      boxSupplyWay:0,
       dataForm: {
         id: 0,
         productId: "",
@@ -84,7 +119,7 @@ export default {
         productOutNumber: [
           { required: true, message: "出库数量不能为空", trigger: "blur" }
         ],
-        boxId: [{ required: true, message: "纸箱id不能为空", trigger: "blur" }],
+      
         boxNumber: [
           { required: true, message: "箱子数不能为空", trigger: "blur" }
         ],
@@ -101,7 +136,42 @@ export default {
     };
   },
   methods: {
+     //获取纸箱编号
+    selectOrderIdByProductId(){
+
+          let _url=this.$http.adornUrl(`/product/productleavestorage/selectOrderIdByProductId/${this.dataForm.productId}`);
+          if(this.dataForm.productId ==''){
+           _url=this.$http.adornUrl(`/product/productleavestorage/selectOrderIdByProductId/0`)
+          }
+            this.$http({
+            url:_url,
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+        
+            this.orderList=data.orderList;
+            
+          //  alert(data.productBoxList);
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+    },
+     //获取所有的产品
+     getProductList(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getAllProductVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.productList=data.productList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
     init(id) {
+      this.getProductList();
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -178,6 +248,15 @@ export default {
         }
       });
     }
-  }
+  },
+    watch:{
+     "dataForm.productId" (){
+      this.orderList=[];
+      this.dataForm.orderId='';
+      this.selectOrderIdByProductId();
+        //console.log("111")
+      },
+     
+  },
 };
 </script>

@@ -40,9 +40,9 @@
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="ID"></el-table-column>
-      <el-table-column prop="productId" header-align="center" align="center" label="产品ID"></el-table-column>
+      <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
       <el-table-column prop="zhiNumber" header-align="center" align="center" label="只数"></el-table-column>
-      <el-table-column prop="boxId" header-align="center" align="center" label="纸箱id"></el-table-column>
+      <el-table-column prop="boxNo" header-align="center" align="center" label="纸箱编号"></el-table-column>
       <el-table-column prop="boxNumber" header-align="center" align="center" label="箱数"></el-table-column>
       <el-table-column prop="productNumber" header-align="center" align="center" label="入库数量"></el-table-column>
       <el-table-column prop="putInTime" header-align="center" align="center" label="入库时间"></el-table-column>
