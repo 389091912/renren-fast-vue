@@ -1,8 +1,18 @@
 <template>
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+       <el-form-item>
+        <el-input v-model="dataForm.key" placeholder="输入名称" style="width:260px" clearable></el-input>
+      </el-form-item>
+       <el-form-item>
+       <el-date-picker
+          v-model="range"
+          type="daterange"
+          value-format="yyyyMMdd"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -62,9 +72,12 @@ import AddOrUpdate from "./productleavestorage-add-or-update";
 export default {
   data() {
     return {
-      dataForm: {
-        key: ""
+       dataForm: {
+        key: "",
+        rangeBefore:'',
+        rangeAfter:''        
       },
+      range:"",
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -84,13 +97,23 @@ export default {
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
+      if(this.range instanceof Array){
+        this.dataForm.rangeBefore=this.range[0];
+        this.dataForm.rangeAfter=this.range[1];
+      }
+      else{
+        this.dataForm.rangeBefore='';
+        this.dataForm.rangeAfter='';
+      }
       this.$http({
         url: this.$http.adornUrl("/product/productleavestorage/list"),
         method: "get",
         params: this.$http.adornParams({
           page: this.pageIndex,
           limit: this.pageSize,
-          key: this.dataForm.key
+          key: this.dataForm.key,
+          rangeBefore: this.dataForm.rangeBefore,
+          rangeAfter: this.dataForm.rangeAfter,
         })
       }).then(({ data }) => {
         if (data && data.code === 0) {

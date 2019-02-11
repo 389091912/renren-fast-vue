@@ -14,11 +14,15 @@
       <el-form-item label="产品id" prop="productId">
         <el-input v-model="dataForm.productId" placeholder="产品id" style="width:260px"></el-input>
       </el-form-item>
+       <el-form-item label="订单编号" prop="orderId">
+        <el-input v-model="dataForm.orderId" placeholder="订单编号" style="width:260px"></el-input>
+      </el-form-item>
       <el-form-item label="出库数量" prop="productOutNumber">
         <el-input v-model="dataForm.productOutNumber" placeholder="出库数量" style="width:260px">
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
+      
       <el-form-item label="纸箱id" prop="boxId">
         <el-input v-model="dataForm.boxId" placeholder="纸箱id" style="width:260px"></el-input>
       </el-form-item>
@@ -27,9 +31,7 @@
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="订单编号" prop="orderId">
-        <el-input v-model="dataForm.orderId" placeholder="订单编号" style="width:260px"></el-input>
-      </el-form-item>
+     
       <el-form-item label="出库时间" prop="outTime">
         <el-date-picker
           v-model="dataForm.outTime"

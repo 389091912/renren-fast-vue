@@ -38,6 +38,21 @@
         </template>
       </el-table-column>
       <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
+       <el-table-column
+        prop="orderStatus"
+        header-align="center"
+        align="center"
+        label="订单状态"
+      >
+       <template slot-scope="scope">
+        
+         <el-tag  v-if="scope.row.orderStatus=='0'">正常订单</el-tag>
+         <el-tag type="warning"  v-if="scope.row.orderStatus=='1'">订单加急</el-tag>
+         <el-tag type="info" v-if="scope.row.orderStatus=='2'">订单挂起</el-tag>
+         <el-tag type="danger" v-if="scope.row.orderStatus=='3'">取消订单</el-tag>
+         <el-tag type="success" v-if="scope.row.orderStatus=='4'">订单完成</el-tag>
+       </template>
+      </el-table-column>
       <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column prop="status" header-align="center" align="center" label="生产状态 ">
         <!-- 0为等待生产，1为取消生产，2为生产中，3为生产完成 -->
@@ -45,6 +60,7 @@
           <el-button round size="small" v-if="scope.row.status=='0'" @click="changeStatus(scope.row.id,1)">待生产</el-button>
           <el-button round size="small"  type="warning" v-if="scope.row.status=='1'"  @click="changeStatus(scope.row.id,2)">生产中</el-button>
           <el-button round size="small"  type="success" v-if="scope.row.status=='2'" >生产完成</el-button>
+          <el-button round size="small"  type="danger" v-if="scope.row.status=='3'"  @click="changeStatus(scope.row.id,3)" >取消生产</el-button>
         </template>
       </el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
@@ -100,9 +116,11 @@ export default {
           inputPattern: /^[0123]{1}$/,
           inputErrorMessage: '输入的状态不正确'
         }).then(({ value }) => {
-          this.$message({
+
+           this.$message({
             type: 'success',
             message: '你输入的状态是: ' + value
+
           });
         }).catch(() => {
           // this.$message({
@@ -115,7 +133,7 @@ export default {
     // 获取数据列表
     getDataList() {
 
-    let reg =/^[0-9]*$/;
+      let reg =/^[0-9]*$/;
       if(this.dataForm.key!=''){
         if(!reg.test(this.dataForm.key)){  
           alert("你输入的有误,只能输入数字");

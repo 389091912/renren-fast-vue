@@ -103,7 +103,7 @@
           value-format="yyyyMMdd">
         </el-date-picker>
         
-        <el-input v-model="dataForm.productBatch" placeholder="产品批次" style="width:260px"></el-input>
+        <!-- <el-input v-model="dataForm.productBatch" placeholder="产品批次" style="width:260px"></el-input> -->
       </el-form-item>
       <el-form-item label="产品问题" prop="productQuestion">
         <el-input v-model="dataForm.productQuestion" type="textarea" size='medium' placeholder="产品问题" style="width:260px"></el-input>

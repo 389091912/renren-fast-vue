@@ -3,6 +3,7 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible"
+    width="1150px"
   >
     <el-form
       :model="dataForm"
@@ -101,10 +102,11 @@
       <el-form-item label="订单状态" prop="status">
         <template>
           <el-radio-group v-model="dataForm.status">
-            <el-radio :label="0">正常订单</el-radio>
-            <el-radio :label="1">订单加急</el-radio>
+            <el-radio :label="1">正常订单</el-radio>
+            <el-radio :label="0">订单加急</el-radio>
             <el-radio :label="2">订单挂起</el-radio>
             <el-radio :label="3">取消订单</el-radio>
+            <el-radio :label="4">订单完成</el-radio>
           </el-radio-group>
         </template>
         <!-- <el-input v-model="dataForm.status" placeholder=" 0为正常，1为取消订单，2为订单加急，3为订单挂起" style="width:260px"></el-input> -->

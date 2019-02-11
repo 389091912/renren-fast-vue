@@ -23,11 +23,22 @@
           v-model="range"
           type="daterange"
           value-format="yyyyMMdd"
+          unlink-panels
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
       </el-form-item>
+        <el-form-item label="状态" prop="type">
+          <el-select v-model="dataForm.type" clearable filterable placeholder="请选择">
+            <el-option
+              v-for="item in typeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button
@@ -102,8 +113,18 @@ export default {
       dataForm: {
         key: "",
         rangeBefore:'',
-        rangeAfter:'' 
+        rangeAfter:'',
+        type:"",
       },
+      typeList:[{
+        id:'1',
+        name:"入库",
+      },
+      {
+        id:'0',
+        name:"出库",
+      }
+      ],
       boxAddLeaveList:[],
       range:'',
       dataList: [],
@@ -149,6 +170,12 @@ export default {
         this.dataForm.rangeBefore='';
         this.dataForm.rangeAfter='';
       }
+      // if(this.dataForm.type==''){
+      //   if(this.dataForm.key!=''&&this.dataForm.rangeBefore!=''){
+      //   this.$message.error("必须选择状态，入库或出库");
+      //     return false;
+      //   }
+      // }
       this.dataListLoading = true;
       this.$http({
         url: this.$http.adornUrl("/product/boxaddleave/list"),
@@ -157,6 +184,7 @@ export default {
           page: this.pageIndex,
           limit: this.pageSize,
           key: this.dataForm.key,
+          type:this.dataForm.type,
           rangeBefore: this.dataForm.rangeBefore,
           rangeAfter: this.dataForm.rangeAfter
         })

@@ -57,6 +57,23 @@
           placeholder="入库时间"
         ></el-date-picker>
       </el-form-item>
+
+      <el-form-item label="供货商" prop="factoryId">
+         <el-select v-model="dataForm.factoryId" 
+        default-first-option
+        style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item1 in productBoxFactoryList"
+            :key="item1.id"
+            :label="item1.name"
+            :value="item1.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="单价" prop="boxPrice">
+        <el-input v-model="dataForm.boxPrice" placeholder="单价"  style="width:260px"></el-input>
+      </el-form-item>
       </template>
       <template v-if="dataForm.type=='0'">
       <el-form-item label="纸箱出库数量" prop="outBoxNumber">
@@ -92,7 +109,13 @@
     data () {
       return {
         visible: false,
-       productBoxList:[],   
+       productBoxFactoryList:[],
+       productBoxList:[],
+        boxFactory:[{
+          factoryId:'',
+          boxBatch:'',
+          boxPrice:'',
+        }],
         dataForm: {
           id: 0,
           boxNo: '',
@@ -108,6 +131,8 @@
           status:'',
           addBoxTime:'',
           outBoxTime:'',
+          boxPrice:'',
+          factoryId:'',
           type:'1'
         },
         dataRule: {
@@ -127,24 +152,35 @@
         }
       }
     },
-    created() {
-      this.getAllProductBoxList();
-  },
     methods: {
-          getAllProductBoxList(){
+          getAllBoxFactoryList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/boxfactory/getAllBoxFactoryList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.productBoxFactoryList=data.productBoxFactoryList;
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
+
+        getAllProductBoxList(){
             this.$http({
             url:this.$http.adornUrl(`/product/productbox/getAllProductBoxList`),
             method: "get"
         }).then(({data})=>{
           if(data &&data.code==0){
             this.productBoxList=data.productBoxList;
-          //  alert(data.productBoxList);
           }else {
               this.$message.error(data.msg);
           }
         })
       },
       init (id) {
+        this.getAllProductBoxList();
+        this.getAllBoxFactoryList();
         this.dataForm= {
           boxNo: '',
           bodyNumber: '',
@@ -154,6 +190,8 @@
           outBoxNumber: '',
           addBoxTime:'',
           outBoxTime:'',
+          factoryId:'',
+          boxPrice:'',
           type:'1'
         },
         this.dataForm.id = id || 0
@@ -181,6 +219,8 @@
                 this.dataForm.type = data.boxAddLeave.type
                 this.dataForm.addBoxTime = data.boxAddLeave.addBoxTime
                 this.dataForm.outBoxTime = data.boxAddLeave.outBoxTime
+                this.dataForm.boxPrice = data.boxAddLeave.boxPrice
+                this.dataForm.factoryId = data.boxAddLeave.factoryId
               }
             })
           }
@@ -208,7 +248,9 @@
                 'outBoxTime': this.dataForm.outBoxTime,
                 'addBoxTime': this.dataForm.addBoxTime,
                 'status': this.dataForm.status,
-                'type': this.dataForm.type
+                'type': this.dataForm.type,
+                'boxPrice': this.dataForm.boxPrice,
+                'factoryId': this.dataForm.factoryId
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
@@ -227,7 +269,21 @@
             })
           }
         })
-      }
+      },
+   removeDomain(index) {
+    //var index = this.dynamicValidateForm.domains.indexOf(item);
+    if (index !== -1) {
+      this.boxFactory.splice(index, 1);
+    }
+  },
+
+    addDomain() {
+    this.boxFactory.push({
+          factoryId:'',
+          boxBatch:'',
+          boxPrice:'',
+    });
+  }
     }
   }
 </script>

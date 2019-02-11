@@ -3,6 +3,7 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible"
+    width="1150px"
   >
     <el-form
       :model="dataForm"
@@ -39,11 +40,63 @@
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
-        <el-form-item label="纸箱价格" prop="boxPrice">
+      <el-form-item label="客户" prop="costomer">
+        <el-input v-model="dataForm.costomer" placeholder="客户" style="width:260px"> </el-input>
+        <el-button type="success" style="margin-left:50px;margin-bommon:-30px" @click="addDomain">添加纸箱批次</el-button>
+
+      </el-form-item>
+      <template >
+        <div v-for="(factory, index) in boxFactory"
+        :key="index"
+        :prop="'factory.' + index + '.value'"
+        ref="domain">
+
+       <el-form-item :label="(index+1)+'、厂家'" prop="factoryId">
+
+          <el-select v-model="factory.factoryId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in productBoxFactoryList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item  style="margin-left:250px;margin-top:-60px"
+                  label="价格"
+                  prop="boxPrice"
+                >
+          <el-input
+            v-model.number="factory.boxPrice"
+            placeholder="价格"
+            maxlength="10"
+            style="width:150px">
+            <template slot="append">元</template>
+          </el-input>
+
+          </el-form-item>
+          
+           <el-form-item  style="margin-left:500px;margin-top:-60px"
+                  label="批次"
+                  prop="boxBatch"
+                >
+                 <el-date-picker style="width:260px"
+          v-model="factory.boxBatch"
+          type="date"
+          placeholder="请选择纸箱批次(按照日期)"
+          value-format="yyyy-MM-dd">
+        </el-date-picker>
+          <el-button type="danger" style="margin-left:10px;" v-if="index!='0'"   @click.prevent="removeDomain(index)">删除</el-button>  
+          </el-form-item>
+        </div>
+  
+      </template>
+        <!-- <el-form-item label="纸箱价格" prop="boxPrice">
         <el-input v-model.number="dataForm.boxPrice" placeholder="纸箱价格" style="width:260px">
           <template slot="append">元</template>
         </el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="客户" prop="costomer">
         <el-input v-model="dataForm.costomer" placeholder="客户" style="width:260px"></el-input>
       </el-form-item>
@@ -71,6 +124,12 @@ export default {
   data() {
     return {
       visible: false,
+       boxFactory:[{
+          factoryId:'',
+          boxBatch:'',
+          boxPrice:'',
+        }],
+      productBoxFactoryList:[],
       dataForm: {
         id: 0,
         boxNo: "",
@@ -88,6 +147,7 @@ export default {
         updateTime: "",
         updateUser: "",
         status: "",
+        boxFactoryVoStr: "",
         leaveNumber: ""
       },
       dataRule: {
@@ -109,7 +169,20 @@ export default {
     };
   },
   methods: {
+      getAllBoxFactoryList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/boxfactory/getAllBoxFactoryList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.productBoxFactoryList=data.productBoxFactoryList;
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
     init(id) {
+      this.getAllBoxFactoryList();
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -134,6 +207,7 @@ export default {
               this.dataForm.remark = data.productBox.remark;
               this.dataForm.leaveNumber = data.productBox.leaveNumber;
               this.dataForm.boxPrice = data.productBox.boxPrice;
+              this.boxFactory= data.productBox.boxFactoryVoList;
             }
           });
         }
@@ -165,7 +239,8 @@ export default {
               updateUser: this.dataForm.updateUser,
               status: this.dataForm.status,
               leaveNumber: this.dataForm.leaveNumber,
-              boxPrice: this.dataForm.boxPrice
+              boxPrice: this.dataForm.boxPrice,
+              boxFactoryVoStr: JSON.stringify(this.dataForm.boxFactoryVoStr)
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -184,7 +259,21 @@ export default {
           });
         }
       });
+    },
+     removeDomain(index) {
+    //var index = this.dynamicValidateForm.domains.indexOf(item);
+    if (index !== -1) {
+      this.boxFactory.splice(index, 1);
     }
+  },
+
+    addDomain() {
+    this.boxFactory.push({
+          factoryId:'',
+          boxBatch:'',
+          boxPrice:'',
+    });
+  }
   }
 };
 </script>

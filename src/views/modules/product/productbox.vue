@@ -14,6 +14,17 @@
           </el-option>
         </el-select>
       </el-form-item>
+       <el-form-item>
+       <el-date-picker
+          v-model="range"
+          type="daterange"
+          value-format="yyyyMMdd"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button
@@ -87,8 +98,11 @@ export default {
   data() {
     return {
       dataForm: {
-        key: ""
+        key: "",
+        rangeBefore:'',
+        rangeAfter:'',
       },
+      range:'',
       productBoxList:[],
       dataList: [],
       pageIndex: 1,
@@ -122,6 +136,14 @@ export default {
     // 获取数据列表
     getDataList() {
       this.getAllProductBoxList();
+        if(this.range instanceof Array){
+        this.dataForm.rangeBefore=this.range[0];
+        this.dataForm.rangeAfter=this.range[1];
+      }
+      else{
+        this.dataForm.rangeBefore='';
+        this.dataForm.rangeAfter='';
+      }
       this.dataListLoading = true;
       this.$http({
         url: this.$http.adornUrl("/product/productbox/list"),
@@ -129,7 +151,9 @@ export default {
         params: this.$http.adornParams({
           page: this.pageIndex,
           limit: this.pageSize,
-          key: this.dataForm.key
+          key: this.dataForm.key,
+          rangeBefore: this.dataForm.rangeBefore,
+          rangeAfter: this.dataForm.rangeAfter
         })
       }).then(({ data }) => {
         if (data && data.code === 0) {

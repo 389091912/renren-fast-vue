@@ -22,7 +22,17 @@
       </el-form-item>
       <el-form-item label="订单生产状态" prop="status">
         <!-- 0为等待生产，1为取消生产，2为生产中，3为生产完成。 -->
-        <el-input v-model="dataForm.status" placeholder="0为等待生产，1为取消生产，2为生产中，3为生产完成。" style="width:260px"></el-input>
+        <el-select v-model="dataForm.status" 
+        default-first-option
+        style="width:260px" filterable placeholder="请选择生产状态">
+          <el-option
+            v-for="item in productStatusList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <!-- <el-input v-model="dataForm.status" placeholder="0为等待生产，1为取消生产，2为生产中，3为生产完成。" style="width:260px"></el-input> -->
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -49,6 +59,25 @@ export default {
         updateUser: "",
         status: ""
       },
+      productStatusList:[
+        {
+          value: 0,
+          label: '等待生产'
+      },
+        {
+          value: 1,
+          label: '生产中'
+      },
+        {
+          value: 2,
+          label: '生产完成'
+      },
+        {
+          value: 3,
+          label: '取消生产'
+      },
+      ],
+
       dataRule: {
         orderId: [
           { required: true, message: "订单id不能为空", trigger: "blur" }
