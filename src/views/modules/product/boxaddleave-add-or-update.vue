@@ -145,9 +145,9 @@
           parryNumber: [
             { required: true, message: '格挡数量不能为空', trigger: 'blur' }
           ],
-          spacerNumber: [
-            { required: true, message: '垫片数量不能为空', trigger: 'blur' }
-          ],
+          // spacerNumber: [
+          //   { required: true, message: '垫片数量不能为空', trigger: 'blur' }
+          // ],
          
         }
       }

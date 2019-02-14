@@ -43,12 +43,12 @@
             v-model.number="product.productNumber"
             placeholder="数量"
             maxlength="10"
-            style="width:150px">
-            <template slot="append">件</template>
+            style="width:160px">
+            <template slot="append">万件</template>
           </el-input>
 
           </el-form-item>
-           <el-form-item  style="margin-left:460px;margin-top:-55px"
+           <el-form-item  style="margin-left:460px;margin-top:-60px"
                   label="克数"
                   prop="productWeight"
                 >

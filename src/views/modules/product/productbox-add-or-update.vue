@@ -97,9 +97,7 @@
           <template slot="append">元</template>
         </el-input>
       </el-form-item> -->
-      <el-form-item label="客户" prop="costomer">
-        <el-input v-model="dataForm.costomer" placeholder="客户" style="width:260px"></el-input>
-      </el-form-item>
+      
       <el-form-item label="位置" prop="location">
         <el-input v-model="dataForm.location" placeholder="位置" style="width:260px"></el-input>
       </el-form-item>

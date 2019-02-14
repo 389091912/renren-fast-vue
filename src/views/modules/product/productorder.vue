@@ -28,10 +28,18 @@
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
-      <el-table-column prop="orderTime" header-align="center" align="center" label="订单时间"></el-table-column>
-      <el-table-column prop="employeeId" header-align="center" align="center" label="员工"></el-table-column>
+      <el-table-column prop="orderTime" header-align="center" align="center" label="订单时间">
+        <template slot-scope="scope">
+          {{scope.row.orderTime|formateDate}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="employeeName" header-align="center" align="center" label="员工"></el-table-column>
       <el-table-column prop="customer" header-align="center" align="center" label="客户"></el-table-column>
-      <el-table-column prop="deliveryTime" header-align="center" align="center" label="交货时间"></el-table-column>
+      <el-table-column prop="deliveryTime" header-align="center" align="center" label="交货时间">
+         <template slot-scope="scope">
+          {{scope.row.deliveryTime|formateDate}}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="status"
         header-align="center"
@@ -172,6 +180,12 @@ export default {
           }
         });
       });
+    }
+  },
+  filters:{
+    formateDate(value){
+
+      return value.substring(0,10);
     }
   }
 };

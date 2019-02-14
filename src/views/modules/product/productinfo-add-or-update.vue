@@ -70,7 +70,7 @@
           :show-file-list="false"
           >
           
-         <img v-if="imageUrl" :src="imageUrl" class="avatar">
+         <img v-if="imageUrl" alt="" :src="imageUrl" class="avatar">
          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
@@ -216,9 +216,9 @@ export default {
         productName: [
           { required: true, message: "产品名称不能为空", trigger: "blur" }
         ],
-        modelNo: [
-          { required: true, message: "模具编号不能为空", trigger: "blur" }
-        ],
+        // modelNo: [
+        //   { required: true, message: "模具编号不能为空", trigger: "blur" }
+        // ],
         // cartonId: [
         //   { required: true, message: "纸箱编号不能为空", trigger: "blur" }
         // ],
@@ -243,11 +243,6 @@ export default {
       }
     };
   },
-   created() {
-  
-    // this.getModelListInfo();
-    // this.getAllProductBoxList();
-  },
   methods: {
   getModelListInfo(){
       this.$http({
@@ -262,18 +257,24 @@ export default {
       })
     },
    getCustomerModelNo(){
+     if(!this.dataForm.modelNo){
+       console.log(this.dataForm.modelNo);
+       return false;
+     }     
       this.$http({
-          url:this.$http.adornUrl(`/product/productmodel/getCustomerModelNo/${this.dataForm.modelNo}`),
-          method: "get"
-      }).then(({data})=>{
-        if(data &&data.code==0){
-          this.dataForm.customerProductNo=data.customerModelNo;
-         
-        }else {
-             this.$message.error(data.msg);
-         }
-      })
-    },
+                url:this.$http.adornUrl(`/product/productmodel/getCustomerModelNo/${!this.dataForm.modelNo?'0':this.dataForm.modelNo}`),
+                method: "get"
+            }).then(({data})=>{
+              if(data &&data.code==0){
+                this.dataForm.customerProductNo=data.customerModelNo;
+              
+              }else {
+                  this.$message.error(data.msg);
+              }
+            })
+
+
+     },
     getAllProductBoxList(){
           this.$http({
           url:this.$http.adornUrl(`/product/productbox/getAllProductBoxList`),
@@ -393,7 +394,7 @@ export default {
               this.dataForm.productTrailingProcess = data.productInfo.productTrailingProcess;
               this.dataForm.productRemark = data.productInfo.productRemark;
               this.dataForm.yield = data.productInfo.yield;
-              if(data.productInfo.productImageUrl||data.productInfo.productImageUrl!=''){
+              if(data.productInfo.productImageUrl!=null&&data.productInfo.productImageUrl!=''){
                 this.oldImageUrl=window.SITE_CONFIG.baseUrl+'/pub'+data.productInfo.productImageUrl+'?token='+this.$cookie.get('token');
                 this.imageUrl=window.SITE_CONFIG.baseUrl+'/pub'+data.productInfo.productImageUrl+'?token='+this.$cookie.get('token');
              }else{

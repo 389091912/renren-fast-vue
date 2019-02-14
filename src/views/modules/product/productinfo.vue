@@ -45,10 +45,10 @@
           <el-popover
             placement="right"
             title=""
-            trigger="hover">
-            <img :src="imageUrl+scope.row.productImageUrl+ '?token='+token" style="height:600px;width:600px" />
-            <img slot="reference" :src="imageUrl+scope.row.productImageUrl+ '?token='+token" alt="图片未加载成功" style="height: 50px;width: 50px">
-          </el-popover>
+            trigger="hover" v-if="scope.row.productImageUrl">
+            <img :src="imageUrl+scope.row.productImageUrl+ '?token='+token" alt="" style="height:600px;width:600px" />
+            <img slot="reference" :src="imageUrl+scope.row.productImageUrl+ '?token='+token" alt="" style="height: 50px;width: 50px">
+          </el-popover> 
         </template>
       </el-table-column>
       <el-table-column prop="modelNo" header-align="center" align="center" label="模具编号"></el-table-column>

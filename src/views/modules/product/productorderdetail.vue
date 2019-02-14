@@ -30,7 +30,7 @@
       <el-table-column prop="id" header-align="center" align="center" label="ID"></el-table-column>
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
       <el-table-column prop="productWeight" header-align="center" align="center" label="克数"></el-table-column>
-      <el-table-column prop="productNumber" header-align="center" align="center" label="订单数量"></el-table-column>
+      <el-table-column prop="productNumber" header-align="center" align="center" label="订单数量(万)"></el-table-column>
       <el-table-column prop="boxSupplyWay" header-align="center" align="center" label="纸箱供应方式">
         <template slot-scope="scope">
           <el-tag type="danger" v-if="scope.row.boxSupplyWay=='0'">客供</el-tag>
@@ -46,8 +46,8 @@
       >
        <template slot-scope="scope">
         
-         <el-tag  v-if="scope.row.orderStatus=='0'">正常订单</el-tag>
-         <el-tag type="warning"  v-if="scope.row.orderStatus=='1'">订单加急</el-tag>
+         <el-tag  v-if="scope.row.orderStatus=='1'">正常订单</el-tag>
+         <el-tag type="warning"  v-if="scope.row.orderStatus=='0'">订单加急</el-tag>
          <el-tag type="info" v-if="scope.row.orderStatus=='2'">订单挂起</el-tag>
          <el-tag type="danger" v-if="scope.row.orderStatus=='3'">取消订单</el-tag>
          <el-tag type="success" v-if="scope.row.orderStatus=='4'">订单完成</el-tag>
@@ -57,10 +57,10 @@
       <el-table-column prop="status" header-align="center" align="center" label="生产状态 ">
         <!-- 0为等待生产，1为取消生产，2为生产中，3为生产完成 -->
          <template slot-scope="scope">
-          <el-button round size="small" v-if="scope.row.status=='0'" @click="changeStatus(scope.row.id,1)">待生产</el-button>
-          <el-button round size="small"  type="warning" v-if="scope.row.status=='1'"  @click="changeStatus(scope.row.id,2)">生产中</el-button>
+          <el-button round size="small" v-if="scope.row.status=='0'" @click="changeStatus(scope.row.id)">待生产</el-button>
+          <el-button round size="small"  type="warning" v-if="scope.row.status=='1'"  @click="changeStatus(scope.row.id)">生产中</el-button>
           <el-button round size="small"  type="success" v-if="scope.row.status=='2'" >生产完成</el-button>
-          <el-button round size="small"  type="danger" v-if="scope.row.status=='3'"  @click="changeStatus(scope.row.id,3)" >取消生产</el-button>
+          <el-button round size="small"  type="danger" v-if="scope.row.status=='3'"  @click="changeStatus(scope.row.id)" >取消生产</el-button>
         </template>
       </el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
@@ -108,7 +108,7 @@ export default {
     this.getDataList();
   },
   methods: {
-    changeStatus(id,status){
+    changeStatus(orderDetailId){
          this.$prompt(`输入修改状态只能为：<p style="color:rgba(0, 206, 209, 1);" >0 为待生产</p><p style="color:rgba(250, 212, 0, 1)">1 为生产中</p><p style="color:green">2 为生产完成</p><p style="color:red">3 为取消生产</p>`, '提示', {
           dangerouslyUseHTMLString: true,
           confirmButtonText: '确定',
@@ -116,12 +116,31 @@ export default {
           inputPattern: /^[0123]{1}$/,
           inputErrorMessage: '输入的状态不正确'
         }).then(({ value }) => {
+          console.log(orderDetailId);
+          console.log(value);
 
-           this.$message({
-            type: 'success',
-            message: '你输入的状态是: ' + value
+          this.$http({
+            url:this.$http.adornUrl(`/product/productorderdetail/updateOrderDetailStatus`),
+            method:'post',
+            data:
+            this.$http.adornData({
+              id:orderDetailId,
+              status:value,
+            })
+          }).then(({data})=>{
+                if (data && data.code === 0) {
 
-          });
+                  this.getDataList();
+            }
+
+
+          })
+
+          //  this.$message({
+          //   type: 'success',
+          //   message: '你输入的状态是: ' + value
+
+          // });
         }).catch(() => {
           // this.$message({
           //   type: 'info',

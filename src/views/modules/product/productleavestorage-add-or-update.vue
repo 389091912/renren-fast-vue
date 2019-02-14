@@ -21,6 +21,11 @@
             ></el-option>
          </el-select> 
        </el-form-item>
+        <el-form-item label="克数" prop="productWeight">
+        <el-input v-model.number="productWeight" placeholder="克数" style="width:260px">
+          <template slot="append">克</template>
+        </el-input>
+      </el-form-item>
        <el-form-item label="订单编号" prop="orderId">
           <el-select v-model="dataForm.orderId" clearable filterable placeholder="请选择"  style="width:260px">
             <el-option
@@ -33,9 +38,14 @@
         <!-- <el-input v-model="dataForm.orderId" placeholder="订单编号" style="width:260px"></el-input> -->
       </el-form-item>
       <el-form-item label="出库数量" prop="productOutNumber">
-        <el-input v-model="dataForm.productOutNumber" placeholder="出库数量" style="width:260px">
+        <el-input v-model.number="dataForm.productOutNumber" placeholder="出库数量" style="width:260px">
           <template slot="append">件</template>
         </el-input>
+      </el-form-item>
+      <el-form-item label="产品总克数" prop="weightCount">
+        <el-tag type="danger">
+            {{weightCount}}克
+        </el-tag>
       </el-form-item>
     <template>
       <el-form-item  label="纸箱供应方式">
@@ -96,10 +106,11 @@ export default {
       productList:[],
       orderList:[],
       boxSupplyWay:0,
+      productWeight:0,
       dataForm: {
         id: 0,
         productId: "",
-        productOutNumber: "",
+        productOutNumber: 0,
         boxId: "",
         boxNumber: "",
         orderId: "",
@@ -129,9 +140,7 @@ export default {
         outTime: [
           { required: true, message: "出库时间不能为空", trigger: "blur" }
         ],
-        signTime: [
-          { required: true, message: "签收时间不能为空", trigger: "blur" }
-        ]
+       
       }
     };
   },
@@ -257,6 +266,11 @@ export default {
         //console.log("111")
       },
      
+  },
+  computed: {
+    weightCount(){
+      return this.productWeight*this.dataForm.productOutNumber;
+    }
   },
 };
 </script>
