@@ -61,7 +61,7 @@
           v-model="dataForm.putInTime"
           type="date"
           style="width:260px"
-           value-format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="入库时间">
         </el-date-picker>
       </el-form-item>

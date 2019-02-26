@@ -40,9 +40,9 @@
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="客户" prop="costomer">
-        <el-input v-model="dataForm.costomer" placeholder="客户" style="width:260px"> </el-input>
-        <el-button type="success" style="margin-left:50px;margin-bommon:-30px" @click="addDomain">添加纸箱批次</el-button>
+      <el-form-item label="纸箱批次" prop="costomer">
+        <!-- <el-input v-model="dataForm.costomer" placeholder="客户" style="width:260px"> </el-input> -->
+        <!-- <el-button type="success" style="margin-left:50px;margin-bommon:-30px" @click="addDomain">添加纸箱批次</el-button> -->
 
       </el-form-item>
       <template >
@@ -156,12 +156,8 @@ export default {
         parry: [{ required: true, message: "格挡不能为空", trigger: "blur" }],
         spacer: [{ required: true, message: "垫片不能为空", trigger: "blur" }],
         zhiShu: [{ required: true, message: "每箱只数不能为空", trigger: "blur" }],
-        boxNumber: [
-          { required: true, message: "库存数量不能为空", trigger: "blur" }
-        ],
-        costomer: [
-          { required: true, message: "客户不能为空", trigger: "blur" }
-        ],
+       
+
         location: [{ required: true, message: "位置不能为空", trigger: "blur" }]
       }
     };

@@ -5,7 +5,13 @@
         <el-input v-model="dataForm.key" placeholder="名称" clearable></el-input>
       </el-form-item>
        <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="类别" clearable></el-input>
+        <el-input v-model="dataForm.type" placeholder="类别" clearable></el-input>
+      </el-form-item>
+       <el-form-item>
+        <el-input v-model="dataForm.depotId" placeholder="仓库号" clearable></el-input>
+      </el-form-item>
+        <el-form-item>
+        <el-input v-model="dataForm.customerName" placeholder="客户名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -97,8 +103,22 @@ export default {
   data() {
     return {
       dataForm: {
-        key: ""
+        key: "",
+        depotId:'',
+        type:'',
+        customerName:''
       },
+      //  <el-radio :label="0">入库登记</el-radio>
+      //       <el-radio :label="1">模具拉出</el-radio>
+      //       <el-radio :label="2">新品打样</el-radio>
+      //       <el-radio :label="3">返厂维修</el-radio>
+      //       <el-radio :label="4">外来加工</el-radio>
+      typeList:[
+        {
+          id:'0',
+          name:"入库登记"
+        }
+      ],
       dataList: [],
       pageIndex: 1,
       pageSize: 10,

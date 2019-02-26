@@ -59,6 +59,7 @@
             style="width:150px">
             <template slot="append">克</template>
           </el-input>
+
            </el-form-item>
 
 
@@ -130,7 +131,7 @@ export default {
     
       ProductDetailVo: [
           {
-            
+            id:"",
             productId: "",
             productNumber: "",
             productWeight: "",
@@ -217,7 +218,7 @@ export default {
               this.dataForm.deliveryTime = data.productOrder.deliveryTime;
               this.dataForm.status = data.productOrder.status;
               this.dataForm.remark = data.productOrder.remark;
-            //  console.log(data.productOrder.productOrderDetailList);
+             console.log(data.productOrder.productOrderDetailList);
            this.ProductDetailVo = data.productOrder.productOrderDetailList;
             }
           
@@ -271,6 +272,7 @@ export default {
   },
   addDomain() {
     this.ProductDetailVo.push({
+            id:"",
             productId: "",
             productNumber: "",
             productWeight: "",

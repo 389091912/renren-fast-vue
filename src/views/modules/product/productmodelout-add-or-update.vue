@@ -36,7 +36,7 @@
             <el-radio :label="4">老第一仓库</el-radio>
           </el-radio-group>     
         </el-form-item>
-       <el-form-item label="架号" prop="siteNo">
+       <el-form-item v-if="dataForm.modelType=='0'" label="架号" prop="siteNo">
         <el-input v-model="dataForm.siteNo" placeholder="架号" style="width:260px"></el-input>
        </el-form-item>
       <el-form-item label="模具编号" prop="modelNo">
@@ -121,9 +121,13 @@
       <el-form-item label="模具经手人" prop="modelHandlingPeople">
         <el-input v-model="dataForm.modelHandlingPeople" placeholder="模具经手人" style="width:260px"></el-input>
       </el-form-item>
+       <el-form-item  v-if="dataForm.modelType=='0'" label="审批人" prop="applyName">
+        <el-input v-model="dataForm.applyName" placeholder="模具审批人" style="width:260px"></el-input>
+      </el-form-item>
       <el-form-item label="提货人名称" prop="customerName">
         <el-input v-model="dataForm.customerName" placeholder="提货人名称" style="width:260px"></el-input>
       </el-form-item>
+
        <el-form-item label="厂商" prop="factory">
         <el-input v-model="dataForm.factory" placeholder="厂商" style="width:260px"></el-input>
       </el-form-item>
@@ -193,12 +197,9 @@ export default {
         modelRemark: "",
         modelDeliveryTime: "",
         modelReceiptTime: "",
-        createTime: "",
-        createUser: "",
-        updateTime: "",
-        updateUser: "",
         status: "",
         modelType: '',
+        applyName:'',
         bottleWeight: '',
         reasonReturn: '',
         factory:''
@@ -268,6 +269,7 @@ export default {
         this.dataForm.modelHandlingPeople='';
         this.dataForm.customerName='';
         this.dataForm.factory='';
+        this.dataForm.applyName='';
     
     },
     getModelListInfo(){
@@ -295,6 +297,7 @@ export default {
     //   })
     // },
     init(id) {
+      this.dataForm.modelRemark="";
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -331,6 +334,7 @@ export default {
               this.dataForm.factory = data.productModelOut.factory;
               this.dataForm.depotId = data.productModelOut.depotId;
               this.dataForm.siteNo = data.productModelOut.siteNo;
+              this.dataForm.applyName = data.productModelOut.applyName;
             }
           });
         }
@@ -376,6 +380,7 @@ export default {
               factory: this.dataForm.factory,
               depotId: this.dataForm.depotId,
               siteNo: this.dataForm.siteNo,
+              applyName: this.dataForm.applyName,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {

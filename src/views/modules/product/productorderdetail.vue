@@ -4,13 +4,24 @@
       <el-form-item>
         <el-input v-model.trim="dataForm.key"  placeholder="克数" clearable></el-input>
       </el-form-item>
+       <el-form-item>
+            <el-select v-model="dataForm.productId" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in productList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        <!-- <el-input v-model.trim="dataForm.productId"  placeholder="产品名称" clearable></el-input> -->
+      </el-form-item> 
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button
+        <!-- <el-button
           v-if="isAuth('product:productorderdetail:save')"
           type="primary"
           @click="addOrUpdateHandle()"
-        >新增</el-button>
+        >新增</el-button> -->
         <el-button
           v-if="isAuth('product:productorderdetail:delete')"
           type="danger"
@@ -90,8 +101,10 @@ export default {
   data() {
     return {
       dataForm: {
-        key: ""
+        key: "",
+        productId:"",
       },
+      productList:[],
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -108,6 +121,19 @@ export default {
     this.getDataList();
   },
   methods: {
+    getProductList(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getAllProductVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.productList=data.productList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
+
     changeStatus(orderDetailId){
          this.$prompt(`输入修改状态只能为：<p style="color:rgba(0, 206, 209, 1);" >0 为待生产</p><p style="color:rgba(250, 212, 0, 1)">1 为生产中</p><p style="color:green">2 为生产完成</p><p style="color:red">3 为取消生产</p>`, '提示', {
           dangerouslyUseHTMLString: true,
@@ -157,9 +183,9 @@ export default {
         if(!reg.test(this.dataForm.key)){  
           alert("你输入的有误,只能输入数字");
        return false;
-     } 
- }
-
+      } 
+    }
+      this.getProductList();
       this.dataListLoading = true;
    
       this.$http({
@@ -168,7 +194,8 @@ export default {
         params: this.$http.adornParams({
           page: this.pageIndex,
           limit: this.pageSize,
-          key: this.dataForm.key
+          key: this.dataForm.key,
+          productId: this.dataForm.productId
         })
       }).then(({ data }) => {
         if (data && data.code === 0) {

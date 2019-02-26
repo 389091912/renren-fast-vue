@@ -79,6 +79,7 @@
           v-model="dataForm.outTime"
           type="date"
           style="width:260px"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="出库时间"
         ></el-date-picker>
       </el-form-item>
@@ -87,6 +88,7 @@
           v-model="dataForm.signTime"
           type="date"
           style="width:260px"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="签收时间"
         ></el-date-picker>
       </el-form-item>

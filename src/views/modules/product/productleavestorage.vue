@@ -38,11 +38,11 @@
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label></el-table-column>
-      <el-table-column prop="productId" header-align="center" align="center" label="产品id"></el-table-column>
+      <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
       <el-table-column prop="productOutNumber" header-align="center" align="center" label="出库数量"></el-table-column>
-      <el-table-column prop="boxId" header-align="center" align="center" label="纸箱id"></el-table-column>
+      <el-table-column prop="boxNo" header-align="center" align="center" label="纸箱编号"></el-table-column>
       <el-table-column prop="boxNumber" header-align="center" align="center" label="箱子数"></el-table-column>
-      <el-table-column prop="orderId" header-align="center" align="center" label="订单编号"></el-table-column>
+      <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
       <el-table-column prop="outTime" header-align="center" align="center" label="出库时间"></el-table-column>
       <el-table-column prop="signTime" header-align="center" align="center" label="签收时间"></el-table-column>
       <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>

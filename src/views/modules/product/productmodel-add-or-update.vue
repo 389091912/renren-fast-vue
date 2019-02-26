@@ -32,7 +32,7 @@
             <el-radio :label="4">老第一仓库</el-radio>
           </el-radio-group>     
         </el-form-item>
-        <el-form-item label="架号" prop="siteNo">
+        <el-form-item  v-if="dataForm.modelType=='0'" label="架号" prop="siteNo">
         <el-input v-model="dataForm.siteNo" placeholder="架号" style="width:260px"></el-input>
       </el-form-item>
       </template>

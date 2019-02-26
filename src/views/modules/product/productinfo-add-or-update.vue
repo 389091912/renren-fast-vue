@@ -20,6 +20,7 @@
       <el-form-item label="模具编号" prop="modelNo">
        <el-select v-model="dataForm.modelNo" 
         default-first-option
+        clearable
         style="width:260px" filterable placeholder="请选择">
           <el-option
             v-for="item in modelList"
@@ -30,10 +31,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="客户编号" prop="customerProductNo">
-        <el-input v-model="dataForm.customerProductNo" placeholder="客户产品(模具)编号"  style="width:260px"></el-input>
+        <el-input v-model="dataForm.customerProductNo" clearable placeholder="客户产品(模具)编号"  style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="纸箱编号" prop="cartonId">
          <el-select v-model="dataForm.cartonId" 
+         clearable
         default-first-option
         style="width:260px" filterable placeholder="请选择">
           <el-option
@@ -210,9 +212,7 @@ export default {
         productCategory: "",
       },
       dataRule: {
-        productNo: [
-          { required: true, message: "瓶子序号不能为空", trigger: "blur" }
-        ],
+      
         productName: [
           { required: true, message: "产品名称不能为空", trigger: "blur" }
         ],

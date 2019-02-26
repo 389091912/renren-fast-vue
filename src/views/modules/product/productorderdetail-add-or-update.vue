@@ -11,15 +11,34 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="130px"
     >
-      <el-form-item label="订单id" prop="orderId">
-        <el-input v-model="dataForm.orderId" placeholder="订单id" style="width:260px"></el-input>
+      <el-form-item label="订单id" prop="orderNo">
+        
+        <el-input  v-model="dataForm.orderNo" disabled  placeholder="订单编号" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="产品ID" prop="productId">
-        <el-input v-model="dataForm.productId" placeholder="产品ID" style="width:260px"></el-input>
+      <el-form-item label="产品名称" prop="productName">
+        <el-input v-model="dataForm.productName" disabled placeholder="产品名称" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="订单数量" prop="productNumber">
-        <el-input v-model="dataForm.productNumber" placeholder="订单数量" style="width:260px"></el-input>
+        <el-input v-model="dataForm.productNumber" placeholder="订单数量" style="width:260px">
+           <template slot="append">万件</template>
+        </el-input>
       </el-form-item>
+       <el-form-item label="产品克数" prop="productWeight">
+        <el-input v-model="dataForm.productWeight" placeholder="产品克数" style="width:260px">
+      <template slot="append">克</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item 
+                  label="纸箱供应方式"
+                  prop="boxSupplyWay"
+                >
+              <el-radio-group v-model="dataForm.boxSupplyWay" >
+              <el-radio :label="0">客供</el-radio>
+              <el-radio :label="1">自供</el-radio>
+            </el-radio-group>
+       </el-form-item>
+
+
       <el-form-item label="订单生产状态" prop="status">
         <!-- 0为等待生产，1为取消生产，2为生产中，3为生产完成。 -->
         <el-select v-model="dataForm.status" 
@@ -50,14 +69,14 @@ export default {
       dataForm: {
         id: 0,
         orderId: "",
+        orderNo: "",
         productId: "",
+        productName: "",
         productNumber: "",
+        productWeight: "",
+        boxSupplyWay:"",
+        status:"",
         remark: "",
-        createTime: "",
-        createUser: "",
-        updateTime: "",
-        updateUser: "",
-        status: ""
       },
       productStatusList:[
         {
@@ -107,14 +126,15 @@ export default {
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.dataForm.orderId = data.productOrderDetail.orderId;
+              this.dataForm.orderNo = data.productOrderDetail.orderNo;
               this.dataForm.productId = data.productOrderDetail.productId;
+              this.dataForm.productName = data.productOrderDetail.productName;
               this.dataForm.productNumber = data.productOrderDetail.productNumber;
+              this.dataForm.productWeight = data.productOrderDetail.productWeight;
+              this.dataForm.boxSupplyWay = data.productOrderDetail.boxSupplyWay;
               this.dataForm.remark = data.productOrderDetail.remark;
-              this.dataForm.createTime = data.productOrderDetail.createTime;
-              this.dataForm.createUser = data.productOrderDetail.createUser;
-              this.dataForm.updateTime = data.productOrderDetail.updateTime;
-              this.dataForm.updateUser = data.productOrderDetail.updateUser;
               this.dataForm.status = data.productOrderDetail.status;
+    
             }
           });
         }
@@ -136,12 +156,10 @@ export default {
               orderId: this.dataForm.orderId,
               productId: this.dataForm.productId,
               productNumber: this.dataForm.productNumber,
+              productWeight: this.dataForm.productWeight,
+              boxSupplyWay: this.dataForm.boxSupplyWay,
               remark: this.dataForm.remark,
-              createTime: this.dataForm.createTime,
-              createUser: this.dataForm.createUser,
-              updateTime: this.dataForm.updateTime,
-              updateUser: this.dataForm.updateUser,
-              status: this.dataForm.status
+              status:this.dataForm.status,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
