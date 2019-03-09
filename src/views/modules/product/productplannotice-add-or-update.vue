@@ -1,4 +1,5 @@
 <template>
+
   <el-dialog
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
@@ -12,10 +13,25 @@
       label-width="130px"
     >
       <el-form-item label="设备编号" prop="deviceId">
-        <el-input v-model="dataForm.deviceId" placeholder="设备编号" style="width:260px"></el-input>
+         <el-select v-model="dataForm.deviceId" filterable clearable placeholder="请选择" style="width:260px">
+            <el-option
+              v-for="item in deviceList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+
       </el-form-item>
       <el-form-item label="产品编号" prop="productId">
-        <el-input v-model="dataForm.productId" placeholder="产品编号" style="width:260px"></el-input>
+       <el-select v-model="dataForm.productId" filterable placeholder="请选择" clearable style="width:260px">
+            <el-option
+              v-for="item in productList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
       </el-form-item>
       <el-form-item label="模具编号" prop="modelId">
         <el-input v-model="dataForm.modelId" placeholder="模具编号" style="width:260px"></el-input>
@@ -33,13 +49,19 @@
         <el-input v-model="dataForm.orderId" placeholder="订单id" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="订单数量" prop="orderNumber">
-        <el-input v-model="dataForm.orderNumber" placeholder="订单数量" style="width:260px"></el-input>
+        <el-input v-model="dataForm.orderNumber" placeholder="订单数量" style="width:260px">
+           <template slot="append">万件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="库存数量" prop="repertoryNumber">
-        <el-input v-model="dataForm.repertoryNumber" placeholder="库存数量" style="width:260px"></el-input>
+        <el-input v-model="dataForm.repertoryNumber" placeholder="库存数量" style="width:260px">
+                     <template slot="append">万件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="实际需求数量" prop="needNumber">
-        <el-input v-model="dataForm.needNumber" placeholder="实际需求数量" style="width:260px"></el-input>
+        <el-input v-model="dataForm.needNumber" placeholder="实际需求数量" style="width:260px">
+                     <template slot="append">万件</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="客户样品 有 无" prop="customerProductSytle">
         <el-input v-model="dataForm.customerProductSytle" placeholder="客户样品 有 无" style="width:260px"></el-input>
@@ -54,7 +76,14 @@
         <el-input v-model="dataForm.packRequire" placeholder="包装要求" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="纸箱编号" prop="boxId">
-        <el-input v-model="dataForm.boxId" placeholder="纸箱编号" style="width:260px"></el-input>
+        <el-select v-model="dataForm.boxId"  default-first-option clearable  style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item in productBoxList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="客户要求" prop="customerRequire">
         <el-input v-model="dataForm.customerRequire" placeholder="客户要求" style="width:260px"></el-input>
@@ -90,6 +119,9 @@ export default {
   data() {
     return {
       visible: false,
+      deviceList:[],
+      productList:[],
+      productBoxList:[],
       dataForm: {
         id: 0,
         deviceId: "",
@@ -123,66 +155,106 @@ export default {
         productId: [
           { required: true, message: "产品编号不能为空", trigger: "blur" }
         ],
-        modelId: [
-          { required: true, message: "模具编号不能为空", trigger: "blur" }
-        ],
-        customerProductNo: [
-          { required: true, message: "客户编号不能为空", trigger: "blur" }
-        ],
-        materialWeight: [
-          { required: true, message: "料重不能为空", trigger: "blur" }
-        ],
-        volume: [{ required: true, message: "容量不能为空", trigger: "blur" }],
-        orderId: [
-          { required: true, message: "订单id不能为空", trigger: "blur" }
-        ],
-        orderNumber: [
-          { required: true, message: "订单数量不能为空", trigger: "blur" }
-        ],
-        repertoryNumber: [
-          { required: true, message: "库存数量不能为空", trigger: "blur" }
-        ],
-        needNumber: [
-          { required: true, message: "实际需求数量不能为空", trigger: "blur" }
-        ],
-        customerProductSytle: [
-          { required: true, message: "客户样品 有 无不能为空", trigger: "blur" }
-        ],
-        bottleCapSuit: [
-          { required: true, message: "瓶盖套装 有 无不能为空", trigger: "blur" }
-        ],
-        followUpProcess: [
-          { required: true, message: "后续加工不能为空", trigger: "blur" }
-        ],
-        packRequire: [
-          { required: true, message: "包装要求不能为空", trigger: "blur" }
-        ],
-        boxId: [
-          { required: true, message: "纸箱编号不能为空", trigger: "blur" }
-        ],
-        customerRequire: [
-          { required: true, message: "客户要求不能为空", trigger: "blur" }
-        ],
-        bottleHight: [
-          { required: true, message: "瓶身总高度不能为空", trigger: "blur" }
-        ],
-        bottleInDiameter: [
-          { required: true, message: "瓶口内径不能为空", trigger: "blur" }
-        ],
-        headNeckHeight: [
-          { required: true, message: "头径高度不能为空", trigger: "blur" }
-        ],
-        bottleOutDiameter: [
-          { required: true, message: "瓶口外径不能为空", trigger: "blur" }
-        ],
-        facadeRequire: [
-          { required: true, message: "外观不能为空", trigger: "blur" }
-        ],
+        // modelId: [
+        //   { required: true, message: "模具编号不能为空", trigger: "blur" }
+        // ],
+        // customerProductNo: [
+        //   { required: true, message: "客户编号不能为空", trigger: "blur" }
+        // ],
+        // materialWeight: [
+        //   { required: true, message: "料重不能为空", trigger: "blur" }
+        // ],
+        // volume: [{ required: true, message: "容量不能为空", trigger: "blur" }],
+        // orderId: [
+        //   { required: true, message: "订单id不能为空", trigger: "blur" }
+        // ],
+        // orderNumber: [
+        //   { required: true, message: "订单数量不能为空", trigger: "blur" }
+        // ],
+        // repertoryNumber: [
+        //   { required: true, message: "库存数量不能为空", trigger: "blur" }
+        // ],
+        // needNumber: [
+        //   { required: true, message: "实际需求数量不能为空", trigger: "blur" }
+        // ],
+        // customerProductSytle: [
+        //   { required: true, message: "客户样品 有 无不能为空", trigger: "blur" }
+        // ],
+        // bottleCapSuit: [
+        //   { required: true, message: "瓶盖套装 有 无不能为空", trigger: "blur" }
+        // ],
+        // followUpProcess: [
+        //   { required: true, message: "后续加工不能为空", trigger: "blur" }
+        // ],
+        // packRequire: [
+        //   { required: true, message: "包装要求不能为空", trigger: "blur" }
+        // ],
+        // boxId: [
+        //   { required: true, message: "纸箱编号不能为空", trigger: "blur" }
+        // ],
+        // customerRequire: [
+        //   { required: true, message: "客户要求不能为空", trigger: "blur" }
+        // ],
+        // bottleHight: [
+        //   { required: true, message: "瓶身总高度不能为空", trigger: "blur" }
+        // ],
+        // bottleInDiameter: [
+        //   { required: true, message: "瓶口内径不能为空", trigger: "blur" }
+        // ],
+        // headNeckHeight: [
+        //   { required: true, message: "头径高度不能为空", trigger: "blur" }
+        // ],
+        // bottleOutDiameter: [
+        //   { required: true, message: "瓶口外径不能为空", trigger: "blur" }
+        // ],
+        // facadeRequire: [
+        //   { required: true, message: "外观不能为空", trigger: "blur" }
+        // ],
       }
     };
   },
   methods: {
+   getProductList(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getAllProductVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.productList=data.productList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
+
+    getDriverList(){
+        this.$http({
+          url:this.$http.adornUrl(`/product/productdevice/getDriverList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.deviceList=data.deviceList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
+     getAllProductBoxList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/productbox/getAllProductBoxList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.productBoxList=data.productBoxList;
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
     init(id) {
+      this.getProductList();
+      this.getDriverList();
+      this.getAllProductBoxList();
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -287,6 +359,11 @@ export default {
         }
       });
     }
+  },
+  watch:{
+      "dataForm.productId":function(){
+            
+      }
   }
 };
 </script>

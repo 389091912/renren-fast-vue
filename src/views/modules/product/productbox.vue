@@ -106,7 +106,7 @@ export default {
       productBoxList:[],
       dataList: [],
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 20,
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],

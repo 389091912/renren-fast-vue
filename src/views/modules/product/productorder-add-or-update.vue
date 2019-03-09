@@ -180,10 +180,6 @@ export default {
       }
     };
   },
-   created() {
-  
-    this.getProductList();
-  },
   methods: {
      getProductList(){
       this.$http({
@@ -198,6 +194,7 @@ export default {
       })
     },
     init(id) {
+      this.getProductList();
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {

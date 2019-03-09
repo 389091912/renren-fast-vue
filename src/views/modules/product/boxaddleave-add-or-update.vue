@@ -24,9 +24,7 @@
       </el-form-item>
     </template>
      <el-form-item label="纸箱编号" prop="boxNo">
-         <el-select v-model="dataForm.boxNo" 
-        default-first-option
-        style="width:260px" filterable placeholder="请选择">
+         <el-select v-model="dataForm.boxNo"  default-first-option clearable  style="width:260px" filterable placeholder="请选择">
           <el-option
             v-for="item in productBoxList"
             :key="item.id"
@@ -75,6 +73,25 @@
         <el-input v-model="dataForm.boxPrice" placeholder="单价"  style="width:260px"></el-input>
       </el-form-item>
       </template>
+    <el-form-item label="纸箱订单留存" prop="boxOrderImage">
+        <el-upload
+          class="avatar-uploader"  
+          :action="uploadImageUrl"
+          :on-remove="handleRemove"
+          :on-success="handleImageSuccess"
+          :before-upload="beforeImageUpload"
+          :show-file-list="false"
+          >
+          
+         <img v-if="imageUrl" alt="" :src="imageUrl" class="avatar">
+         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+        <el-dialog :visible.sync="dialogVisible">
+        <img width="100%" :src="imageUrl" alt="">
+        </el-dialog>
+        
+      </el-form-item>
+
       <template v-if="dataForm.type=='0'">
       <el-form-item label="纸箱出库数量" prop="outBoxNumber">
         <el-input v-model="dataForm.outBoxNumber" placeholder="纸箱出库数量"  style="width:260px"></el-input>
@@ -96,19 +113,49 @@
     </span>
   </el-dialog>
 </template>
-<style>
+<style>  
+ .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 260px;
+    height: 260px;
+    line-height: 260px;
+    text-align: center;
+  }
+  .avatar {
+    width: 260px;
+    height: 260px;
+    display: block;
+  }
+ .el-textarea__inner{
+    height: 99px;
+  }
+  .el-upload-dragger{
+    width: 260px;
+  }
   .el-select-dropdown__list{
    
     max-height: 150px;
    
-  }   
-
+  }  
 </style>
+
 <script>
   export default {
     data () {
       return {
         visible: false,
+         uploadImageUrl: '',
        productBoxFactoryList:[],
        productBoxList:[],
         boxFactory:[{
@@ -116,6 +163,7 @@
           boxBatch:'',
           boxPrice:'',
         }],
+        imageUrl:'',
         dataForm: {
           id: 0,
           boxNo: '',
@@ -133,7 +181,8 @@
           outBoxTime:'',
           boxPrice:'',
           factoryId:'',
-          type:'1'
+          type:'1',
+          boxOrderImage:'',
         },
         dataRule: {
           boxNo: [
@@ -181,6 +230,8 @@
       init (id) {
         this.getAllProductBoxList();
         this.getAllBoxFactoryList();
+        this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadBoxImage?token=${this.$cookie.get('token')}`);
+
         this.dataForm= {
           boxNo: '',
           bodyNumber: '',
@@ -192,7 +243,8 @@
           outBoxTime:'',
           factoryId:'',
           boxPrice:'',
-          type:'1'
+          type:'1',
+          boxOrderImage:'',
         },
         this.dataForm.id = id || 0
         this.visible = true
@@ -221,6 +273,7 @@
                 this.dataForm.outBoxTime = data.boxAddLeave.outBoxTime
                 this.dataForm.boxPrice = data.boxAddLeave.boxPrice
                 this.dataForm.factoryId = data.boxAddLeave.factoryId
+                this.dataForm.boxOrderImage = data.boxAddLeave.boxOrderImage
               }
             })
           }
@@ -250,6 +303,7 @@
                 'status': this.dataForm.status,
                 'type': this.dataForm.type,
                 'boxPrice': this.dataForm.boxPrice,
+                'boxOrderImage': this.dataForm.boxOrderImage,
                 'factoryId': this.dataForm.factoryId
               })
             }).then(({data}) => {
@@ -276,7 +330,28 @@
       this.boxFactory.splice(index, 1);
     }
   },
+     handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+    
+      handleImageSuccess(res, file) {
+         this.imageUrl = URL.createObjectURL(file.raw);
+         this.dataForm.boxOrderImage = res.imageUrl;
+      },
+      beforeImageUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isPNG = file.type === 'image/png';
+        const isLt5M = file.size / 1024 / 1024 <5;
 
+        if (!(isJPG||isPNG)) {
+          this.$message.error('上传图片只能是 JPG 和 PNG 格式!');
+        }
+        if (!isLt5M) {
+          this.$message.error('上传图片大小不能超过 5MB!');
+        }
+        return (isJPG||isPNG) && isLt5M;
+      },
+     
     addDomain() {
     this.boxFactory.push({
           factoryId:'',

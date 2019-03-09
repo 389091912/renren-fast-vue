@@ -172,8 +172,6 @@
   }   
 </style>
 
-</style>
-
 
 <script>
 export default {
@@ -308,10 +306,10 @@ export default {
         const isLt5M = file.size / 1024 / 1024 <5;
 
         if (!(isJPG||isPNG)) {
-          this.$message.error('上传头像图片只能是 JPG 和 PNG 格式!');
+          this.$message.error('上传图片只能是 JPG 和 PNG 格式!');
         }
         if (!isLt5M) {
-          this.$message.error('上传头像图片大小不能超过 5MB!');
+          this.$message.error('上传图片大小不能超过 5MB!');
         }
         return (isJPG||isPNG) && isLt5M;
       },

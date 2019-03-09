@@ -92,6 +92,24 @@
           placeholder="签收时间"
         ></el-date-picker>
       </el-form-item>
+          <el-form-item label="出库订单留存" prop="boxOrderImage">
+        <el-upload
+          class="avatar-uploader"  
+          :action="uploadImageUrl"
+          :on-remove="handleRemove"
+          :on-success="handleImageSuccess"
+          :before-upload="beforeImageUpload"
+          :show-file-list="false"
+          >
+          
+         <img v-if="imageUrl" alt="" :src="imageUrl" class="avatar">
+         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+        <el-dialog :visible.sync="dialogVisible">
+        <img width="100%" :src="imageUrl" alt="">
+        </el-dialog>
+        
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -99,12 +117,49 @@
     </span>
   </el-dialog>
 </template>
-
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 260px;
+    height: 260px;
+    line-height: 260px;
+    text-align: center;
+  }
+  .avatar {
+    width: 260px;
+    height: 260px;
+    display: block;
+  }
+ .el-textarea__inner{
+    height: 99px;
+  }
+  .el-upload-dragger{
+    width: 260px;
+  }
+  .el-select-dropdown__list{
+   
+    max-height: 150px;
+   
+  }   
+</style>
 <script>
 export default {
   data() {
     return {
       visible: false,
+      uploadImageUrl: '',
+      imageUrl:"",
       productList:[],
       orderList:[],
       boxSupplyWay:0,
@@ -123,7 +178,8 @@ export default {
         updateUser: "",
         remark: "",
         updateTime: "",
-        status: ""
+        status: "",
+        orderImage: ""
       },
       dataRule: {
         productId: [
@@ -182,7 +238,26 @@ export default {
       })
     },
     init(id) {
+      this.imageUrl="";
+       this.dataForm= {
+        id: 0,
+        productId: "",
+        productOutNumber: 0,
+        boxId: "",
+        boxNumber: "",
+        orderId: "",
+        outTime: "",
+        signTime: "",
+        createUser: "",
+        createTime: "",
+        updateUser: "",
+        remark: "",
+        updateTime: "",
+        status: "",
+        orderImage: ""
+      },
       this.getProductList();
+      this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadProductLeaveImage?token=${this.$cookie.get('token')}`);
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -209,6 +284,7 @@ export default {
               this.dataForm.remark = data.productLeaveStorage.remark;
               this.dataForm.updateTime = data.productLeaveStorage.updateTime;
               this.dataForm.status = data.productLeaveStorage.status;
+              this.dataForm.orderImage = data.productLeaveStorage.orderImage;
             }
           });
         }
@@ -239,7 +315,8 @@ export default {
               updateUser: this.dataForm.updateUser,
               remark: this.dataForm.remark,
               updateTime: this.dataForm.updateTime,
-              status: this.dataForm.status
+              status: this.dataForm.status,
+              orderImage: this.dataForm.orderImage,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -258,7 +335,28 @@ export default {
           });
         }
       });
-    }
+    },
+     handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+    
+      handleImageSuccess(res, file) {
+         this.imageUrl = URL.createObjectURL(file.raw);
+         this.dataForm.orderImage = res.imageUrl;
+      },
+      beforeImageUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isPNG = file.type === 'image/png';
+        const isLt5M = file.size / 1024 / 1024 <5;
+
+        if (!(isJPG||isPNG)) {
+          this.$message.error('上传图片只能是 JPG 和 PNG 格式!');
+        }
+        if (!isLt5M) {
+          this.$message.error('上传图片大小不能超过 5MB!');
+        }
+        return (isJPG||isPNG) && isLt5M;
+      },
   },
     watch:{
      "dataForm.productId" (){
