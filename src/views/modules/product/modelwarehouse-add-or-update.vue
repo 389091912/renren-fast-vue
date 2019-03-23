@@ -4,9 +4,6 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="仓库号" prop="warehouseNo">
-      <el-input v-model="dataForm.warehouseNo" placeholder="仓库号"></el-input>
-    </el-form-item>
     <el-form-item label="仓库名称" prop="warehouseName">
       <el-input v-model="dataForm.warehouseName" placeholder="仓库名称"></el-input>
     </el-form-item>
@@ -25,13 +22,10 @@
         visible: false,
         dataForm: {
           id: 0,
-          warehouseNo: '',
           warehouseName: ''
         },
         dataRule: {
-          warehouseNo: [
-            { required: true, message: '仓库号不能为空', trigger: 'blur' }
-          ],
+         
           warehouseName: [
             { required: true, message: '仓库名称不能为空', trigger: 'blur' }
           ]
@@ -51,7 +45,6 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.warehouseNo = data.modelwarehouse.warehouseNo
                 this.dataForm.warehouseName = data.modelwarehouse.warehouseName
               }
             })
@@ -67,7 +60,6 @@
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'warehouseNo': this.dataForm.warehouseNo,
                 'warehouseName': this.dataForm.warehouseName
               })
             }).then(({data}) => {

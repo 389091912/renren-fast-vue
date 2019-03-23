@@ -23,6 +23,10 @@
           </el-select>
 
       </el-form-item>
+
+       <el-form-item label="生产组数" prop="groupNumber">
+        <el-input v-model="dataForm.groupNumber" maxlength="2" placeholder="生产组数" style="width:260px"></el-input>
+      </el-form-item>
       <el-form-item label="产品编号" prop="productId">
        <el-select v-model="dataForm.productId" filterable placeholder="请选择" clearable style="width:260px">
             <el-option
@@ -39,21 +43,21 @@
       <el-form-item label="客户编号" prop="customerProductNo">
         <el-input v-model="dataForm.customerProductNo" placeholder="客户编号" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="料重" prop="materialWeight">
-        <el-input v-model="dataForm.materialWeight" placeholder="料重" style="width:260px"></el-input>
+      <el-form-item label="克数" prop="materialWeight">
+        <el-input v-model="dataForm.materialWeight" placeholder="克数" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="容量" prop="volume">
         <el-input v-model="dataForm.volume" placeholder="容量" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="订单id" prop="orderId">
+      <!-- <el-form-item label="订单id" prop="orderId">
         <el-input v-model="dataForm.orderId" placeholder="订单id" style="width:260px"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="订单数量" prop="orderNumber">
         <el-input v-model="dataForm.orderNumber" placeholder="订单数量" style="width:260px">
            <template slot="append">万件</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="库存数量" prop="repertoryNumber">
+      <!-- <el-form-item label="库存数量" prop="repertoryNumber">
         <el-input v-model="dataForm.repertoryNumber" placeholder="库存数量" style="width:260px">
                      <template slot="append">万件</template>
         </el-input>
@@ -62,11 +66,11 @@
         <el-input v-model="dataForm.needNumber" placeholder="实际需求数量" style="width:260px">
                      <template slot="append">万件</template>
         </el-input>
-      </el-form-item>
-      <el-form-item label="客户样品 有 无" prop="customerProductSytle">
+      </el-form-item> -->
+      <el-form-item label="客户样品" prop="customerProductSytle">
         <el-input v-model="dataForm.customerProductSytle" placeholder="客户样品 有 无" style="width:260px"></el-input>
       </el-form-item>
-      <el-form-item label="瓶盖套装 有 无" prop="bottleCapSuit">
+      <el-form-item label="瓶盖套装" prop="bottleCapSuit">
         <el-input v-model="dataForm.bottleCapSuit" placeholder="瓶盖套装 有 无" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="后续加工" prop="followUpProcess">
@@ -106,6 +110,10 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注" style="width:260px"></el-input>
       </el-form-item>
+      <el-form-item label="是否优先" prop="isPriority">
+        <el-input v-model="dataForm.isPriority" placeholder="是否优先" style="width:260px"></el-input>
+      </el-form-item>
+
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -146,7 +154,9 @@ export default {
         bottleOutDiameter: "",
         facadeRequire: "",
         remark: "",
-        status: ""
+        status: "",
+        groupNumber:"",
+        isPriority:""
       },
       dataRule: {
         deviceId: [
@@ -251,6 +261,64 @@ export default {
           }
         })
       },
+    addInit(orderId,productId,productWeight,productNumber,id,remark){
+    
+      this.getProductList();
+      this.getDriverList();
+      this.getAllProductBoxList();
+    
+      this.dataForm.id = id || 0;
+      this.visible = true;
+      this.$nextTick(() => {
+      this.$refs["dataForm"].resetFields();
+      this.dataForm.productId=productId;
+      this.dataForm.orderId=orderId;
+      this.dataForm.orderNumber=productNumber;
+      this.dataForm.materialWeight=productWeight;
+      this.dataForm.remark=remark;
+        if (this.dataForm.id) {
+          this.$http({
+            url: this.$http.adornUrl(
+              `/product/productplannotice/info/${this.dataForm.id}`
+            ),
+            method: "get",
+            params: this.$http.adornParams()
+          }).then(({ data }) => {
+            if (data && data.code === 0) {
+              this.dataForm.deviceId = data.productPlanNotice.deviceId;
+              this.dataForm.productId = data.productPlanNotice.productId;
+              this.dataForm.modelId = data.productPlanNotice.modelId;
+              this.dataForm.customerProductNo =data.productPlanNotice.customerProductNo;
+              this.dataForm.materialWeight = data.productPlanNotice.materialWeight;
+              this.dataForm.volume = data.productPlanNotice.volume;
+              this.dataForm.orderId = data.productPlanNotice.orderId;
+              this.dataForm.orderNumber = data.productPlanNotice.orderNumber;
+              this.dataForm.repertoryNumber =data.productPlanNotice.repertoryNumber;
+              this.dataForm.needNumber = data.productPlanNotice.needNumber;
+              this.dataForm.customerProductSytle = data.productPlanNotice.customerProductSytle;
+              this.dataForm.bottleCapSuit = data.productPlanNotice.bottleCapSuit;
+              this.dataForm.followUpProcess =data.productPlanNotice.followUpProcess;
+              this.dataForm.packRequire = data.productPlanNotice.packRequire;
+              this.dataForm.boxId = data.productPlanNotice.boxId;
+              this.dataForm.customerRequire = data.productPlanNotice.customerRequire;
+              this.dataForm.bottleHight = data.productPlanNotice.bottleHight;
+              this.dataForm.bottleInDiameter =data.productPlanNotice.bottleInDiameter;
+              this.dataForm.headNeckHeight =data.productPlanNotice.headNeckHeight;
+              this.dataForm.bottleOutDiameter =data.productPlanNotice.bottleOutDiameter;
+              this.dataForm.facadeRequire = data.productPlanNotice.facadeRequire;
+              this.dataForm.remark = data.productPlanNotice.remark;
+              this.dataForm.createTime = data.productPlanNotice.createTime;
+              this.dataForm.createUser = data.productPlanNotice.createUser;
+              this.dataForm.updateTime = data.productPlanNotice.updateTime;
+              this.dataForm.updateUser = data.productPlanNotice.updateUser;
+              this.dataForm.status = data.productPlanNotice.status;
+              this.dataForm.groupNumber = data.productPlanNotice.groupNumber;
+              this.dataForm.isPriority = data.productPlanNotice.isPriority;
+            }
+          });
+        }
+      });
+    },
     init(id) {
       this.getProductList();
       this.getDriverList();
@@ -295,6 +363,8 @@ export default {
               this.dataForm.updateTime = data.productPlanNotice.updateTime;
               this.dataForm.updateUser = data.productPlanNotice.updateUser;
               this.dataForm.status = data.productPlanNotice.status;
+              this.dataForm.groupNumber = data.productPlanNotice.groupNumber;
+              this.dataForm.isPriority = data.productPlanNotice.isPriority;
             }
           });
         }
@@ -339,7 +409,9 @@ export default {
               createUser: this.dataForm.createUser,
               updateTime: this.dataForm.updateTime,
               updateUser: this.dataForm.updateUser,
-              status: this.dataForm.status
+              status: this.dataForm.status,
+              groupNumber: this.dataForm.groupNumber,
+              isPriority: this.dataForm.isPriority
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {

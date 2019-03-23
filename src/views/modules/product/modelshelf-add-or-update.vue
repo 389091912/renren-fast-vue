@@ -10,21 +10,6 @@
     <el-form-item label="架号" prop="shelfNo">
       <el-input v-model="dataForm.shelfNo" placeholder="架号"></el-input>
     </el-form-item>
-    <el-form-item label="是否有货" prop="isEmpty">
-      <el-input v-model="dataForm.isEmpty" placeholder="是否有货"></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="createTime">
-      <el-input v-model="dataForm.createTime" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="createUser">
-      <el-input v-model="dataForm.createUser" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="updateUser">
-      <el-input v-model="dataForm.updateUser" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="updataTime">
-      <el-input v-model="dataForm.updataTime" placeholder=""></el-input>
-    </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>

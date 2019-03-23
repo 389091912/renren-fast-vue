@@ -72,10 +72,10 @@
       <el-form-item label="单价" prop="boxPrice">
         <el-input v-model="dataForm.boxPrice" placeholder="单价"  style="width:260px"></el-input>
       </el-form-item>
-      </template>
-    <el-form-item label="纸箱订单留存" prop="boxOrderImage">
+       <el-form-item label="纸箱订单留存" prop="boxOrderImage">
         <el-upload
           class="avatar-uploader"  
+          accept="image/*"
           :action="uploadImageUrl"
           :on-remove="handleRemove"
           :on-success="handleImageSuccess"
@@ -91,6 +91,9 @@
         </el-dialog>
         
       </el-form-item>
+      </template>
+
+   
 
       <template v-if="dataForm.type=='0'">
       <el-form-item label="纸箱出库数量" prop="outBoxNumber">
@@ -154,8 +157,9 @@
   export default {
     data () {
       return {
-        visible: false,
-         uploadImageUrl: '',
+      dialogVisible: false,
+       visible:false,
+       uploadImageUrl: '',
        productBoxFactoryList:[],
        productBoxList:[],
         boxFactory:[{
@@ -231,7 +235,7 @@
         this.getAllProductBoxList();
         this.getAllBoxFactoryList();
         this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadBoxImage?token=${this.$cookie.get('token')}`);
-
+        this. imageUrl='',
         this.dataForm= {
           boxNo: '',
           bodyNumber: '',
@@ -274,6 +278,10 @@
                 this.dataForm.boxPrice = data.boxAddLeave.boxPrice
                 this.dataForm.factoryId = data.boxAddLeave.factoryId
                 this.dataForm.boxOrderImage = data.boxAddLeave.boxOrderImage
+                if(this.dataForm.boxOrderImage){
+                this.imageUrl =  window.SITE_CONFIG.baseUrl+'/pub'+this.dataForm.boxOrderImage+'?token='+this.$cookie.get('token');
+                }
+
               }
             })
           }

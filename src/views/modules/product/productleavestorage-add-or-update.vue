@@ -26,17 +26,20 @@
           <template slot="append">克</template>
         </el-input>
       </el-form-item>
-       <el-form-item label="订单编号" prop="orderId">
-          <el-select v-model="dataForm.orderId" clearable filterable placeholder="请选择"  style="width:260px">
-            <el-option
-              v-for="item in orderList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-         </el-select> 
-        <!-- <el-input v-model="dataForm.orderId" placeholder="订单编号" style="width:260px"></el-input> -->
-      </el-form-item>
+      <template v-if="!dataForm.id">
+          <el-form-item label="订单编号" prop="orderId" >
+                    <el-select v-model="dataForm.orderId" clearable filterable placeholder="请选择"  style="width:260px">
+                      <el-option
+                        v-for="item in orderList"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      ></el-option>
+                  </el-select> 
+                  <!-- <el-input v-model="dataForm.orderId" placeholder="订单编号" style="width:260px"></el-input> -->
+                </el-form-item>
+      </template>
+      
       <el-form-item label="出库数量" prop="productOutNumber">
         <el-input v-model.number="dataForm.productOutNumber" placeholder="出库数量" style="width:260px">
           <template slot="append">件</template>
@@ -92,9 +95,10 @@
           placeholder="签收时间"
         ></el-date-picker>
       </el-form-item>
-          <el-form-item label="出库订单留存" prop="boxOrderImage">
+          <el-form-item label="出库订单留存" prop="orderImage">
         <el-upload
-          class="avatar-uploader"  
+          class="avatar-uploader"
+          accept="image/*"
           :action="uploadImageUrl"
           :on-remove="handleRemove"
           :on-success="handleImageSuccess"
@@ -164,6 +168,8 @@ export default {
       orderList:[],
       boxSupplyWay:0,
       productWeight:0,
+
+      dialogVisible:false,
       dataForm: {
         id: 0,
         productId: "",
@@ -285,6 +291,9 @@ export default {
               this.dataForm.updateTime = data.productLeaveStorage.updateTime;
               this.dataForm.status = data.productLeaveStorage.status;
               this.dataForm.orderImage = data.productLeaveStorage.orderImage;
+              if(this.dataForm.orderImage){
+              this.imageUrl= window.SITE_CONFIG.baseUrl+'/pub'+this.dataForm.orderImage+'?token='+this.$cookie.get('token');
+              }
             }
           });
         }

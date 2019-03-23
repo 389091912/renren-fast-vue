@@ -28,23 +28,37 @@
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="ID"></el-table-column>
-      <el-table-column prop="deviceId" header-align="center" align="center" label="设备编号"></el-table-column>
-      <el-table-column prop="productId" header-align="center" align="center" label="产品编号"></el-table-column>
+      <el-table-column prop="deviceName" header-align="center" align="center" label="设备编号"></el-table-column>
+      <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
+      <el-table-column prop="groupNumber" header-align="center" align="center" label="生产组数"></el-table-column>
       <el-table-column prop="modelId" header-align="center" align="center" label="模具编号"></el-table-column>
+     <el-table-column prop="orderNumber" header-align="center" align="center" label="数量">
+       <template slot-scope="scope">
+         {{scope.row.orderNumber}}万
+       </template>
+     </el-table-column>
+           <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column prop="customerProductNo" header-align="center" align="center" label="客户编号"></el-table-column>
-      <el-table-column prop="materialWeight" header-align="center" align="center" label="料重"></el-table-column>
+      <el-table-column prop="materialWeight" header-align="center" align="center" label="克数"></el-table-column>
       <el-table-column prop="volume" header-align="center" align="center" label="容量"></el-table-column>
       <el-table-column prop="orderId" header-align="center" align="center" label="订单id"></el-table-column>
-      <el-table-column prop="orderNumber" header-align="center" align="center" label="订单数量"></el-table-column>
-      <el-table-column prop="repertoryNumber" header-align="center" align="center" label="库存数量"></el-table-column>
-      <el-table-column prop="needNumber" header-align="center" align="center" label="实际需求数量"></el-table-column>
+      <el-table-column prop="isPriority" header-align="center" align="center" label="是否优先">
+              <template slot-scope="scope">
+                    
+                  <el-tag type="success" v-if="scope.row.isPriority == '1' ">优先 </el-tag>
+                  <el-tag type="danger" v-if="scope.row.isPriority !='1'">正常 </el-tag>
+              </template>
+
+          </el-table-column>
+      <el-table-column prop="repertoryNumber" header-align="center" align="center" label="库存数量(万)"></el-table-column>
+      <el-table-column prop="needNumber" header-align="center" align="center" label="实际需求数量(万)"></el-table-column>
       <el-table-column
         prop="customerProductSytle"
         header-align="center"
         align="center"
-        label="客户样品 有 无"
+        label="客户样品"
       ></el-table-column>
-      <el-table-column prop="bottleCapSuit" header-align="center" align="center" label="瓶盖套装 有 无"></el-table-column>
+      <el-table-column prop="bottleCapSuit" header-align="center" align="center" label="瓶盖套装"></el-table-column>
       <el-table-column prop="followUpProcess" header-align="center" align="center" label="后续加工"></el-table-column>
       <el-table-column prop="packRequire" header-align="center" align="center" label="包装要求"></el-table-column>
       <el-table-column prop="boxId" header-align="center" align="center" label="纸箱编号"></el-table-column>
@@ -54,7 +68,8 @@
       <el-table-column prop="headNeckHeight" header-align="center" align="center" label="头径高度"></el-table-column>
       <el-table-column prop="bottleOutDiameter" header-align="center" align="center" label="瓶口外径"></el-table-column>
       <el-table-column prop="facadeRequire" header-align="center" align="center" label="外观"></el-table-column>
-      <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
+     
+
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>

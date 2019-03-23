@@ -42,6 +42,17 @@
       <el-table-column prop="productOutNumber" header-align="center" align="center" label="出库数量"></el-table-column>
       <el-table-column prop="boxNo" header-align="center" align="center" label="纸箱编号"></el-table-column>
       <el-table-column prop="boxNumber" header-align="center" align="center" label="箱子数"></el-table-column>
+       <el-table-column prop="orderImage" header-align="center" align="center" label="订单留存">
+      <template slot-scope="scope">
+          <el-popover
+            placement="right"
+            title=""
+            trigger="hover" v-if="scope.row.orderImage">
+            <img :src="imageUrl+scope.row.orderImage+ '?token='+token" alt="" style="height:600px;width:600px" />
+            <img slot="reference" :src="imageUrl+scope.row.orderImage+ '?token='+token" alt="" style="height: 50px;width: 50px">
+          </el-popover> 
+        </template>
+      </el-table-column>
       <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
       <el-table-column prop="outTime" header-align="center" align="center" label="出库时间"></el-table-column>
       <el-table-column prop="signTime" header-align="center" align="center" label="签收时间"></el-table-column>
@@ -105,6 +116,8 @@ export default {
         this.dataForm.rangeBefore='';
         this.dataForm.rangeAfter='';
       }
+      this.imageUrl=window.SITE_CONFIG.baseUrl+'/pub';
+      this.token=this.$cookie.get('token');
       this.$http({
         url: this.$http.adornUrl("/product/productleavestorage/list"),
         method: "get",

@@ -66,30 +66,46 @@
       <el-table-column prop="bodyNumber" header-align="center" align="center" label="箱体数量"></el-table-column>
       <el-table-column prop="parryNumber" header-align="center" align="center" label="格挡数量"></el-table-column>
       <el-table-column prop="spacerNumber" header-align="center" align="center" label="垫片数量"></el-table-column>
+      <el-table-column prop="boxOrderImage" header-align="center" align="center" label="订单留存">
+      <template slot-scope="scope">
+          <el-popover
+            placement="right"
+            title=""
+            trigger="hover" v-if="scope.row.boxOrderImage">
+            <img :src="imageUrl+scope.row.boxOrderImage+ '?token='+token" alt="" style="height:600px;width:600px" />
+            <img slot="reference" :src="imageUrl+scope.row.boxOrderImage+ '?token='+token" alt="" style="height: 50px;width: 50px">
+          </el-popover> 
+        </template>
+      </el-table-column>
       <el-table-column prop="addBoxNumber" header-align="center" align="center" label="成品入库数量">
          <template slot-scope="scope">
             <el-tag  type='success' v-if="scope.row.addBoxNumber">{{scope.row.addBoxNumber}}</el-tag>
           </template>
       </el-table-column>
       <el-table-column prop="addBoxTime" header-align="center" align="center" label="入库时间"></el-table-column>
+
       <el-table-column prop="outBoxNumber" header-align="center" align="center" label="成品出库数量">
          <template slot-scope="scope">
             <el-tag  type='danger' v-if="scope.row.outBoxNumber">{{scope.row.outBoxNumber}}</el-tag>
           </template>
       </el-table-column>
       <el-table-column prop="outBoxTime" header-align="center" align="center" label="出库时间"></el-table-column>
+     
       <el-table-column prop="type" header-align="center" align="center" label="状态">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.type==1" type='success'>入库</el-tag>
             <el-tag v-if='scope.row.type==0' type='danger'>出库</el-tag>
           </template>
+          
       </el-table-column>
+
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
+
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -133,7 +149,9 @@ export default {
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
-      addOrUpdateVisible: false
+      addOrUpdateVisible: false,
+      token:null,
+      imageUrl:null,
     };
   },
   components: {
@@ -177,6 +195,8 @@ export default {
       //   }
       // }
       this.dataListLoading = true;
+      this.imageUrl=window.SITE_CONFIG.baseUrl+'/pub';
+      this.token=this.$cookie.get('token');
       this.$http({
         url: this.$http.adornUrl("/product/boxaddleave/list"),
         method: "get",

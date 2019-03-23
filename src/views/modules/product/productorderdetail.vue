@@ -48,6 +48,8 @@
           <el-tag type="success" v-if="scope.row.boxSupplyWay=='1'">自供</el-tag>
         </template>
       </el-table-column>
+      <el-table-column prop="boxNumber" header-align="center" align="center" label="纸箱入库数量"></el-table-column>
+
       <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
        <el-table-column
         prop="orderStatus"
@@ -78,7 +80,14 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+
+           <el-button type="success" size="small"  v-if="scope.row.status=='0'||scope.row.status=='1'"
+           @click="addPlanOrUpdateHandle(scope.row.id,scope.row.productId,scope.row.productWeight,scope.row.productNumber,scope.row.planId,scope.row.remark)">
+            制定生产
+           </el-button>
         </template>
+     
+      
       </el-table-column>
     </el-table>
     <el-pagination
@@ -92,11 +101,13 @@
     ></el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <add-plan-or-update v-if="addOrUpdateVisible" ref="addPlanOrUpdate" @refreshDataList="getDataList"></add-plan-or-update>
   </div>
 </template>
 
 <script>
 import AddOrUpdate from "./productorderdetail-add-or-update";
+import AddPlanOrUpdate from "./productplannotice-add-or-update";
 export default {
   data() {
     return {
@@ -111,11 +122,14 @@ export default {
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
-      addOrUpdateVisible: false
+      addOrUpdateVisible: false,
+      token:null,
+      imageUrl:null,
     };
   },
   components: {
-    AddOrUpdate
+    AddOrUpdate,
+    AddPlanOrUpdate
   },
   activated() {
     this.getDataList();
@@ -228,6 +242,14 @@ export default {
       this.addOrUpdateVisible = true;
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id);
+      });
+    },
+     //scope.row.id,scope.row.productId,scope.row.productWeight,scope.row.productNumber
+     // 新增 生产计划 / 修改
+    addPlanOrUpdateHandle(orderId,productId,productWeight,productNumber,planId,remark) {
+      this.addOrUpdateVisible = true;
+      this.$nextTick(() => {
+        this.$refs.addPlanOrUpdate.addInit(orderId,productId,productWeight,productNumber,planId,remark);
       });
     },
     // 删除

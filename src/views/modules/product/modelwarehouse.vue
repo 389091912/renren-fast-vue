@@ -29,12 +29,6 @@
         label="序号">
       </el-table-column>
       <el-table-column
-        prop="warehouseNo"
-        header-align="center"
-        align="center"
-        label="仓库号">
-      </el-table-column>
-      <el-table-column
         prop="warehouseName"
         header-align="center"
         align="center"

@@ -45,31 +45,16 @@
         header-align="center"
         align="center"
         label="是否有货">
+        <template slot-scope="scope">
+            <el-tag type="success" v-if="scope.row.isEmpty=='0'">
+                无货
+            </el-tag>
+            <el-tag type="danger" v-if="scope.row.isEmpty=='1'">
+                有货
+            </el-tag>
+          </template>
       </el-table-column>
-      <el-table-column
-        prop="createTime"
-        header-align="center"
-        align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
-        prop="createUser"
-        header-align="center"
-        align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
-        prop="updateUser"
-        header-align="center"
-        align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
-        prop="updataTime"
-        header-align="center"
-        align="center"
-        label="">
-      </el-table-column>
+
       <el-table-column
         fixed="right"
         header-align="center"

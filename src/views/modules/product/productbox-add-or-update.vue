@@ -12,6 +12,18 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="130px"
     >
+
+    <el-form-item label="产品编号" prop="productId">
+       <el-select v-model="dataForm.productId" filterable placeholder="请选择" clearable style="width:260px">
+            <el-option
+              v-for="item in productList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+      </el-form-item>
+
       <el-form-item label="纸箱编号" prop="boxNo">
         <el-input v-model="dataForm.boxNo" placeholder="纸箱编号" style="width:260px"></el-input>
       </el-form-item>
@@ -127,6 +139,7 @@ export default {
           boxBatch:'',
           boxPrice:'',
         }],
+      productList:[],  
       productBoxFactoryList:[],
       dataForm: {
         id: 0,
@@ -146,7 +159,8 @@ export default {
         updateUser: "",
         status: "",
         boxFactoryVoStr: "",
-        leaveNumber: ""
+        leaveNumber: "",
+        productId:"",
       },
       dataRule: {
         boxNo: [
@@ -163,6 +177,18 @@ export default {
     };
   },
   methods: {
+       getProductList(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getAllProductVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.productList=data.productList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
       getAllBoxFactoryList(){
             this.$http({
             url:this.$http.adornUrl(`/product/boxfactory/getAllBoxFactoryList`),
@@ -177,6 +203,7 @@ export default {
       },
     init(id) {
       this.getAllBoxFactoryList();
+      this.getProductList();
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -202,6 +229,7 @@ export default {
               this.dataForm.leaveNumber = data.productBox.leaveNumber;
               this.dataForm.boxPrice = data.productBox.boxPrice;
               this.boxFactory= data.productBox.boxFactoryVoList;
+              this.productId= data.productBox.productId;
             }
           });
         }
@@ -234,6 +262,7 @@ export default {
               status: this.dataForm.status,
               leaveNumber: this.dataForm.leaveNumber,
               boxPrice: this.dataForm.boxPrice,
+              productId: this.dataForm.productId,
               boxFactoryVoStr: JSON.stringify(this.dataForm.boxFactoryVoStr)
             })
           }).then(({ data }) => {

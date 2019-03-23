@@ -64,7 +64,8 @@
 
       <el-form-item label="产品图片" prop="productImageId">
         <el-upload
-          class="avatar-uploader"  
+          class="avatar-uploader"
+          accept="image/*"
           :action="uploadImageUrl"
           :on-remove="handleRemove"
           :on-success="handleImageSuccess"
@@ -89,6 +90,7 @@
         :action="uploadDesignUrl"
         :on-success="handleDesignSuccess"
         :before-upload="beforeDesignUpload"
+        :before-remove="beforeDesignRemove"
         :file-list="fileList"
         >
         <i class="el-icon-upload"></i>
@@ -290,6 +292,7 @@ export default {
         this.imageUrl=this.oldImageUrl;
         console.log(file, fileList);
       },
+     
       // handlePictureCardPreview(file) {
       //   this.dialogImageUrl = file.url;
       //   this.dialogVisible = true;
@@ -316,6 +319,23 @@ export default {
       handleDesignSuccess(res, file){
          this.dataForm.productDrawingId = res.drawingId;
          console.log(this.dataForm.productDrawingId);
+      },
+      beforeDesignRemove(file, fileList) {
+
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/deleteDesignId/`+this.dataForm.productDrawingId),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+           this.dataForm.productDrawingId=null;
+         return true;
+        }else {
+             this.$message.error(data.msg);
+         }
+      })
+       
+
+    
       },
       beforeDesignUpload(file) {
         console.log(file);
