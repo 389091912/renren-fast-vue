@@ -105,6 +105,7 @@ export default {
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
+      dataListSelections: [],
       addOrUpdateVisible: false
     };
   },

@@ -48,7 +48,10 @@
           <el-tag type="success" v-if="scope.row.boxSupplyWay=='1'">自供</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="boxNumber" header-align="center" align="center" label="纸箱入库数量"></el-table-column>
+      <el-table-column prop="factoryName" header-align="center" align="center" label="纸箱厂"></el-table-column>
+      <el-table-column prop="needBoxNumber" header-align="center" align="center" label="纸箱订单量"></el-table-column>
+
+      <el-table-column prop="entryBoxNumber" header-align="center" align="center" label="纸箱入库数量" ></el-table-column>
 
       <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
        <el-table-column

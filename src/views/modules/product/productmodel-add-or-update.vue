@@ -32,19 +32,62 @@
             <el-radio :label="4">老第一仓库</el-radio>
           </el-radio-group>     
         </el-form-item>
-        <el-form-item  v-if="dataForm.modelType=='0'" label="架号" prop="siteNo">
-        <el-input v-model="dataForm.siteNo" placeholder="架号" style="width:260px"></el-input>
+        <el-form-item  v-if="dataForm.modelType=='0'" label="架号" prop="modelShelfId">
+          
+           <el-select v-model="dataForm.modelShelfId" filterable clearable placeholder="请选择"  style="width:260px">
+            <el-option
+              v-for="item in modelShelfIsEmptyList"
+              :key="item.id"
+              :label="item.shelfNo"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        <!-- <el-input v-model="dataForm.modelShelfId" placeholder="架号" style="width:260px"></el-input> -->
       </el-form-item>
+     
       </template>
      
-      <el-form-item label="模具编号" prop="modelNo">
-        <el-input v-model="dataForm.modelNo" placeholder="模具编号" style="width:260px"></el-input>
+
+
+      <el-form-item label="模具编号" prop="modelName">
+        <!-- <el-input v-model="dataForm.modelNo" placeholder="模具编号" style="width:260px"></el-input> -->
+
+           <template>
+          <el-select
+          style="width:260px"
+            v-model="dataForm.modelName"
+            
+            filterable
+            allow-create
+            default-first-option
+            placeholder="模具编号">
+            <el-option
+              v-for="item in modelList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </template>
       </el-form-item>
-         <el-form-item label="客户模具编号" prop="customerModelNo">
+
+     
+
+      <el-form-item label="客户模具编号" prop="customerModelNo">
         <el-input v-model="dataForm.customerModelNo" placeholder="客户模具编号" style="width:260px"></el-input>
       </el-form-item>
+
+        
+        
       <el-form-item label="产品名称" prop="productName">
-        <el-input v-model="dataForm.productName" placeholder="产品名称" style="width:260px"></el-input>
+         <el-select v-model="dataForm.productName" filterable clearable placeholder="请选择"  style="width:260px">
+            <el-option
+              v-for="item in productList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
+          </el-select>
       </el-form-item>
       <el-form-item label="成模" prop="modelSuccessMo">
         <el-input v-model="dataForm.modelSuccessMo" placeholder="成模" style="width:260px">
@@ -176,10 +219,13 @@ export default {
   data() {
     return {
       visible: false,
+      productList:[],
+      modelList:[],
+      modelShelfIsEmptyList:[],
       dataForm: {
         id: 0,
         siteNo: "",
-        depotId:'',
+        depotId:1,
         modelNo: "",
         customerModelNo:"",
         productName: "",
@@ -199,15 +245,14 @@ export default {
         customerName: "",
         state: "",
         modelRemark: "",
-        createTime: "",
-        createUser: "",
-        updateTime: "",
-        updateUser: "",
         status: "",
         modelType: "",
         bottleWeight: "",
         reasonReturn: "",
-        factory:''
+        factory:'',
+        modelShelfId:'',
+        productId:'',
+        modelName:''
       },
       dataRule: {
         siteNo: [{ required: true, message: "架号不能为空", trigger: "blur" }],
@@ -265,8 +310,48 @@ export default {
     };
   },
   methods: {
+    getModelListInfo(){
+          this.$http({
+              url:this.$http.adornUrl(`/product/productmodel/getModelVoList`),
+              method: "get"
+          }).then(({data})=>{
+            if(data &&data.code==0){
+              this.modelList=data.modelVoList;
+            }else {
+                  this.$message.error(data.msg);
+            }
+          })
+        },
+      getProductList(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getAllProductVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.productList=data.productList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
+    getIsEmptyList(){
+          this.$http({
+          url:this.$http.adornUrl(`/product/modelshelf/getIsEmptyList/`+this.dataForm.depotId),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.modelShelfIsEmptyList=data.modelShelfIsEmptyList;
+        }else {
+            this.$message.error(data.msg);
+         }
+      })
+  
+    },
     init(id) {
       this.dataForm.id = id || 0;
+      this.getModelListInfo();
+      this.getIsEmptyList();
+      this.getProductList();
       this.visible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].resetFields();
@@ -293,12 +378,9 @@ export default {
               this.dataForm.modelCooling = data.productModel.modelCooling;
               this.dataForm.modelClamp = data.productModel.modelClamp;
               this.dataForm.modelVolume = data.productModel.modelVolume;
-              this.dataForm.modelHandlingPeople =
-                data.productModel.modelHandlingPeople;
-              this.dataForm.modelDeliveryTime =
-                data.productModel.modelDeliveryTime;
-              this.dataForm.modelReceiptTime =
-                data.productModel.modelReceiptTime;
+              this.dataForm.modelHandlingPeople =data.productModel.modelHandlingPeople;
+              this.dataForm.modelDeliveryTime =data.productModel.modelDeliveryTime;
+              this.dataForm.modelReceiptTime =data.productModel.modelReceiptTime;
               this.dataForm.customerName = data.productModel.customerName;
               this.dataForm.state = data.productModel.state;
               this.dataForm.modelRemark = data.productModel.modelRemark;
@@ -312,6 +394,7 @@ export default {
               this.dataForm.reasonReturn = data.productModel.reasonReturn;
               this.dataForm.factory = data.productModel.factory;
               this.dataForm.depotId = data.productModel.depotId;
+              this.dataForm.modelShelfId = data.productModel.modelShelfId;
             }
           });
         }
@@ -358,6 +441,7 @@ export default {
               reasonReturn: this.dataForm.reasonReturn,
               factory: this.dataForm.factory,
               depotId: this.dataForm.depotId,
+              modelShelfId: this.dataForm.modelShelfId,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -377,6 +461,14 @@ export default {
         }
       });
     }
-  }
+  },
+    watch:{
+    "dataForm.depotId" (){
+      this.getIsEmptyList();
+      //console.log("111")
+    },
+     
+  },
+
 };
 </script>

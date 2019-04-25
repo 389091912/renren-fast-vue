@@ -40,7 +40,17 @@
           </template> 
       </el-table-column>
       <el-table-column prop="siteNo" header-align="center" align="center" label="架号"></el-table-column>
-      <el-table-column prop="modelNo" header-align="center" align="center" label="模具编号"></el-table-column>
+      <el-table-column prop="modelName" header-align="center" align="center" label="模具编号"></el-table-column>
+         <el-table-column prop="modelType" header-align="center" align="center" label="类型" width="120">
+        <template slot-scope="scope">
+              <el-tag type="danger" v-if="scope.row.modelType=='0'">模具拉出</el-tag>
+              <el-tag  type='success' v-if="scope.row.modelType=='1'">入库登记</el-tag>
+              <el-tag v-if="scope.row.modelType=='2'">新品打样</el-tag>
+              <el-tag v-if="scope.row.modelType=='3'">返厂维修</el-tag>
+              <el-tag v-if="scope.row.modelType=='4'">外来加工</el-tag>
+        </template>
+
+      </el-table-column>
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
       <el-table-column prop="modelSuccessMo" header-align="center" align="center" label="成模"></el-table-column>
       <el-table-column prop="modelPrimaryMo" header-align="center" align="center" label="初模"></el-table-column>
@@ -64,16 +74,7 @@
       <el-table-column prop="modelRemark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column prop="modelDeliveryTime" header-align="center" align="center" label="发货日期"></el-table-column>
       <el-table-column prop="modelReceiptTime" header-align="center" align="center" label="收货日期"></el-table-column>
-      <el-table-column prop="modelType" header-align="center" align="center" label="类型" width="120">
-        <template slot-scope="scope">
-             <el-tag v-if="scope.row.modelType=='0'">模具拉出</el-tag>
-              <el-tag v-if="scope.row.modelType=='1'">入库登记</el-tag>
-              <el-tag v-if="scope.row.modelType=='2'">新品打样</el-tag>
-              <el-tag v-if="scope.row.modelType=='3'">返厂维修</el-tag>
-              <el-tag v-if="scope.row.modelType=='4'">外来加工</el-tag>
-        </template>
-
-      </el-table-column>
+   
       <el-table-column prop="reasonReturn" header-align="center" align="center" label="退货原因"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">

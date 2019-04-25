@@ -3,7 +3,8 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible"
-    width="1150px"
+    style="margin-left:200px"
+    width="1400px"
   >
     <el-form
       :model="dataForm"
@@ -25,7 +26,7 @@
       >
         <el-form-item :label="(index+1)+'、产品'" prop="productId">
 
-          <el-select v-model="product.productId" filterable placeholder="请选择">
+          <el-select v-model="product.productId" filterable placeholder="请选择" >
             <el-option
               v-for="item in productList"
               :key="item.id"
@@ -63,7 +64,7 @@
            </el-form-item>
 
 
-           <el-form-item  style="margin-left:660px;margin-top:-60px"
+           <el-form-item  style="margin-left:660px;margin-top:-60px;"
                   label="纸箱"
                   prop="productNumber"
                 >
@@ -71,10 +72,41 @@
               <el-radio :label="0">客供</el-radio>
               <el-radio :label="1">自供</el-radio>
             </el-radio-group>
-             <el-button type="danger" style="margin-left:10px;" v-if="index!='0'"   @click.prevent="removeDomain(index)">删除</el-button>  
+            <template v-if="product.boxSupplyWay=='0'">
+               <el-button type="danger"  v-if="index!='0'"   @click.prevent="removeDomain(index)">删除</el-button>  
+            </template>
+            <template v-if="product.boxSupplyWay=='1'">
+
+            <el-form-item label="" prop="factoryId" style="margin-left:160px;margin-top:-35px;">
+              <el-select v-model="product.boxFactoryId" 
+              default-first-option 
+              style="width:150px" clearable filterable placeholder="请选择纸箱厂商">
+                <el-option
+                  v-for="item1 in productBoxFactoryList"
+                  :key="item1.id"
+                  :label="item1.name"
+                  :value="item1.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+              <el-form-item   style="margin-left:320px;margin-top:-40px;"
+                      label=""
+                      prop="needBoxNumber"
+                    >
+              <el-input
+                v-model.number="product.needBoxNumber"
+                placeholder="纸箱数量"
+                maxlength="10"
+                style="width:140px">
+                <template slot="append">件</template>
+              </el-input>
+               <el-button type="danger"  v-if="index!='0'"   @click.prevent="removeDomain(index)">删除</el-button>  
+              </el-form-item>
+          </template>
            </el-form-item>
-        
+
       </div>
+     
       <el-form-item label="订单时间" prop="orderTime">
         <el-date-picker
           v-model="dataForm.orderTime"
@@ -135,7 +167,9 @@ export default {
             productId: "",
             productNumber: "",
             productWeight: "",
-            boxSupplyWay: "",
+            boxSupplyWay: 1,
+            boxFactoryId:'',
+            needBoxNumber:'',
             remark: null
   
           }
@@ -181,6 +215,18 @@ export default {
     };
   },
   methods: {
+     getAllBoxFactoryList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/boxfactory/getAllBoxFactoryList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.productBoxFactoryList=data.productBoxFactoryList;
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
      getProductList(){
       this.$http({
           url:this.$http.adornUrl(`/product/productinfo/getAllProductVoList`),
@@ -195,6 +241,7 @@ export default {
     },
     init(id) {
       this.getProductList();
+      this.getAllBoxFactoryList();
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -215,8 +262,7 @@ export default {
               this.dataForm.deliveryTime = data.productOrder.deliveryTime;
               this.dataForm.status = data.productOrder.status;
               this.dataForm.remark = data.productOrder.remark;
-             console.log(data.productOrder.productOrderDetailList);
-           this.ProductDetailVo = data.productOrder.productOrderDetailList;
+              this.ProductDetailVo = data.productOrder.productOrderDetailList;
             }
           
           });
@@ -273,7 +319,7 @@ export default {
             productId: "",
             productNumber: "",
             productWeight: "",
-            boxSupplyWay: "",
+            boxSupplyWay: 1,
             remark: null
     });
   }
