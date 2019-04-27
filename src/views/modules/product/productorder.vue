@@ -27,6 +27,13 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
+       <el-table-column
+        header-align="center"
+        align="center"
+        label="序号"
+        type="index"
+         width="70">
+      </el-table-column>
       <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
       <el-table-column prop="orderTime" header-align="center" align="center" label="订单时间">
         <template slot-scope="scope">

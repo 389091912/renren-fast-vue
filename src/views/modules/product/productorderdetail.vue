@@ -38,7 +38,7 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="ID"></el-table-column>
+      <el-table-column  header-align="center" align="center" label="序号" type="index"  width="70"></el-table-column>
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
       <el-table-column prop="productWeight" header-align="center" align="center" label="克数"></el-table-column>
       <el-table-column prop="productNumber" header-align="center" align="center" label="订单数量(万)"></el-table-column>

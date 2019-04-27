@@ -34,29 +34,23 @@
         align="center"
         label="材料名称">
       </el-table-column>
-      <el-table-column
-        prop="createUser"
+        <el-table-column
+        prop="countWeight"
         header-align="center"
         align="center"
-        label="">
+        label="总量">
       </el-table-column>
-      <el-table-column
-        prop="createTime"
+        <el-table-column
+        prop="outWeight"
         header-align="center"
         align="center"
-        label="">
+        label="出库">
       </el-table-column>
-      <el-table-column
-        prop="updateUser"
+        <el-table-column
+        prop="residueWeight"
         header-align="center"
         align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
-        prop="updateTime"
-        header-align="center"
-        align="center"
-        label="">
+        label="剩余数量">
       </el-table-column>
       <el-table-column
         fixed="right"

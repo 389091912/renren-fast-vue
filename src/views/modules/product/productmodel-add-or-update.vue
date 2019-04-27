@@ -11,16 +11,24 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="130px"
     >
-       <template>
-      <el-form-item label="类别" prop="modelType">
-          <el-radio-group v-model="dataForm.modelType">
-            <el-radio :label="0">入库登记</el-radio>
-            <el-radio :label="1">模具拉出</el-radio>
+      <template>
+      <el-form-item label="类别" prop="modelType" >
+          <el-radio-group v-model="dataForm.modelType" v-if="dataForm.id==0||dataForm.id==''">
+            <el-radio :label="1">入库登记</el-radio>
+            <el-radio :label="0">模具拉出</el-radio>
             <el-radio :label="2">新品打样</el-radio>
             <el-radio :label="3">返厂维修</el-radio>
             <el-radio :label="4">外来加工</el-radio>
           </el-radio-group>
+          <el-radio-group  v-if="dataForm.id!=''" v-model="dataForm.modelType">
+            <el-radio :label="1" v-if="dataForm.modelType=='1'">入库登记</el-radio>
+            <el-radio :label="0" v-if="dataForm.modelType=='0'">模具拉出</el-radio>
+            <el-radio :label="2" v-if="dataForm.modelType=='2'">新品打样</el-radio>
+            <el-radio :label="3" v-if="dataForm.modelType=='3'">返厂维修</el-radio>
+            <el-radio :label="4" v-if="dataForm.modelType=='4'">外来加工</el-radio>
+          </el-radio-group>
       </el-form-item>
+
      </template>
 
       <template v-if="dataForm.modelType=='0'||dataForm.modelType=='1'">
@@ -32,9 +40,9 @@
             <el-radio :label="4">老第一仓库</el-radio>
           </el-radio-group>     
         </el-form-item>
-        <el-form-item  v-if="dataForm.modelType=='0'" label="架号" prop="modelShelfId">
+        <el-form-item  v-if="dataForm.modelType=='1'" label="架号" prop="modelShelfId">
           
-           <el-select v-model="dataForm.modelShelfId" filterable clearable placeholder="请选择"  style="width:260px">
+           <el-select v-model="dataForm.modelShelfId" filterable placeholder="请选择"  style="width:260px">
             <el-option
               v-for="item in modelShelfIsEmptyList"
               :key="item.id"
@@ -49,23 +57,22 @@
      
 
 
-      <el-form-item label="模具编号" prop="modelName">
+      <el-form-item label="模具编号" prop="modelNo">
         <!-- <el-input v-model="dataForm.modelNo" placeholder="模具编号" style="width:260px"></el-input> -->
 
            <template>
           <el-select
           style="width:260px"
-            v-model="dataForm.modelName"
-            
+            v-model="dataForm.modelNo"
             filterable
             allow-create
             default-first-option
             placeholder="模具编号">
             <el-option
               v-for="item in modelList"
-              :key="item.id"
+              :key="item.name"
               :label="item.name"
-              :value="item.id">
+              :value="item.name">
             </el-option>
           </el-select>
         </template>
@@ -79,17 +86,17 @@
 
         
         
-      <el-form-item label="产品名称" prop="productName">
-         <el-select v-model="dataForm.productName" filterable clearable placeholder="请选择"  style="width:260px">
+      <el-form-item label="产品名称" prop="productId">
+         <el-select v-model="dataForm.productId" filterable clearable placeholder="请选择"  style="width:260px">
             <el-option
               v-for="item in productList"
               :key="item.id"
               :label="item.name"
-              :value="item.name"
+              :value="item.id"
             ></el-option>
           </el-select>
       </el-form-item>
-      <el-form-item label="成模" prop="modelSuccessMo">
+      <!-- <el-form-item label="成模" prop="modelSuccessMo">
         <el-input v-model="dataForm.modelSuccessMo" placeholder="成模" style="width:260px">
           <template slot="append">件</template>
         </el-input>
@@ -99,11 +106,7 @@
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="口模" prop="modelMouthMo">
-        <el-input v-model="dataForm.modelMouthMo" placeholder="口模" style="width:260px">
-          <template slot="append">件</template>
-        </el-input>
-      </el-form-item>
+     
       <el-form-item label="闷头" prop="modelMenTou">
         <el-input v-model="dataForm.modelMenTou" placeholder="闷头 " style="width:260px">
           <template slot="append">件</template>
@@ -111,6 +114,11 @@
       </el-form-item>
       <el-form-item label="漏斗" prop="modelFunnel">
         <el-input v-model="dataForm.modelFunnel" placeholder="漏斗" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
+      </el-form-item>
+       <el-form-item label="口模" prop="modelMouthMo">
+        <el-input v-model="dataForm.modelMouthMo" placeholder="口模" style="width:260px">
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
@@ -124,16 +132,17 @@
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="冷却" prop="modelCooling">
-        <el-input v-model="dataForm.modelCooling" placeholder="冷却" style="width:260px">
-          <template slot="append">件</template>
-        </el-input>
-      </el-form-item>
       <el-form-item label="钳片" prop="modelClamp">
         <el-input v-model="dataForm.modelClamp" placeholder="钳片" style="width:260px">
           <template slot="append">件</template>
         </el-input>
       </el-form-item>
+      <el-form-item label="冷却" prop="modelCooling">
+        <el-input v-model="dataForm.modelCooling" placeholder="冷却" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
+      </el-form-item>
+      
       <el-form-item label="容量" prop="modelVolume">
         <el-input v-model="dataForm.modelVolume" placeholder="容量" style="width:260px">
           <template slot="append">毫升</template>
@@ -143,7 +152,7 @@
         <el-input v-model="dataForm.bottleWeight" placeholder="瓶重" style="width:260px">
           <template slot="append">克</template>
         </el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="经手人" prop="modelHandlingPeople">
         <el-input v-model="dataForm.modelHandlingPeople" placeholder="经手人" style="width:260px"></el-input>
       </el-form-item>

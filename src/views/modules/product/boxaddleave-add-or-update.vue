@@ -17,7 +17,7 @@
           <el-radio-button label="1">入库</el-radio-button>
           <el-radio-button label="0">出库</el-radio-button>
         </el-radio-group>
-         <el-radio-group v-if="dataForm.id!=''" v-model="dataForm.type">
+         <el-radio-group v-if="dataForm.id!=''" v-model="dataForm.type" >
           <el-radio-button v-if="dataForm.type==1" label="1">入库</el-radio-button>
           <el-radio-button v-if="dataForm.type==0" label="0">出库</el-radio-button>
         </el-radio-group>
@@ -104,7 +104,7 @@
           v-model="dataForm.outBoxTime"
           type="date"
           style="width:260px"
-           value-format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="出库时间"
         ></el-date-picker>
       </el-form-item>
@@ -235,7 +235,7 @@
         this.getAllProductBoxList();
         this.getAllBoxFactoryList();
         this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadBoxImage?token=${this.$cookie.get('token')}`);
-        this. imageUrl='',
+        this.imageUrl='',
         this.dataForm= {
           boxNo: '',
           bodyNumber: '',

@@ -26,13 +26,15 @@
         prop="id"
         header-align="center"
         align="center"
-        label="">
+        label="序号"
+        width="100">
       </el-table-column>
       <el-table-column
         prop="warehouseId"
         header-align="center"
         align="center"
-        label="仓库号">
+        label="仓库号"
+        width="100">
       </el-table-column>
       <el-table-column
         prop="shelfNo"
@@ -54,7 +56,12 @@
             </el-tag>
           </template>
       </el-table-column>
-
+      <el-table-column
+        prop="modelName"
+        header-align="center"
+        align="center"
+        label="模具编号">
+      </el-table-column>
       <el-table-column
         fixed="right"
         header-align="center"

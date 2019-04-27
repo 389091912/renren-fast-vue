@@ -30,7 +30,7 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="模具ID"></el-table-column>
+      <el-table-column prop="id" header-align="center" align="center" label="序号" type="index" width="70"></el-table-column>
       <el-table-column prop="depotId" header-align="center" align="center" label="仓库号"  width="120">
        <template slot-scope="scope">
               <el-tag v-if="scope.row.depotId=='1'">新第一仓库</el-tag>
@@ -41,6 +41,7 @@
       </el-table-column>
       <el-table-column prop="siteNo" header-align="center" align="center" label="架号"></el-table-column>
       <el-table-column prop="modelName" header-align="center" align="center" label="模具编号"></el-table-column>
+      <el-table-column prop="customerModelNo" header-align="center" align="center" label="客户编号"></el-table-column>
          <el-table-column prop="modelType" header-align="center" align="center" label="类型" width="120">
         <template slot-scope="scope">
               <el-tag type="danger" v-if="scope.row.modelType=='0'">模具拉出</el-tag>
@@ -54,13 +55,13 @@
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
       <el-table-column prop="modelSuccessMo" header-align="center" align="center" label="成模"></el-table-column>
       <el-table-column prop="modelPrimaryMo" header-align="center" align="center" label="初模"></el-table-column>
-      <el-table-column prop="modelMouthMo" header-align="center" align="center" label="口模"></el-table-column>
       <el-table-column prop="modelMenTou" header-align="center" align="center" label="闷头"></el-table-column>
       <el-table-column prop="modelFunnel" header-align="center" align="center" label="漏斗"></el-table-column>
+      <el-table-column prop="modelMouthMo" header-align="center" align="center" label="口模"></el-table-column>
       <el-table-column prop="modelCore" header-align="center" align="center" label="芯子"></el-table-column>
       <el-table-column prop="modelAirTou" header-align="center" align="center" label="气头"></el-table-column>
-      <el-table-column prop="modelCooling" header-align="center" align="center" label="冷却"></el-table-column>
       <el-table-column prop="modelClamp" header-align="center" align="center" label="钳片"></el-table-column>
+      <el-table-column prop="modelCooling" header-align="center" align="center" label="冷却"></el-table-column>
       <el-table-column prop="bottleWeight" header-align="center" align="center" label="瓶重"></el-table-column>
       <el-table-column
         prop="modelHandlingPeople"

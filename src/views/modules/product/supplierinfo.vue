@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('product:ingredientdetail:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('product:ingredientdetail:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('product:supplierinfo:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:supplierinfo:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -23,86 +23,28 @@
         width="50">
       </el-table-column>
       <el-table-column
+        prop="id"
         header-align="center"
         align="center"
-        label="序号"
-        type="index"
-         width="70">
-      </el-table-column>
-     
-      <el-table-column
-        prop="materialName"
-        header-align="center"
-        align="center"
-        label="原料名称
-">
+        label="序号">
       </el-table-column>
       <el-table-column
-        prop="weight"
-        header-align="center"
-        align="center"
-        label="吨数">
-      </el-table-column>
-        <el-table-column
-        prop="type"
-        header-align="center"
-        align="center"
-        label="类型">
-        <!-- 0为入库，1为出库 -->
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.type==1" type='success'>入库</el-tag>
-            <el-tag v-if='scope.row.type==0' type='danger'>出库</el-tag>
-          </template>
-      </el-table-column>
-       <el-table-column
-        prop="tickerNumber"
-        header-align="center"
-        align="center"
-        label="票号">
-      </el-table-column>
-
-       <el-table-column
         prop="supplierName"
         header-align="center"
         align="center"
-        label="供货商名称">
+        label="供货商">
       </el-table-column>
       <el-table-column
-        prop="price"
+        prop="telephoneNumber"
         header-align="center"
         align="center"
-        label="价格">
+        label="手机号">
       </el-table-column>
       <el-table-column
-        prop="isPay"
+        prop="remark"
         header-align="center"
         align="center"
-        label="付款状态">
-         <template slot-scope="scope">
-            <el-tag v-if="scope.row.isPay=='1'" type='success'>已付款</el-tag>
-            <el-tag v-if="scope.row.isPay=='0'" type='danger'>未付款</el-tag>
-          </template>
-      </el-table-column>
-      <el-table-column
-        prop="imageUrl"
-        header-align="center"
-        align="center"
-        label="入库单留存">
-          <template slot-scope="scope">
-          <el-popover
-            placement="left"
-            title=""
-            trigger="hover" v-if="scope.row.imageUrl">
-            <img :src="imageUrl+scope.row.imageUrl+ '?token='+token" alt="" style="height:600px;width:600px" />
-            <img slot="reference" :src="imageUrl+scope.row.imageUrl+ '?token='+token" alt="" style="height: 50px;width: 50px">
-          </el-popover> 
-        </template>
-      </el-table-column>
-     <el-table-column
-        prop="detailTime"
-        header-align="center"
-        align="center"
-        label="出入库时间">
+        label="备注">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -131,7 +73,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './ingredientdetail-add-or-update'
+  import AddOrUpdate from './supplierinfo-add-or-update'
   export default {
     data () {
       return {
@@ -144,9 +86,7 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: false,
-        imageUrl:null,
-        token:null
+        addOrUpdateVisible: false
       }
     },
     components: {
@@ -159,10 +99,8 @@
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
-      this.imageUrl=window.SITE_CONFIG.baseUrl+'/pub';
-      this.token=this.$cookie.get('token');
         this.$http({
-          url: this.$http.adornUrl('/product/ingredientdetail/list'),
+          url: this.$http.adornUrl('/product/supplierinfo/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -213,7 +151,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/product/ingredientdetail/delete'),
+            url: this.$http.adornUrl('/product/supplierinfo/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

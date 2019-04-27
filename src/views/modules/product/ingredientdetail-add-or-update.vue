@@ -3,40 +3,126 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="供货商名称" prop="supplierId">
-      <el-input v-model="dataForm.supplierId" placeholder="供货商名称"></el-input>
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="130px">
+    
+      <template>
+        <el-form-item label="类型" prop="type">
+            <el-radio-group v-if="dataForm.id==''||dataForm.id==0" v-model="dataForm.type">
+              <el-radio-button label="1">入库</el-radio-button>
+              <el-radio-button label="0">出库</el-radio-button>
+            </el-radio-group>
+            <el-radio-group v-if="dataForm.id!=''" v-model="dataForm.type">
+              <el-radio-button v-if="dataForm.type==1" label="1">入库</el-radio-button>
+              <el-radio-button v-if="dataForm.type==0" label="0">出库</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+
+    </template>
+
+    <el-form-item label="供货商名称" v-if="dataForm.type==1" prop="supplierId">  
+        <el-select v-model="dataForm.supplierId" 
+        default-first-option
+        style="width:260px" clearabled filterable placeholder="请选择">
+          <el-option
+            v-for="item in supplierList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
     </el-form-item>
-    <el-form-item label="原料名称" prop="ingredientId">
-      <el-input v-model="dataForm.ingredientId" placeholder="原料名称"></el-input>
-    </el-form-item>
+
+   <el-form-item label="原料名称" prop="materialName">
+      <template v-if="dataForm.type==1">
+ <el-select
+          style="width:260px"
+            v-model="dataForm.materialName"
+            filterable
+            allow-create
+            default-first-option
+            placeholder="原料名称">
+            <el-option
+              v-for="item in ingredientList"
+              :key="item.name"
+              :label="item.name"
+              :value="item.name">
+            </el-option>
+          </el-select>
+
+      </template>
+       <template v-if="dataForm.type==0">
+         <el-select
+          style="width:260px"
+            v-model="dataForm.materialName"
+            filterable
+            @change="getResidueWeight()"
+            default-first-option
+            placeholder="原料名称">
+            <el-option
+              v-for="item in ingredientList"
+              :key="item.name"
+              :label="item.name"
+              :value="item.name">
+            </el-option>
+          </el-select>
+
+      </template>
+      
+    </el-form-item> 
     <el-form-item label="吨数" prop="weight">
-      <el-input v-model="dataForm.weight" placeholder="吨数"></el-input>
+      <el-input v-model="dataForm.weight" placeholder="吨数"   style="width:260px">
+          <template slot="append">吨</template>
+      </el-input>
+      <template v-if="dataForm.type==0&&dataForm.materialName">
+        剩余数量： <el-tag >{{residueWeight}} 吨</el-tag>
+      </template>
+ 
     </el-form-item>
-    <el-form-item label="价格" prop="price">
-      <el-input v-model="dataForm.price" placeholder="价格"></el-input>
+    <el-form-item label="价格" prop="price" v-if="dataForm.type==1">
+      <el-input v-model="dataForm.price" placeholder="价格"   style="width:260px">
+          <template slot="append">元</template>
+      </el-input>
     </el-form-item>
     <el-form-item label="票号" prop="tickerNumber">
-      <el-input v-model="dataForm.tickerNumber" placeholder="票号"></el-input>
+      <el-input v-model="dataForm.tickerNumber" placeholder="票号"   style="width:260px"></el-input>
     </el-form-item>
-    <el-form-item label="类型0为入库，1为出库" prop="type">
-      <el-input v-model="dataForm.type" placeholder="类型0为入库，1为出库"></el-input>
-    </el-form-item>
-    <el-form-item label="图片" prop="imageUrl">
-      <el-input v-model="dataForm.imageUrl" placeholder="图片"></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="createUser">
-      <el-input v-model="dataForm.createUser" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="createTime">
-      <el-input v-model="dataForm.createTime" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="updateUser">
-      <el-input v-model="dataForm.updateUser" placeholder=""></el-input>
-    </el-form-item>
-    <el-form-item label="" prop="updataTime">
-      <el-input v-model="dataForm.updataTime" placeholder=""></el-input>
-    </el-form-item>
+ 
+  
+
+   <template v-if="dataForm.type==1">
+         <el-form-item label="入库日期" prop="detailTime" >
+              <el-date-picker  style="width:260px"
+                v-model="dataForm.detailTime"
+                type="date"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                placeholder="选择日期">
+              </el-date-picker>
+        </el-form-item> 
+
+        <el-form-item label="付款状态" prop="isPay" >
+              <el-radio v-model="dataForm.isPay" :label=0 border>未付款</el-radio>
+              <el-radio v-model="dataForm.isPay" :label=1 border>已付款</el-radio>
+        </el-form-item>
+        <el-form-item label="入库单留存" prop="imageUrl" >
+                <el-upload
+                    class="avatar-uploader"  
+                    accept="image/*"
+                    :action="uploadImageUrl"
+                    :on-remove="handleRemove"
+                    :on-success="handleImageSuccess"
+                    :before-upload="beforeImageUpload"
+                    :show-file-list="false"
+                  >
+                  
+                <img v-if="imageUrl" alt="" :src="imageUrl" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+        </el-form-item>
+     
+  
+    </template>
+  
+   
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -44,66 +130,143 @@
     </span>
   </el-dialog>
 </template>
-
+<style>  
+ .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 260px;
+    height: 260px;
+    line-height: 260px;
+    text-align: center;
+  }
+  .avatar {
+    width: 260px;
+    height: 260px;
+    display: block;
+  }
+ .el-textarea__inner{
+    height: 99px;
+  }
+  .el-upload-dragger{
+    width: 260px;
+  }
+  .el-select-dropdown__list{
+   
+    max-height: 150px;
+   
+  }  
+</style>
 <script>
   export default {
     data () {
       return {
         visible: false,
+        supplierList:[],
+        ingredientList:[],
+        uploadImageUrl: '',
+        residueWeight:'',
         dataForm: {
           id: 0,
           supplierId: '',
           ingredientId: '',
           weight: '',
           price: '',
+          type:"1",
           tickerNumber: '',
-          type: '',
           imageUrl: '',
-          createUser: '',
-          createTime: '',
-          updateUser: '',
-          updataTime: ''
+          materialName:"",
+          detailTime:"",
+          isPay:"0",
         },
+        imageUrl:'',
         dataRule: {
-          supplierId: [
-            { required: true, message: '供货商名称不能为空', trigger: 'blur' }
-          ],
+         
           ingredientId: [
             { required: true, message: '原料名称不能为空', trigger: 'blur' }
           ],
           weight: [
             { required: true, message: '吨数不能为空', trigger: 'blur' }
           ],
-          price: [
-            { required: true, message: '价格不能为空', trigger: 'blur' }
-          ],
-          tickerNumber: [
-            { required: true, message: '票号不能为空', trigger: 'blur' }
-          ],
-          type: [
-            { required: true, message: '类型0为入库，1为出库不能为空', trigger: 'blur' }
-          ],
-          imageUrl: [
-            { required: true, message: '图片不能为空', trigger: 'blur' }
-          ],
-          createUser: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ],
-          createTime: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ],
-          updateUser: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ],
-          updataTime: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ]
+       
+
+     
         }
       }
     },
     methods: {
+      getResidueWeight(){
+        this.residueWeight='';
+        if(this.dataForm.materialName==''){
+            return ;
+        }
+         this.$http({
+              url: this.$http.adornUrl(`/product/ingredient/residueWeightByMaterialName`),
+              method: 'post',
+              data: this.$http.adornData({
+                'materialName': this.dataForm.materialName,
+              })
+            }).then(({data}) => {
+              if (data && data.code === 0) {
+                  
+                  this.residueWeight=data.residueWeight;
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+      },
+      getAllIngredientList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/ingredient/getAllIngredientList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.ingredientList=data.ingredientList;
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
+      getAllSupplierList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/supplierinfo/getAllSupplierList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.supplierList=data.supplierList;
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
       init (id) {
-        this.dataForm.id = id || 0
+         this.dataForm={
+          supplierId: '',
+          ingredientId: '',
+          weight: '',
+          price: '',
+          type:"1",
+          tickerNumber: '',
+          imageUrl: '',
+          materialName:"",
+          detailTime:"",
+          isPay:"0",
+        },
+        this.getAllIngredientList(),
+        this.getAllSupplierList(),
+        this.dataForm.id = id || 0,
+        this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadSupplierImage?token=${this.$cookie.get('token')}`);
+        this.imageUrl='',
+       
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
@@ -114,17 +277,20 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.supplierId = data.ingredientdetail.supplierId
-                this.dataForm.ingredientId = data.ingredientdetail.ingredientId
-                this.dataForm.weight = data.ingredientdetail.weight
-                this.dataForm.price = data.ingredientdetail.price
-                this.dataForm.tickerNumber = data.ingredientdetail.tickerNumber
-                this.dataForm.type = data.ingredientdetail.type
-                this.dataForm.imageUrl = data.ingredientdetail.imageUrl
-                this.dataForm.createUser = data.ingredientdetail.createUser
-                this.dataForm.createTime = data.ingredientdetail.createTime
-                this.dataForm.updateUser = data.ingredientdetail.updateUser
-                this.dataForm.updataTime = data.ingredientdetail.updataTime
+                this.dataForm.supplierId = data.ingredientDetail.supplierId
+                this.dataForm.ingredientId = data.ingredientDetail.ingredientId
+                this.dataForm.weight = data.ingredientDetail.weight
+                this.dataForm.price = data.ingredientDetail.price
+                this.dataForm.tickerNumber = data.ingredientDetail.tickerNumber
+                this.dataForm.type = data.ingredientDetail.type
+                this.dataForm.imageUrl = data.ingredientDetail.imageUrl
+                this.dataForm.materialName = data.ingredientDetail.materialName
+                this.dataForm.detailTime = data.ingredientDetail.detailTime
+                this.dataForm.isPay = data.ingredientDetail.isPay
+                if(this.dataForm.imageUrl){
+                   this.imageUrl =  window.SITE_CONFIG.baseUrl+'/pub'+this.dataForm.imageUrl+'?token='+this.$cookie.get('token');
+
+                }
               }
             })
           }
@@ -146,10 +312,9 @@
                 'tickerNumber': this.dataForm.tickerNumber,
                 'type': this.dataForm.type,
                 'imageUrl': this.dataForm.imageUrl,
-                'createUser': this.dataForm.createUser,
-                'createTime': this.dataForm.createTime,
-                'updateUser': this.dataForm.updateUser,
-                'updataTime': this.dataForm.updataTime
+                'materialName': this.dataForm.materialName,
+                'detailTime': this.dataForm.detailTime,
+                'isPay': this.dataForm.isPay,
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
@@ -168,7 +333,28 @@
             })
           }
         })
-      }
+      },
+        handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+    
+      handleImageSuccess(res, file) {
+         this.imageUrl = URL.createObjectURL(file.raw);
+         this.dataForm.imageUrl = res.imageUrl;
+      },
+      beforeImageUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isPNG = file.type === 'image/png';
+        const isLt5M = file.size / 1024 / 1024 <5;
+
+        if (!(isJPG||isPNG)) {
+          this.$message.error('上传图片只能是 JPG 和 PNG 格式!');
+        }
+        if (!isLt5M) {
+          this.$message.error('上传图片大小不能超过 5MB!');
+        }
+        return (isJPG||isPNG) && isLt5M;
+      },
     }
   }
 </script>

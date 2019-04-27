@@ -38,7 +38,14 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="30"></el-table-column>
-      <el-table-column prop="productNo" header-align="center" align="center" label="瓶子序号"></el-table-column>
+        <el-table-column
+        header-align="center"
+        align="center"
+        label="序号"
+        type="index"
+         width="70">
+      </el-table-column>
+      <!-- <el-table-column prop="productNo" header-align="center" align="center" label="瓶子序号"></el-table-column> -->
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
       <el-table-column prop="productImageId" header-align="center" align="center" label="产品图片">
       <template slot-scope="scope">
