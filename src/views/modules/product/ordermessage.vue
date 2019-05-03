@@ -2,26 +2,12 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-         <el-select
-          style="width:260px"
-            v-model="dataForm.key"
-            clearable
-            filterable
-            default-first-option
-            placeholder="原料名称">
-            <el-option
-              v-for="item in ingredientList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
-       
+        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('product:ingredient:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('product:ingredient:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('product:ordermessage:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:ordermessage:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -44,30 +30,24 @@
         width="70">
       </el-table-column>
       <el-table-column
-        prop="materialName"
+        prop="orderDetailId"
         header-align="center"
         align="center"
-        label="材料名称">
+        label="订单id">
       </el-table-column>
-        <el-table-column
-        prop="countWeight"
+      <el-table-column
+        prop="userId"
         header-align="center"
         align="center"
-        label="总量">
+        label="人员id">
       </el-table-column>
-        <el-table-column
-        prop="outWeight"
+      <el-table-column
+        prop="isRead"
         header-align="center"
         align="center"
-        label="出库">
+        label="消息状态">
       </el-table-column>
-        <el-table-column
-        prop="residueWeight"
-        header-align="center"
-        align="center"
-        sortable
-        label="剩余数量">
-      </el-table-column>
+      
       <el-table-column
         fixed="right"
         header-align="center"
@@ -95,7 +75,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './ingredient-add-or-update'
+  import AddOrUpdate from './ordermessage-add-or-update'
   export default {
     data () {
       return {
@@ -103,7 +83,6 @@
           key: ''
         },
         dataList: [],
-         ingredientList:[],
         pageIndex: 1,
         pageSize: 10,
         totalPage: 0,
@@ -119,25 +98,11 @@
       this.getDataList()
     },
     methods: {
-
-        getAllIngredientList(){
-            this.$http({
-            url:this.$http.adornUrl(`/product/ingredient/getAllIngredientList`),
-            method: "get"
-        }).then(({data})=>{
-          if(data &&data.code==0){
-            this.ingredientList=data.ingredientList;
-          }else {
-              this.$message.error(data.msg);
-          }
-        })
-      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
-        this.getAllIngredientList();
         this.$http({
-          url: this.$http.adornUrl('/product/ingredient/list'),
+          url: this.$http.adornUrl('/product/ordermessage/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -188,7 +153,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/product/ingredient/delete'),
+            url: this.$http.adornUrl('/product/ordermessage/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

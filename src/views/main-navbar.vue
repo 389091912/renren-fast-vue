@@ -24,9 +24,21 @@
             </el-badge>
           </template>
         </el-menu-item>
-        <!-- <el-menu-item index="2">
-         
-        </el-menu-item> -->
+        <el-menu-item index="2" v-if="userType==0||userType==2">
+           <el-badge :value=orderMsgCountNumber+modelMsgCountNumber class="item">
+               <el-dropdown :show-timeout="0" placement="bottom">
+            <span class="el-dropdown-link">
+                  <icon-svg  name="tixing" class="el-icon-message"></icon-svg>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item  v-if="userType==0">订单未读消息：<el-tag type="info"> {{orderMsgCountNumber}} 条</el-tag></el-dropdown-item>
+              <el-dropdown-item >模具未读消息：<el-tag type="info" >{{modelMsgCountNumber}} 条</el-tag></el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+              <!-- <el-button type="info" icon="el-icon-message" size="small" circle></el-button> -->
+            <!-- <el-button size="small">消息</el-button> -->
+          </el-badge>
+        </el-menu-item>
         <!-- <el-submenu index="3">
           <template slot="title">Git源码</template>
           <el-menu-item index="2-1"><a href="//github.com/daxiongYang/renren-fast-vue" target="_blank">前端</a></el-menu-item>
@@ -57,7 +69,7 @@
   export default {
     data () {
       return {
-        updatePassowrdVisible: false
+        updatePassowrdVisible: false,
       }
     },
     components: {
@@ -77,6 +89,15 @@
       },
       userName: {
         get () { return this.$store.state.user.name }
+      },
+      userType:{
+        get(){return this.$store.state.user.type }
+      },
+      modelMsgCountNumber:{
+        get(){return this.$store.state.user.modelMsgCountNumber }
+      },
+      orderMsgCountNumber:{
+        get(){return this.$store.state.user.orderMsgCountNumber }
       }
     },
     methods: {
@@ -105,7 +126,8 @@
             }
           })
         }).catch(() => {})
-      }
+      },
+     
     }
   }
 </script>

@@ -38,9 +38,17 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column  header-align="center" align="center" label="序号" type="index"  width="70"></el-table-column>
-      <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
-      <el-table-column prop="productWeight" header-align="center" align="center" label="克数"></el-table-column>
+      <el-table-column  header-align="center" align="center" label="序号" type="index"  width="70">
+   
+      </el-table-column>
+      <el-table-column prop="productName" header-align="center" align="center" label="产品名称">
+         <template slot-scope="scope">
+            {{scope.row.productName}}
+            <el-badge value="new" class="item" v-if="scope.row.isRead==0"></el-badge>
+        </template>
+      </el-table-column>
+      <el-table-column prop="modelNo" header-align="center" align="center" label="模具编号"  ></el-table-column>
+      <el-table-column prop="productWeight" header-align="center" align="center" label="克数" sortable ></el-table-column>
       <el-table-column prop="productNumber" header-align="center" align="center" label="订单数量(万)"></el-table-column>
       <el-table-column prop="boxSupplyWay" header-align="center" align="center" label="纸箱供应方式">
         <template slot-scope="scope">
@@ -53,7 +61,7 @@
 
       <el-table-column prop="entryBoxNumber" header-align="center" align="center" label="纸箱入库数量" ></el-table-column>
 
-      <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
+      <el-table-column prop="employeeName" header-align="center" align="center" label="跟单人员"></el-table-column>
        <el-table-column
         prop="orderStatus"
         header-align="center"
@@ -81,6 +89,7 @@
       </el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
+          <el-button v-if="scope.row.isRead==0" type="text" size="small" @click="remarkOrderMsgIsRead(scope.row.id)">已读</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
 
@@ -130,6 +139,12 @@ export default {
       imageUrl:null,
     };
   },
+  computed: {
+       updateOrderMsgCountNumber: {
+        get () { return this.$store.state.user.orderMsgCountNumber },
+        set (val) { this.$store.commit('user/updateOrderMsgCountNumber', val) }
+      },
+  },
   components: {
     AddOrUpdate,
     AddPlanOrUpdate
@@ -159,9 +174,8 @@ export default {
           inputPattern: /^[0123]{1}$/,
           inputErrorMessage: '输入的状态不正确'
         }).then(({ value }) => {
-          console.log(orderDetailId);
-          console.log(value);
-
+       
+            
           this.$http({
             url:this.$http.adornUrl(`/product/productorderdetail/updateOrderDetailStatus`),
             method:'post',
@@ -192,6 +206,39 @@ export default {
         });
     },
 
+    remarkOrderMsgIsRead(orderDetailId){
+       this.$http({
+            url:this.$http.adornUrl(`/product/orderusermessage/save`),
+            method:'post',
+            data:
+            this.$http.adornData({
+              orderMsgId:orderDetailId,
+              isRead:'1'
+            })
+          }).then(({data})=>{
+                if (data && data.code === 0) {
+                  this.getDataList();
+                  this.getOrderMsgUserNumber();
+            }
+
+
+          })
+
+    },
+
+    getOrderMsgUserNumber(){
+    
+          this.$http({
+                  url: this.$http.adornUrl('/product/orderusermessage/getUserMessageCount'),
+                  method: 'get',
+                  params: this.$http.adornParams()
+                }).then(({data}) => {
+                  if (data && data.code === 0) {
+                    this.updateOrderMsgCountNumber = data.orderMsgCountNumber
+                  }
+          })
+        
+      },
     // 获取数据列表
     getDataList() {
 

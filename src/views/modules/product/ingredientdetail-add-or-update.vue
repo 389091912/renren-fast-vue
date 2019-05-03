@@ -5,7 +5,7 @@
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="130px">
     
-      <template>
+    <template>
         <el-form-item label="类型" prop="type">
             <el-radio-group v-if="dataForm.id==''||dataForm.id==0" v-model="dataForm.type">
               <el-radio-button label="1">入库</el-radio-button>
@@ -39,6 +39,7 @@
             v-model="dataForm.materialName"
             filterable
             allow-create
+            clearable
             default-first-option
             placeholder="原料名称">
             <el-option
@@ -100,23 +101,23 @@
         </el-form-item> 
 
         <el-form-item label="付款状态" prop="isPay" >
-              <el-radio v-model="dataForm.isPay" :label=0 border>未付款</el-radio>
-              <el-radio v-model="dataForm.isPay" :label=1 border>已付款</el-radio>
+              <el-radio v-model="dataForm.isPay" label="0" border>未付款</el-radio>
+              <el-radio v-model="dataForm.isPay" label="1" border>已付款</el-radio>
         </el-form-item>
         <el-form-item label="入库单留存" prop="imageUrl" >
-                <el-upload
-                    class="avatar-uploader"  
-                    accept="image/*"
-                    :action="uploadImageUrl"
-                    :on-remove="handleRemove"
-                    :on-success="handleImageSuccess"
-                    :before-upload="beforeImageUpload"
-                    :show-file-list="false"
-                  >
-                  
-                <img v-if="imageUrl" alt="" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
+            <el-upload
+                class="avatar-uploader"  
+                accept="image/*"
+                :action="uploadImageUrl"
+                :on-remove="handleRemove"
+                :on-success="handleImageSuccess"
+                :before-upload="beforeImageUpload"
+                :show-file-list="false"
+              >
+              
+            <img v-if="imageUrl" alt="" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
         </el-form-item>
      
   

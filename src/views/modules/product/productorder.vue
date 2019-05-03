@@ -99,11 +99,18 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false
+      
     };
   },
   components: {
     AddOrUpdate
   },
+  computed: {
+       updateOrderMsgCountNumber: {
+         get () { return this.$store.state.user.orderMsgCountNumber },
+        set (val) { this.$store.commit('user/updateOrderMsgCountNumber', val) }
+      },
+    },
   activated() {
     this.getDataList();
   },
@@ -174,6 +181,7 @@ export default {
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {
           if (data && data.code === 0) {
+            this.getOrderMsgUserNumber();
             this.$message({
               message: "操作成功",
               type: "success",
@@ -187,7 +195,20 @@ export default {
           }
         });
       });
-    }
+    },
+      getOrderMsgUserNumber(){
+    
+          this.$http({
+                  url: this.$http.adornUrl('/product/orderusermessage/getUserMessageCount'),
+                  method: 'get',
+                  params: this.$http.adornParams()
+                }).then(({data}) => {
+                  if (data && data.code === 0) {
+                    this.updateOrderMsgCountNumber = data.orderMsgCountNumber
+                  }
+          })
+        
+      },
   },
   filters:{
     formateDate(value){

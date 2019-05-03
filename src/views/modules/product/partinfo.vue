@@ -2,26 +2,25 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-         <el-select
+        <el-select
           style="width:260px"
             v-model="dataForm.key"
-            clearable
             filterable
+            clearable
             default-first-option
-            placeholder="原料名称">
+            placeholder="配件名称">
             <el-option
-              v-for="item in ingredientList"
+              v-for="item in partInfoList"
               :key="item.id"
               :label="item.name"
               :value="item.id">
             </el-option>
           </el-select>
-       
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('product:ingredient:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('product:ingredient:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('product:partinfo:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:partinfo:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -44,30 +43,23 @@
         width="70">
       </el-table-column>
       <el-table-column
-        prop="materialName"
+        prop="partName"
         header-align="center"
         align="center"
-        label="材料名称">
+        label="配件名称">
       </el-table-column>
-        <el-table-column
-        prop="countWeight"
+      
+       <el-table-column
+        prop="residueNumber"
         header-align="center"
         align="center"
-        label="总量">
+        label="库存数量">
+        <template slot-scope="scope">
+            <el-tag v-if="scope.row.residueNumber>5" type='success'>{{scope.row.residueNumber}}</el-tag>
+            <el-tag v-if='scope.row.residueNumber<=5' type='danger'>{{scope.row.residueNumber}}</el-tag>
+          </template>
       </el-table-column>
-        <el-table-column
-        prop="outWeight"
-        header-align="center"
-        align="center"
-        label="出库">
-      </el-table-column>
-        <el-table-column
-        prop="residueWeight"
-        header-align="center"
-        align="center"
-        sortable
-        label="剩余数量">
-      </el-table-column>
+
       <el-table-column
         fixed="right"
         header-align="center"
@@ -95,7 +87,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './ingredient-add-or-update'
+  import AddOrUpdate from './partinfo-add-or-update'
   export default {
     data () {
       return {
@@ -103,7 +95,7 @@
           key: ''
         },
         dataList: [],
-         ingredientList:[],
+        partInfoList:[],
         pageIndex: 1,
         pageSize: 10,
         totalPage: 0,
@@ -120,13 +112,13 @@
     },
     methods: {
 
-        getAllIngredientList(){
+       getAllPartList(){
             this.$http({
-            url:this.$http.adornUrl(`/product/ingredient/getAllIngredientList`),
+            url:this.$http.adornUrl(`/product/partinfo/getAllPartList`),
             method: "get"
         }).then(({data})=>{
           if(data &&data.code==0){
-            this.ingredientList=data.ingredientList;
+            this.partInfoList=data.partInfoList;
           }else {
               this.$message.error(data.msg);
           }
@@ -134,10 +126,10 @@
       },
       // 获取数据列表
       getDataList () {
-        this.dataListLoading = true
-        this.getAllIngredientList();
+        this.dataListLoading = true,
+        this.getAllPartList();
         this.$http({
-          url: this.$http.adornUrl('/product/ingredient/list'),
+          url: this.$http.adornUrl('/product/partinfo/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -188,7 +180,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/product/ingredient/delete'),
+            url: this.$http.adornUrl('/product/partinfo/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

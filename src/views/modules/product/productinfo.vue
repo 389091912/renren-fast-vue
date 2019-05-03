@@ -58,7 +58,7 @@
           </el-popover> 
         </template>
       </el-table-column>
-      <el-table-column prop="modelNo" header-align="center" align="center" label="模具编号"></el-table-column>
+      <el-table-column prop="modelName" header-align="center" align="center" label="模具编号"></el-table-column>
       <el-table-column prop="customerProductNo" header-align="center" align="center" label="客户编号"></el-table-column>
       <el-table-column prop="cartonId" header-align="center" align="center" label="纸箱编号"></el-table-column>
       <el-table-column prop="productNum" header-align="center" align="center" label="库存数量"></el-table-column>

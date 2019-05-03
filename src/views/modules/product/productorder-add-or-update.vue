@@ -4,7 +4,7 @@
     :close-on-click-modal="false"
     :visible.sync="visible"
     style="margin-left:200px"
-    width="1400px"
+    width="1200px"
   >
     <el-form
       :model="dataForm"
@@ -26,7 +26,7 @@
       >
         <el-form-item :label="(index+1)+'、产品'" prop="productId">
 
-          <el-select v-model="product.productId" filterable placeholder="请选择" >
+          <el-select v-model="product.productId" @change="getModelNoByProductId(index)" filterable clearable placeholder="请选择" >
             <el-option
               v-for="item in productList"
               :key="item.id"
@@ -36,7 +36,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item  style="margin-left:250px;margin-top:-60px"
+        <el-form-item  style="margin-left:280px;margin-top:-60px"
                   label="数量"
                   prop="productNumber"
                 >
@@ -49,7 +49,7 @@
           </el-input>
 
           </el-form-item>
-           <el-form-item  style="margin-left:460px;margin-top:-60px"
+           <el-form-item  style="margin-left:500px;margin-top:-60px"
                   label="克数"
                   prop="productWeight"
                 >
@@ -61,10 +61,34 @@
             <template slot="append">克</template>
           </el-input>
 
+
            </el-form-item>
 
+          <el-form-item   label="模具编号"  prop="modelId">
 
-           <el-form-item  style="margin-left:660px;margin-top:-60px;"
+              <el-select 
+              style="width:200px"
+                v-model="product.modelId"
+                filterable
+                disabled
+                default-first-option
+                placeholder="模具编号">
+                <el-option
+                  v-for="item in modelList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+          </el-select>
+            <!-- <el-input
+                v-model.number="product.modelNo"
+                placeholder="模具编号"
+                maxlength="10"
+                style="width:200px">
+              </el-input> -->
+          
+
+      <el-form-item  style="margin-left:150px;margin-top:-36px"
                   label="纸箱"
                   prop="productNumber"
                 >
@@ -72,11 +96,13 @@
               <el-radio :label="0">客供</el-radio>
               <el-radio :label="1">自供</el-radio>
             </el-radio-group>
+
             <template v-if="product.boxSupplyWay=='0'">
                <el-button type="danger"  v-if="index!='0'"   @click.prevent="removeDomain(index)">删除</el-button>  
             </template>
-            <template v-if="product.boxSupplyWay=='1'">
 
+            <template v-if="product.boxSupplyWay=='1'">
+            
             <el-form-item label="" prop="factoryId" style="margin-left:160px;margin-top:-35px;">
               <el-select v-model="product.boxFactoryId" 
               default-first-option 
@@ -89,22 +115,27 @@
                 </el-option>
               </el-select>
             </el-form-item>
-              <el-form-item   style="margin-left:320px;margin-top:-40px;"
+              <el-form-item   style="margin-left:340px;margin-top:-36px;"
                       label=""
                       prop="needBoxNumber"
                     >
               <el-input
                 v-model.number="product.needBoxNumber"
-                placeholder="纸箱数量"
+                placeholder="所需纸箱数量"
                 maxlength="10"
-                style="width:140px">
+                style="width:180px">
                 <template slot="append">件</template>
               </el-input>
+
+
                <el-button type="danger"  v-if="index!='0'"   @click.prevent="removeDomain(index)">删除</el-button>  
               </el-form-item>
           </template>
            </el-form-item>
 
+          </el-form-item>
+        
+     
       </div>
      
       <el-form-item label="订单时间" prop="orderTime">
@@ -160,7 +191,8 @@ export default {
   data() {
     return {
       visible: false,
-    
+      productBoxFactoryList:[],
+      modelList:[],
       ProductDetailVo: [
           {
             id:"",
@@ -170,6 +202,7 @@ export default {
             boxSupplyWay: 1,
             boxFactoryId:'',
             needBoxNumber:'',
+            modelId:'',
             remark: null
   
           }
@@ -201,7 +234,7 @@ export default {
         deliveryTime: [
           { required: true, message: "交货时间不能为空", trigger: "blur" }
         ],
-      
+       
         status: [
           {
             required: true,
@@ -214,7 +247,25 @@ export default {
       }
     };
   },
+  computed: {
+       updateOrderMsgCountNumber: {
+         get () { return this.$store.state.user.orderMsgCountNumber },
+        set (val) { this.$store.commit('user/updateOrderMsgCountNumber', val) }
+      },
+    },
   methods: {
+     getModelListInfo(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productmodel/getModelVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.modelList=data.modelVoList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
      getAllBoxFactoryList(){
             this.$http({
             url:this.$http.adornUrl(`/product/boxfactory/getAllBoxFactoryList`),
@@ -239,9 +290,47 @@ export default {
          }
       })
     },
+    getModelNoByProductId(index){
+        console.log(index);
+        console.log(this.ProductDetailVo[index].productId);
+      let productId=this.ProductDetailVo[index].productId;
+      this.ProductDetailVo[index].modelId='';
+    this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/info/`+productId),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          console.log(data.productInfo);
+          if(data.productInfo.modelNo){
+      this.ProductDetailVo[index].modelId=Number(data.productInfo.modelNo);
+          }else{
+              this.$message.warning("该产品没有关联相关模具,请返回产品信息中关联。");
+          }
+    
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+
+    },
     init(id) {
       this.getProductList();
       this.getAllBoxFactoryList();
+      this.getModelListInfo();
+      this.ProductDetailVo= [
+          {
+            id:"",
+            productId: "",
+            productNumber: "",
+            productWeight: "",
+            boxSupplyWay: 1,
+            boxFactoryId:'',
+            needBoxNumber:'',
+            modelId:'',
+            remark: null
+  
+          }
+        ]
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -271,6 +360,14 @@ export default {
     },
     // 表单提交
     dataFormSubmit() {
+
+     for(let item of this.ProductDetailVo){
+      if(item.modelNo==""){
+        this.$message.error("模具编号不能为空");
+        return false;
+      }
+     }
+      
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           this.$http({
@@ -291,6 +388,7 @@ export default {
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
+              this.getOrderMsgUserNumber();
               this.$message({
                 message: "操作成功",
                 type: "success",
@@ -298,8 +396,10 @@ export default {
                 onClose: () => {
                   this.visible = false;
                   this.$emit("refreshDataList");
-                }
+                },
+               
               });
+              
             } else {
               this.$message.error(data.msg);
             }
@@ -320,9 +420,23 @@ export default {
             productNumber: "",
             productWeight: "",
             boxSupplyWay: 1,
+            modelId:'',
             remark: null
     });
-  }
+  },
+  getOrderMsgUserNumber(){
+    
+          this.$http({
+                  url: this.$http.adornUrl('/product/orderusermessage/getUserMessageCount'),
+                  method: 'get',
+                  params: this.$http.adornParams()
+                }).then(({data}) => {
+                  if (data && data.code === 0) {
+                    this.updateOrderMsgCountNumber = data.orderMsgCountNumber
+                  }
+          })
+        
+      },
 
   }
 };

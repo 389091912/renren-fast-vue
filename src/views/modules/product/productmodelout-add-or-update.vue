@@ -53,7 +53,7 @@
                   :value="item.name">
                 </el-option>
               </el-select>
-              <el-input v-if="dataForm.id!=''" v-model="dataForm.modelNo" disabled placeholder="模具编号" style="width:260px"></el-input>
+              <el-input v-if="dataForm.id!=''" v-model="dataForm.modelName" disabled placeholder="模具编号" style="width:260px"></el-input>
 
             </template>
           </el-form-item>
@@ -312,7 +312,7 @@ export default {
         modelAirTou: 0,
         modelCooling: 0,
         modelClamp: 0,
-        modelHandlingPeople: "",
+        modelHandlingPeople: "黄小虎",
         customerName: "",
         modelRemark: "",
         modelDeliveryTime: "",
@@ -340,9 +340,7 @@ export default {
       },
       modelList:[],
       dataRule: {
-        modelName: [
-          { required: true, message: "模具编号不能为空", trigger: "blur" }
-        ],
+       
         modelSuccessMo: [
           { required: true, message: "成模不能为空", trigger: "blur" }
         ],
@@ -383,6 +381,9 @@ export default {
   methods: {
 
       getIsEmptyList(){
+          if(this.dataForm.depotId==''||this.dataForm.depotId==null){
+            return false;
+          }
           this.$http({
           url:this.$http.adornUrl(`/product/modelshelf/getIsEmptyList/`+this.dataForm.depotId),
           method: "get"
@@ -409,10 +410,12 @@ export default {
       })
     },
    getModelInfoBymodelNo(){
-      if(this.dataForm.modelName==''){
+         if(this.dataForm.modelName==''){
             return false;
           }
-
+          if(this.dataForm.modelName==null){
+            return false;
+          }
          this.modelShelfNoFlag=false;
          this.modelShelfNo='';
           this.$http({
@@ -427,11 +430,9 @@ export default {
               this.dataForm.modelShelfId=data.productModel.modelShelfId;
               this.dataForm.productId=data.productModel.productId;
 
-            console.log(this.dataForm.modelShelfId)
              if(data.productModel.modelShelfId&&data.productModel.modelShelfId!=null){
                 this.modelShelfNoFlag=true;
                 this.modelShelfNo=data.productModel.shelfNo;
-                console.log(data.productModel.shelfNo)
 
               }
              
@@ -508,7 +509,7 @@ export default {
         this.dataForm.modelAirTou=0;
         this.dataForm.modelCooling=0;
         this.dataForm.modelClamp=0;
-        this.dataForm.modelHandlingPeople='';
+        this.dataForm.modelHandlingPeople='黄小虎';
         this.dataForm.customerName='';
         this.dataForm.factory='';
         this.dataForm.applyName='';
@@ -650,15 +651,11 @@ export default {
       });
     }
   },
+  
   watch:{
-    //  "dataForm.modelNo" (){
-    //    this.getProductName();
-    //     //console.log("111")
-    //   },
-      // "dataForm.modelType" (){
-        
-      //   this.clearndataForm();
-      // }
+      "dataForm.depotId" (){
+      this.getIsEmptyList();
+    }
   }
 };
 </script>

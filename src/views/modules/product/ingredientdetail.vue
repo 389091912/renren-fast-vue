@@ -2,7 +2,20 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+          <el-select
+          style="width:260px"
+            v-model="dataForm.key"
+            clearable
+            filterable
+            default-first-option
+            placeholder="原料名称">
+            <el-option
+              v-for="item in ingredientList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -138,6 +151,7 @@
         dataForm: {
           key: ''
         },
+        ingredientList:[],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -156,9 +170,24 @@
       this.getDataList()
     },
     methods: {
+
+       getAllIngredientList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/ingredient/getAllIngredientList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.ingredientList=data.ingredientList;
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
+
       // 获取数据列表
       getDataList () {
-        this.dataListLoading = true
+      this.dataListLoading = true
+      this.getAllIngredientList();
       this.imageUrl=window.SITE_CONFIG.baseUrl+'/pub';
       this.token=this.$cookie.get('token');
         this.$http({

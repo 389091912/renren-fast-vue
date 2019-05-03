@@ -2,11 +2,23 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="名称" clearable></el-input>
+          <el-select 
+              style="width:260px"
+                v-model="dataForm.key"
+                filterable
+                clearable
+                default-first-option
+                placeholder="模具编号">
+                <el-option
+                  v-for="item in modelList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+          </el-select>
+        <!-- <el-input v-model="dataForm.key" placeholder="名称" clearable></el-input> -->
       </el-form-item>
-      <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="类别" clearable></el-input>
-      </el-form-item>
+     
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button
@@ -40,7 +52,14 @@
           </template> 
       </el-table-column>
       <el-table-column prop="siteNo" header-align="center" align="center" label="架号"></el-table-column>
-      <el-table-column prop="modelName" header-align="center" align="center" label="模具编号"></el-table-column>
+      <el-table-column prop="modelName" header-align="center" align="center" label="模具编号">
+         <template slot-scope="scope">
+            {{scope.row.modelName}}
+            <el-badge value="new" class="item" v-if="scope.row.isRead==0"></el-badge>
+        </template>
+
+      </el-table-column>
+
       <el-table-column prop="customerModelNo" header-align="center" align="center" label="客户编号"></el-table-column>
          <el-table-column prop="modelType" header-align="center" align="center" label="类型" width="120">
         <template slot-scope="scope">
@@ -79,6 +98,7 @@
       <el-table-column prop="reasonReturn" header-align="center" align="center" label="退货原因"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
+         <el-button v-if="scope.row.isRead==0" type="text" size="small" @click="remarkModelMsgIsRead(scope.row.id)">已读</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
@@ -107,6 +127,7 @@ export default {
         key: ""
       },
       dataList: [],
+      modelList:[],
       pageIndex: 1,
       pageSize: 20,
       totalPage: 0,
@@ -115,6 +136,12 @@ export default {
       addOrUpdateVisible: false
     };
   },
+    computed: {
+          updateModelMsgCountNumber: {
+        get () { return this.$store.state.user.modelMsgCountNumber },
+        set (val) { this.$store.commit('user/updateModelMsgCountNumber', val) }
+      }
+  },
   components: {
     AddOrUpdate
   },
@@ -122,9 +149,22 @@ export default {
     this.getDataList();
   },
   methods: {
+     getModelListInfo(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productmodel/getModelVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.modelList=data.modelVoList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
+      this.getModelListInfo();
       this.$http({
         url: this.$http.adornUrl("/product/productmodelout/list"),
         method: "get",
@@ -201,7 +241,39 @@ export default {
           }
         });
       });
-    }
+    },
+    remarkModelMsgIsRead(modelMsgId){
+       this.$http({
+            url:this.$http.adornUrl(`/product/modelusermessage/save`),
+            method:'post',
+            data:
+            this.$http.adornData({
+              modelMsgId:modelMsgId,
+              isRead:'1'
+            })
+          }).then(({data})=>{
+                if (data && data.code === 0) {
+                  this.getDataList();
+                  this.getModelMsgUserNumber();
+            }
+
+
+          })
+    },
+      getModelMsgUserNumber(){
+       
+          this.$http({
+                  url: this.$http.adornUrl('/product/modelusermessage/getModelMsgUserNumber'),
+                  method: 'get',
+                  params: this.$http.adornParams()
+                }).then(({data}) => {
+                  if (data && data.code === 0) {
+                    this.updateModelMsgCountNumber = data.msgCountNumber
+                  }
+                })
+        
+        
+      },
   }
 };
 </script>

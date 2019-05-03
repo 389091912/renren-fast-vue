@@ -44,10 +44,25 @@
       userName: {
         get () { return this.$store.state.user.name },
         set (val) { this.$store.commit('user/updateName', val) }
+      },
+       updateType: {
+        get () { return this.$store.state.user.type },
+        set (val) { this.$store.commit('user/updateType', val) }
+      },
+        updateOrderMsgCountNumber: {
+        get () { return this.$store.state.user.orderMsgCountNumber },
+        set (val) { this.$store.commit('user/updateOrderMsgCountNumber', val) }
+      },
+        updateModelMsgCountNumber: {
+        get () { return this.$store.state.user.modelMsgCountNumber },
+        set (val) { this.$store.commit('user/updateModelMsgCountNumber', val) }
       }
     },
     created () {
       this.getUserInfo()
+      this.getModelMsgUserNumber()
+      this.getOrderMsgUserNumber()
+
     },
     mounted () {
       this.resetDocumentClientHeight()
@@ -71,9 +86,39 @@
             this.loading = false
             this.userId = data.user.userId
             this.userName = data.user.username
+            this.updateType=data.user.type
           }
         })
-      }
+      },
+
+       getModelMsgUserNumber(){
+       
+          this.$http({
+                  url: this.$http.adornUrl('/product/modelusermessage/getModelMsgUserNumber'),
+                  method: 'get',
+                  params: this.$http.adornParams()
+                }).then(({data}) => {
+                  if (data && data.code === 0) {
+                    this.updateModelMsgCountNumber = data.msgCountNumber
+                  }
+                })
+        
+        
+      },
+      getOrderMsgUserNumber(){
+    
+          this.$http({
+                  url: this.$http.adornUrl('/product/orderusermessage/getUserMessageCount'),
+                  method: 'get',
+                  params: this.$http.adornParams()
+                }).then(({data}) => {
+                  if (data && data.code === 0) {
+                    console.log(data.orderMsgCountNumber);
+                    this.updateOrderMsgCountNumber = data.orderMsgCountNumber
+                  }
+          })
+        
+      },
     }
   }
 </script>
