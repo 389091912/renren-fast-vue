@@ -27,6 +27,10 @@
           @click="deleteHandle()"
           :disabled="dataListSelections.length <= 0"
         >批量删除</el-button>
+         <el-button
+          type="success"
+          @click="getExcel()"
+        >导出Excel</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -37,11 +41,23 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label></el-table-column>
+      <el-table-column  header-align="center"  label="序号" type="index" align="center" width="70"></el-table-column>
+         <el-table-column prop="outTime" header-align="center" align="center" label="出库时间" width="100" >
+            <template slot-scope="scope">
+                  {{scope.row.outTime|formateDate }}
+            </template>
+      </el-table-column>
+      <el-table-column prop="ticketNo" header-align="center" align="center" label="票号"></el-table-column>
+      <el-table-column prop="customer" header-align="center" align="center" label="客户"></el-table-column>
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
-      <el-table-column prop="productOutNumber" header-align="center" align="center" label="出库数量"></el-table-column>
-      <el-table-column prop="boxNo" header-align="center" align="center" label="纸箱编号"></el-table-column>
-      <el-table-column prop="boxNumber" header-align="center" align="center" label="箱子数"></el-table-column>
+      <el-table-column prop="boxNumber" header-align="center" align="center" label="箱子数(件数)"></el-table-column>
+      <el-table-column prop="zhiNumber" header-align="center" align="center" label="只数"></el-table-column>
+      <el-table-column prop="productOutNumber" header-align="center" align="center" label="数量"></el-table-column>
+      <el-table-column prop="productWeight" header-align="center" align="center" label="克数"></el-table-column>
+      <el-table-column prop="weightCount" header-align="center" align="center" label="总克数"></el-table-column>
+      <el-table-column prop="salesman" header-align="center" align="center" label="销售员"></el-table-column>
+      <!-- <el-table-column prop="boxNo" header-align="center" align="center" label="纸箱编号"></el-table-column> -->
+      <el-table-column prop="tray" header-align="center" align="center" label="托盘"></el-table-column>
        <el-table-column prop="orderImage" header-align="center" align="center" label="订单留存">
       <template slot-scope="scope">
           <el-popover
@@ -54,8 +70,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
-      <el-table-column prop="outTime" header-align="center" align="center" label="出库时间"></el-table-column>
-      <el-table-column prop="signTime" header-align="center" align="center" label="签收时间"></el-table-column>
+   
+      <el-table-column prop="signTime" header-align="center" align="center" label="签收时间">
+            <template slot-scope="scope">
+                  {{scope.row.signTime|formateDate }}
+            </template>
+      </el-table-column>
       <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
@@ -139,6 +159,10 @@ export default {
         this.dataListLoading = false;
       });
     },
+     getExcel(){
+      this.token=this.$cookie.get('token');
+      window.location.href = window.SITE_CONFIG.baseUrl +"/product/productleavestorage/getExcel" + '?token=' + this.token;
+    },
     // 每页数
     sizeChangeHandle(val) {
       this.pageSize = val;
@@ -196,6 +220,15 @@ export default {
           }
         });
       });
+    }
+  },filters:{
+    formateDate(value){
+      if(value){
+         return value.substring(0,10);
+      }else{
+        return '';
+      }
+
     }
   }
 };

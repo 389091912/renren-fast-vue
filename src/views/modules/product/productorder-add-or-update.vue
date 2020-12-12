@@ -14,7 +14,7 @@
       label-width="130px"
     >
       <el-form-item label="订单编号" prop="orderNo">
-        <el-input v-model="dataForm.orderNo" placeholder="订单编号" style="width:260px"></el-input>
+        <el-input v-model="dataForm.orderNo" placeholder="订单编号" disabled style="width:260px"></el-input>
         <el-button type="success" style="margin-left:50px;margin-bommon:-30px" @click="addDomain">添加产品</el-button>
       </el-form-item>
         
@@ -66,7 +66,7 @@
 
           <el-form-item   label="模具编号"  prop="modelId">
 
-              <el-select 
+            <el-select 
               style="width:200px"
                 v-model="product.modelId"
                 filterable
@@ -79,7 +79,7 @@
                   :label="item.name"
                   :value="item.id">
                 </el-option>
-          </el-select>
+           </el-select>
             <!-- <el-input
                 v-model.number="product.modelNo"
                 placeholder="模具编号"
@@ -252,6 +252,7 @@ export default {
          get () { return this.$store.state.user.orderMsgCountNumber },
         set (val) { this.$store.commit('user/updateOrderMsgCountNumber', val) }
       },
+     
     },
   methods: {
      getModelListInfo(){
@@ -291,8 +292,7 @@ export default {
       })
     },
     getModelNoByProductId(index){
-        console.log(index);
-        console.log(this.ProductDetailVo[index].productId);
+      
       let productId=this.ProductDetailVo[index].productId;
       this.ProductDetailVo[index].modelId='';
     this.$http({
@@ -313,6 +313,33 @@ export default {
       })
 
     },
+    getDateTimeFormate(){
+          var date = new Date();
+          var month = date.getMonth() + 1;
+          var strDate = date.getDate();
+           var  oHour = date.getHours(); 
+           var oMin = date.getMinutes();  
+           var oSen = date.getSeconds();  
+          if (month >= 1 && month <= 9) {
+              month = "0" + month;
+          }
+          if (strDate >= 0 && strDate <= 9) {
+              strDate = "0" + strDate;
+          }
+          
+            if (oHour >= 0 && oHour <= 9) {
+              oHour = "0" + oHour;
+          }
+            if (oMin >= 0 && oMin <= 9) {
+              oMin = "0" + oMin;
+          }
+            if (oSen >= 0 && oSen <= 9) {
+              oSen = "0" + oSen;
+          }
+         var currentdate = date.getFullYear()+"-"+ month+"-" + strDate+"_"+ oHour +":"+ oMin;
+           
+          return currentdate;
+    },
     init(id) {
       this.getProductList();
       this.getAllBoxFactoryList();
@@ -332,6 +359,7 @@ export default {
           }
         ]
       this.dataForm.id = id || 0;
+      this.dataForm.orderNo="HX-"+this.$store.state.user.simpleName+"-"+this.getDateTimeFormate();
       this.visible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].resetFields();
@@ -366,6 +394,13 @@ export default {
         this.$message.error("模具编号不能为空");
         return false;
       }
+      if(item.boxSupplyWay==1){
+        if(item.needBoxNumber==""){
+                this.$message.error("纸箱订单数量不能为空");
+                return false;
+         }
+      }
+      
      }
       
       this.$refs["dataForm"].validate(valid => {

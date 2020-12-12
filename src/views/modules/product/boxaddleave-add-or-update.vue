@@ -23,6 +23,43 @@
         </el-radio-group>
       </el-form-item>
     </template>
+     <el-form-item label="订单编号" prop="orderId">
+         <el-select v-model="dataForm.orderId"  default-first-option clearable @change="getProductIdListByOrderId()"  style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item in productOrderList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+          <el-form-item label="相关产品" prop="productId">
+         <el-select v-model="dataForm.productId"  default-first-option clearable  @change="getBoxNeedNumberListByOrderIdAndProductId()" style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item in productList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+        <template v-if="this.dataForm.orderId&&this.dataForm.productId">
+          <el-tag >纸箱订单数量：{{productOrderDetailEntity.needBoxNumber}}</el-tag>
+          <el-tag type="warning">纸箱已入库数量：{{productOrderDetailEntity.entryBoxNumber}}</el-tag>
+          <el-tag type="danger">最多入库数量：{{productOrderDetailEntity.needBoxNumber-productOrderDetailEntity.entryBoxNumber}}</el-tag>
+        </template>
+      </el-form-item>
+      <el-form-item label="供货商" prop="factoryId">
+         <el-select v-model="dataForm.factoryId" 
+        default-first-option 
+        style="width:260px" filterable placeholder="请选择">
+          <el-option
+            v-for="item1 in productBoxFactoryList"
+            :key="item1.id"
+            :label="item1.name"
+            :value="item1.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
      <el-form-item label="纸箱编号" prop="boxNo">
          <el-select v-model="dataForm.boxNo"  default-first-option clearable  style="width:260px" filterable placeholder="请选择">
           <el-option
@@ -33,6 +70,7 @@
           </el-option>
         </el-select>
       </el-form-item>
+
       <el-form-item label="箱体数量" prop="bodyNumber">
         <el-input v-model="dataForm.bodyNumber" placeholder="箱体数量"  style="width:260px"></el-input>
       </el-form-item>
@@ -54,19 +92,6 @@
            value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="入库时间"
         ></el-date-picker>
-      </el-form-item>
-
-      <el-form-item label="供货商" prop="factoryId">
-         <el-select v-model="dataForm.factoryId" 
-        default-first-option
-        style="width:260px" filterable placeholder="请选择">
-          <el-option
-            v-for="item1 in productBoxFactoryList"
-            :key="item1.id"
-            :label="item1.name"
-            :value="item1.id">
-          </el-option>
-        </el-select>
       </el-form-item>
 
       <el-form-item label="单价" prop="boxPrice">
@@ -161,7 +186,9 @@
        visible:false,
        uploadImageUrl: '',
        productBoxFactoryList:[],
+       productList:[],
        productBoxList:[],
+       productOrderList:[],
         boxFactory:[{
           factoryId:'',
           boxBatch:'',
@@ -187,7 +214,10 @@
           factoryId:'',
           type:'1',
           boxOrderImage:'',
+          orderId:'',
+          productId:'',
         },
+        productOrderDetailEntity:{},
         dataRule: {
           boxNo: [
             { required: true, message: '纸箱编号不能为空', trigger: 'blur' }
@@ -195,9 +225,9 @@
           bodyNumber: [
             { required: true, message: '箱体数量不能为空', trigger: 'blur' }
           ],
-          parryNumber: [
-            { required: true, message: '格挡数量不能为空', trigger: 'blur' }
-          ],
+          // outBoxTime: [
+          //   { required: true, message: 'shi', trigger: 'blur' }
+          // ],
           // spacerNumber: [
           //   { required: true, message: '垫片数量不能为空', trigger: 'blur' }
           // ],
@@ -218,8 +248,7 @@
           }
         })
       },
-
-        getAllProductBoxList(){
+      getAllProductBoxList(){
             this.$http({
             url:this.$http.adornUrl(`/product/productbox/getAllProductBoxList`),
             method: "get"
@@ -231,7 +260,68 @@
           }
         })
       },
+      getAllOrderList(){
+                this.$http({
+                url:this.$http.adornUrl(`/product/productorder/getAllOrderList`),
+                method: "get"
+            }).then(({data})=>{
+              if(data &&data.code==0){
+                this.productOrderList=data.productOrderList;
+              }else {
+                  this.$message.error(data.msg);
+              }
+            })
+          },
+      getProductIdListByOrderId(){
+
+        var orderId=this.dataForm.orderId;
+        if(orderId==''){
+            this.dataForm.productId='';
+            return false;
+        }
+      this.$http({
+                url:this.$http.adornUrl(`/product/productorder/getProductIdListByOrderId/`+orderId),
+                method: "get",
+            }).then(({data})=>{
+              if(data &&data.code==0){
+                this.productList=data.productList;
+                this.dataForm.productId='';
+              }else {
+                  this.$message.error(data.msg);
+              }
+            })
+        
+      },
+
+      getBoxNeedNumberListByOrderIdAndProductId(){
+        
+        this.productOrderDetailEntity='';
+        if(this.dataForm.orderId==''){
+          this.dataForm.productId='';
+          return false;
+        }
+        if(this.dataForm.productId==''){
+            this.dataForm.orderId=='';
+            this.dataForm.factoryId='';
+          return false;
+        }
+
+    this.$http({
+        url: this.$http.adornUrl("/product/boxaddleave/getBoxNeedNumberListByOrderIdAndProductId"),
+        method: "get",
+        params: this.$http.adornParams({
+          orderId: this.dataForm.orderId,
+          productId: this.dataForm.productId,
+        })
+      }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.productOrderDetailEntity = data.productOrderDetailEntity;
+          this.dataForm.factoryId=this.productOrderDetailEntity.boxFactoryId;
+        } 
+      });
+      },
       init (id) {
+        this.getAllOrderList();
         this.getAllProductBoxList();
         this.getAllBoxFactoryList();
         this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadBoxImage?token=${this.$cookie.get('token')}`);
@@ -249,6 +339,8 @@
           boxPrice:'',
           type:'1',
           boxOrderImage:'',
+          orderId:'',
+          productId:'',
         },
         this.dataForm.id = id || 0
         this.visible = true
@@ -273,11 +365,13 @@
                 this.dataForm.updateTime = data.boxAddLeave.updateTime
                 this.dataForm.status = data.boxAddLeave.status
                 this.dataForm.type = data.boxAddLeave.type
-                this.dataForm.addBoxTime = data.boxAddLeave.addBoxTime
-                this.dataForm.outBoxTime = data.boxAddLeave.outBoxTime
-                this.dataForm.boxPrice = data.boxAddLeave.boxPrice
-                this.dataForm.factoryId = data.boxAddLeave.factoryId
-                this.dataForm.boxOrderImage = data.boxAddLeave.boxOrderImage
+                this.dataForm.addBoxTime = data.boxAddLeave.addBoxTime;
+                this.dataForm.outBoxTime = data.boxAddLeave.outBoxTime;
+                this.dataForm.boxPrice = data.boxAddLeave.boxPrice;
+                this.dataForm.factoryId = data.boxAddLeave.factoryId;
+                this.dataForm.boxOrderImage = data.boxAddLeave.boxOrderImage;
+                this.dataForm.orderId = data.boxAddLeave.orderId;
+                this.dataForm.productId = data.boxAddLeave.productId;
                 if(this.dataForm.boxOrderImage){
                 this.imageUrl =  window.SITE_CONFIG.baseUrl+'/pub'+this.dataForm.boxOrderImage+'?token='+this.$cookie.get('token');
                 }
@@ -312,7 +406,9 @@
                 'type': this.dataForm.type,
                 'boxPrice': this.dataForm.boxPrice,
                 'boxOrderImage': this.dataForm.boxOrderImage,
-                'factoryId': this.dataForm.factoryId
+                'factoryId': this.dataForm.factoryId,
+                'orderId': this.dataForm.orderId,
+                'productId': this.dataForm.productId,
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
@@ -351,13 +447,13 @@
         const isPNG = file.type === 'image/png';
         const isLt5M = file.size / 1024 / 1024 <5;
 
-        if (!(isJPG||isPNG)) {
-          this.$message.error('上传图片只能是 JPG 和 PNG 格式!');
-        }
+        // if (!(isJPG||isPNG)) {
+        //   this.$message.error('上传图片只能是 JPG 和 PNG 格式!');
+        // }
         if (!isLt5M) {
           this.$message.error('上传图片大小不能超过 5MB!');
         }
-        return (isJPG||isPNG) && isLt5M;
+        return isLt5M;
       },
      
     addDomain() {

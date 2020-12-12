@@ -4,14 +4,12 @@
       <el-form-item>
         <el-input v-model="dataForm.key" placeholder="名称" clearable></el-input>
       </el-form-item>
+      
        <el-form-item>
-        <el-input v-model="dataForm.type" placeholder="类别" clearable></el-input>
-      </el-form-item>
-       <el-form-item>
-        <el-input v-model="dataForm.depotId" placeholder="仓库号" clearable></el-input>
+        <el-input v-model="dataForm.key" placeholder="仓库号" clearable></el-input>
       </el-form-item>
         <el-form-item>
-        <el-input v-model="dataForm.customerName" placeholder="客户名称" clearable></el-input>
+        <el-input v-model="dataForm.key" placeholder="客户名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>

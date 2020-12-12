@@ -52,6 +52,10 @@
           @click="deleteHandle()"
           :disabled="dataListSelections.length <= 0"
         >批量删除</el-button>
+         <el-button
+          type="success"
+          @click="getExcel()"
+        >导出Excel</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -82,14 +86,24 @@
             <el-tag  type='success' v-if="scope.row.addBoxNumber">{{scope.row.addBoxNumber}}</el-tag>
           </template>
       </el-table-column>
-      <el-table-column prop="addBoxTime" header-align="center" align="center" label="入库时间"></el-table-column>
+      <el-table-column prop="addBoxTime" header-align="center" align="center" label="入库时间">
+           <template slot-scope="scope">
+                  {{scope.row.addBoxTime|formateDate }}
+            </template>
+
+      </el-table-column>
 
       <el-table-column prop="outBoxNumber" header-align="center" align="center" label="成品出库数量">
          <template slot-scope="scope">
             <el-tag  type='danger' v-if="scope.row.outBoxNumber">{{scope.row.outBoxNumber}}</el-tag>
           </template>
       </el-table-column>
-      <el-table-column prop="outBoxTime" header-align="center" align="center" label="出库时间"></el-table-column>
+      <el-table-column prop="outBoxTime" header-align="center" align="center" label="出库时间">
+        <template slot-scope="scope">
+                  {{scope.row.outBoxTime|formateDate }}
+        </template>
+
+      </el-table-column>
      
       <el-table-column prop="type" header-align="center" align="center" label="状态">
           <template slot-scope="scope">
@@ -241,6 +255,14 @@ export default {
         this.$refs.addOrUpdate.init(id);
       });
     },
+    getExcel(){
+   
+      this.token=this.$cookie.get('token');
+    
+      window.location.href = window.SITE_CONFIG.baseUrl +"/product/boxaddleave/getExcel"  + '?token=' + this.token;
+
+   
+    },
     // 删除
     deleteHandle(id) {
       var ids = id
@@ -276,6 +298,16 @@ export default {
           }
         });
       });
+    }
+  },
+   filters:{
+    formateDate(value){
+
+      if(value){
+      return value.substring(0,10);
+      }else{
+        return "";
+      }
     }
   }
 };

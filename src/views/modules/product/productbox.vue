@@ -48,7 +48,13 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="ID"></el-table-column>
+     <el-table-column
+        header-align="center"
+        align="center"
+        label="序号"
+        type="index"
+         width="70">
+      </el-table-column>
       <el-table-column prop="boxNo" header-align="center" align="center" label="纸箱编号"></el-table-column>
       <el-table-column prop="body" header-align="center" align="center" label="箱体尺寸"></el-table-column>
       <el-table-column prop="bodyNumber" header-align="center" align="center" label="箱体数量"></el-table-column>

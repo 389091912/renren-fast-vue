@@ -171,8 +171,6 @@ export default {
         spacer: [{ required: true, message: "垫片不能为空", trigger: "blur" }],
         zhiShu: [{ required: true, message: "每箱只数不能为空", trigger: "blur" }],
        
-
-        location: [{ required: true, message: "位置不能为空", trigger: "blur" }]
       }
     };
   },

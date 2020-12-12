@@ -17,10 +17,26 @@
             </el-option>
           </el-select>
       </el-form-item>
+       <el-form-item>
+       <el-date-picker
+          v-model="range"
+          type="daterange"
+          value-format="yyyyMMdd"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
+        
+      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="isAuth('product:ingredientdetail:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button v-if="isAuth('product:ingredientdetail:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+       <el-button
+          type="success"
+          @click="getExcel()"
+        >导出Excel</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -90,10 +106,26 @@
         prop="isPay"
         header-align="center"
         align="center"
-        label="付款状态">
+        label="货款支付状态">
          <template slot-scope="scope">
             <el-tag v-if="scope.row.isPay=='1'" type='success'>已付款</el-tag>
             <el-tag v-if="scope.row.isPay=='0'" type='danger'>未付款</el-tag>
+          </template>
+      </el-table-column>
+        <el-table-column
+        prop="freightCost"
+        header-align="center"
+        align="center"
+        label="运费单价">
+      </el-table-column>
+       <el-table-column
+        prop="freightCostPay"
+        header-align="center"
+        align="center"
+        label="运费支付状态">
+         <template slot-scope="scope">
+            <el-tag v-if="scope.row.freightCostPay=='1'" type='success'>已付款</el-tag>
+            <el-tag v-if="scope.row.freightCostPay=='0'" type='danger'>未付款</el-tag>
           </template>
       </el-table-column>
       <el-table-column
@@ -116,6 +148,9 @@
         header-align="center"
         align="center"
         label="出入库时间">
+          <template slot-scope="scope">
+                  {{scope.row.detailTime|formateDate }}
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -149,8 +184,11 @@
     data () {
       return {
         dataForm: {
-          key: ''
+          key: '',
+          rangeBefore:'',
+          rangeAfter:'',
         },
+        range:"",
         ingredientList:[],
         dataList: [],
         pageIndex: 1,
@@ -186,6 +224,14 @@
 
       // 获取数据列表
       getDataList () {
+       if(this.range instanceof Array){
+        this.dataForm.rangeBefore=this.range[0];
+        this.dataForm.rangeAfter=this.range[1];
+      }
+      else{
+        this.dataForm.rangeBefore='';
+        this.dataForm.rangeAfter='';
+      }
       this.dataListLoading = true
       this.getAllIngredientList();
       this.imageUrl=window.SITE_CONFIG.baseUrl+'/pub';
@@ -196,7 +242,9 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key
+            'key': this.dataForm.key,
+            'rangeBefore': this.dataForm.rangeBefore,
+            'rangeAfter': this.dataForm.rangeAfter,
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -209,6 +257,11 @@
           this.dataListLoading = false
         })
       },
+        getExcel(){
+      this.token=this.$cookie.get('token');
+      window.location.href = window.SITE_CONFIG.baseUrl +"/product/ingredientdetail/getExcel" + '?token=' + this.token;
+
+    },
       // 每页数
       sizeChangeHandle (val) {
         this.pageSize = val
@@ -261,6 +314,16 @@
           })
         })
       }
+    },
+   filters:{
+    formateDate(value){
+
+      if(value){
+      return value.substring(0,10);
+      }else{
+        return "";
+      }
     }
+  }
   }
 </script>

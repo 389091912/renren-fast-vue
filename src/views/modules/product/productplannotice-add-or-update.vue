@@ -28,7 +28,7 @@
         <el-input v-model="dataForm.groupNumber" maxlength="2" placeholder="生产组数" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="产品编号" prop="productId">
-       <el-select v-model="dataForm.productId" filterable placeholder="请选择" clearable style="width:260px">
+       <el-select v-model="dataForm.productId" filterable @change="getModelByProductId()" placeholder="请选择" clearable style="width:260px">
             <el-option
               v-for="item in productList"
               :key="item.id"
@@ -38,11 +38,24 @@
           </el-select>
       </el-form-item>
       <el-form-item label="模具编号" prop="modelId">
-        <el-input v-model="dataForm.modelId" placeholder="模具编号" style="width:260px"></el-input>
+          <el-select 
+              style="width:260px"
+                v-model="dataForm.modelId"
+                filterable
+                disabled
+                default-first-option
+                placeholder="模具编号">
+                <el-option
+                  v-for="item in modelList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+           </el-select>
       </el-form-item>
-      <el-form-item label="客户编号" prop="customerProductNo">
+      <!-- <el-form-item label="客户编号" prop="customerProductNo">
         <el-input v-model="dataForm.customerProductNo" placeholder="客户编号" style="width:260px"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="克数" prop="materialWeight">
         <el-input v-model="dataForm.materialWeight" placeholder="克数" style="width:260px"></el-input>
       </el-form-item>
@@ -68,10 +81,16 @@
         </el-input>
       </el-form-item> -->
       <el-form-item label="客户样品" prop="customerProductSytle">
-        <el-input v-model="dataForm.customerProductSytle" placeholder="客户样品 有 无" style="width:260px"></el-input>
+         <el-radio-group  v-model="dataForm.customerProductSytle" style="width:260px">
+          <el-radio label="1">有</el-radio>
+          <el-radio label="0">无</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="瓶盖套装" prop="bottleCapSuit">
-        <el-input v-model="dataForm.bottleCapSuit" placeholder="瓶盖套装 有 无" style="width:260px"></el-input>
+           <el-radio-group  v-model="dataForm.bottleCapSuit" style="width:260px">
+          <el-radio label="1">有</el-radio>
+          <el-radio label="0">无</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="后续加工" prop="followUpProcess">
         <el-input v-model="dataForm.followUpProcess" placeholder="后续加工" style="width:260px"></el-input>
@@ -111,7 +130,10 @@
         <el-input v-model="dataForm.remark" placeholder="备注" style="width:260px"></el-input>
       </el-form-item>
       <el-form-item label="是否优先" prop="isPriority">
-        <el-input v-model="dataForm.isPriority" placeholder="是否优先" style="width:260px"></el-input>
+        <el-radio-group  v-model="dataForm.isPriority" style="width:260px">
+          <el-radio label='1' >优先</el-radio>
+          <el-radio label='0' >正常</el-radio>
+        </el-radio-group>
       </el-form-item>
 
     </el-form>
@@ -130,6 +152,7 @@ export default {
       deviceList:[],
       productList:[],
       productBoxList:[],
+      modelList:[],
       dataForm: {
         id: 0,
         deviceId: "",
@@ -223,6 +246,9 @@ export default {
       }
     };
   },
+  created() {
+          this.getModelListInfo();
+  },
   methods: {
    getProductList(){
       this.$http({
@@ -261,12 +287,47 @@ export default {
           }
         })
       },
-    addInit(orderId,productId,productWeight,productNumber,id,remark){
-    
+
+       getModelListInfo(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productmodel/getModelVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.modelList=data.modelVoList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
+    getModelByProductId(){
+
+          if(this.dataForm.productId==''){
+            return false;
+          }
+          this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getModelByProductId/`+this.dataForm.productId),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+
+          console.log(data.productInfo);
+          if(data.productInfo.modelNo){
+          this.dataForm.modelId=Number(data.productInfo.modelNo);
+          }
+          
+         // this.modelList=data.modelVoList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
+    addInit(orderId,productId,productWeight,productNumber,id,remark,modelId){
+      this.getModelListInfo();
       this.getProductList();
       this.getDriverList();
       this.getAllProductBoxList();
-    
+
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -276,6 +337,8 @@ export default {
       this.dataForm.orderNumber=productNumber;
       this.dataForm.materialWeight=productWeight;
       this.dataForm.remark=remark;
+      console.log(modelId);
+      this.dataForm.modelId=modelId;
         if (this.dataForm.id) {
           this.$http({
             url: this.$http.adornUrl(
@@ -313,16 +376,18 @@ export default {
               this.dataForm.updateUser = data.productPlanNotice.updateUser;
               this.dataForm.status = data.productPlanNotice.status;
               this.dataForm.groupNumber = data.productPlanNotice.groupNumber;
-              this.dataForm.isPriority = data.productPlanNotice.isPriority;
+              this.dataForm.isPriority = data.productPlanNotice.isPriority+"";
             }
           });
         }
       });
     },
     init(id) {
+
       this.getProductList();
       this.getDriverList();
-      this.getAllProductBoxList();
+      this.getAllProductBoxList(); 
+      this.dataForm.modelId='';
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -338,7 +403,12 @@ export default {
             if (data && data.code === 0) {
               this.dataForm.deviceId = data.productPlanNotice.deviceId;
               this.dataForm.productId = data.productPlanNotice.productId;
-              this.dataForm.modelId = data.productPlanNotice.modelId;
+              if(data.productPlanNotice.modelId){
+                console.log(data.productPlanNotice.modelId);
+              this.dataForm.modelId = Number(data.productPlanNotice.modelId);
+             // this.dataForm.modelId = 3;
+              }
+        
               this.dataForm.customerProductNo =data.productPlanNotice.customerProductNo;
               this.dataForm.materialWeight = data.productPlanNotice.materialWeight;
               this.dataForm.volume = data.productPlanNotice.volume;
@@ -433,9 +503,9 @@ export default {
     }
   },
   watch:{
-      "dataForm.productId":function(){
+      // "dataForm.productId":function(){
             
-      }
+      // }
   }
 };
 </script>

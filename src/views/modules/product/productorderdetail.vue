@@ -38,9 +38,7 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column  header-align="center" align="center" label="序号" type="index"  width="70">
-   
-      </el-table-column>
+      <el-table-column  header-align="center" align="center" label="序号" type="index"  width="70"></el-table-column>
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称">
          <template slot-scope="scope">
             {{scope.row.productName}}
@@ -93,9 +91,13 @@
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
 
-           <el-button type="success" size="small"  v-if="scope.row.status=='0'||scope.row.status=='1'"
-           @click="addPlanOrUpdateHandle(scope.row.id,scope.row.productId,scope.row.productWeight,scope.row.productNumber,scope.row.planId,scope.row.remark)">
+           <el-button type="success" size="small"  v-if="scope.row.status=='0'||scope.row.planId==''"
+           @click="addPlanOrUpdateHandle(scope.row.id,scope.row.productId,scope.row.productWeight,scope.row.productNumber,scope.row.planId,scope.row.remark,scope.row.modelId)">
             制定生产
+           </el-button>
+           <el-button type="info" size="small"  v-if="scope.row.planId"
+           @click="addPlanOrUpdateHandle(scope.row.id,scope.row.productId,scope.row.productWeight,scope.row.productNumber,scope.row.planId,scope.row.remark,scope.row.modelId)">
+            查看生产
            </el-button>
         </template>
      
@@ -296,10 +298,10 @@ export default {
     },
      //scope.row.id,scope.row.productId,scope.row.productWeight,scope.row.productNumber
      // 新增 生产计划 / 修改
-    addPlanOrUpdateHandle(orderId,productId,productWeight,productNumber,planId,remark) {
+    addPlanOrUpdateHandle(orderId,productId,productWeight,productNumber,planId,remark,modelId) {
       this.addOrUpdateVisible = true;
       this.$nextTick(() => {
-        this.$refs.addPlanOrUpdate.addInit(orderId,productId,productWeight,productNumber,planId,remark);
+        this.$refs.addPlanOrUpdate.addInit(orderId,productId,productWeight,productNumber,planId,remark,modelId);
       });
     },
     // 删除

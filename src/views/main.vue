@@ -49,6 +49,11 @@
         get () { return this.$store.state.user.type },
         set (val) { this.$store.commit('user/updateType', val) }
       },
+        updateSimpleName:{
+          get(){return this.$store.state.user.simpleName },
+          set (val) { this.$store.commit('user/updateSimpleName', val) }
+
+      },
         updateOrderMsgCountNumber: {
         get () { return this.$store.state.user.orderMsgCountNumber },
         set (val) { this.$store.commit('user/updateOrderMsgCountNumber', val) }
@@ -87,6 +92,7 @@
             this.userId = data.user.userId
             this.userName = data.user.username
             this.updateType=data.user.type
+            this.updateSimpleName=data.user.simpleName
           }
         })
       },

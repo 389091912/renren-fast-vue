@@ -49,7 +49,15 @@
         </template>
   
       <el-form-item label="箱数" prop="boxNumber">
-        <el-input v-model.number="dataForm.boxNumber" placeholder="箱数" style="width:260px"></el-input>
+        <el-input v-model.number="dataForm.boxNumber" placeholder="箱数" style="width:260px">
+              <template slot="append">件</template>
+        </el-input>
+  
+      </el-form-item>
+      <el-form-item label="托盘" prop="tray">
+        <el-input v-model.number="dataForm.tray" placeholder="托盘" style="width:260px">
+              <template slot="append">件</template>
+        </el-input>
   
       </el-form-item>
       <el-form-item label="入库数量" prop="productNumber">
@@ -99,6 +107,7 @@ export default {
         productNumber: "",
         putInTime: "",
         remark: "",
+        tray: "",
       
       },
       dataRule: {
@@ -108,10 +117,10 @@ export default {
         zhiNumber: [
           { required: true, message: "只数不能为空", trigger: "blur" }
         ],
-        boxId: [{ required: true, message: "纸箱id不能为空", trigger: "blur" }],
-        boxNumber: [
-          { required: true, message: "箱数不能为空", trigger: "blur" }
-        ],
+        // boxId: [{ required: true, message: "纸箱id不能为空", trigger: "blur" }],
+        // boxNumber: [
+        //   { required: true, message: "箱数不能为空", trigger: "blur" }
+        // ],
         
         putInTime: [
           { required: true, message: "入库时间不能为空", trigger: "blur" }
@@ -177,6 +186,7 @@ export default {
               this.dataForm.productNumber = data.productPutInStorage.productNumber;
               this.dataForm.putInTime = data.productPutInStorage.putInTime;
               this.dataForm.remark = data.productPutInStorage.remark;
+              this.dataForm.tray = data.productPutInStorage.tray;
             }
           });
         }
@@ -211,7 +221,8 @@ export default {
               createUser: this.dataForm.createUser,
               updateTime: this.dataForm.updateTime,
               updateUser: this.dataForm.updateUser,
-              status: this.dataForm.status
+              status: this.dataForm.status,
+              tray: this.dataForm.tray,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {

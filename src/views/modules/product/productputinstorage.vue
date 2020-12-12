@@ -3,7 +3,15 @@
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
          <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="输入名称" style="width:260px" clearable></el-input>
+             <el-select v-model="dataForm.key" clearable filterable placeholder="请选择产品型号"  style="width:260px">
+            <el-option
+              v-for="item in productList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+         </el-select> 
+        <!-- <el-input v-model="dataForm.key" placeholder="输入名称" style="width:260px" clearable></el-input> -->
       </el-form-item>
        <el-form-item>
        <el-date-picker
@@ -39,13 +47,18 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="ID"></el-table-column>
+      <el-table-column  header-align="center" align="center" label="序号" type="index"  width="70"></el-table-column>
       <el-table-column prop="productName" header-align="center" align="center" label="产品名称"></el-table-column>
       <el-table-column prop="zhiNumber" header-align="center" align="center" label="只数"></el-table-column>
       <el-table-column prop="boxNo" header-align="center" align="center" label="纸箱编号"></el-table-column>
       <el-table-column prop="boxNumber" header-align="center" align="center" label="箱数"></el-table-column>
+      <el-table-column prop="tray" header-align="center" align="center" label="托盘"></el-table-column>
       <el-table-column prop="productNumber" header-align="center" align="center" label="入库数量"></el-table-column>
-      <el-table-column prop="putInTime" header-align="center" align="center" label="入库时间"></el-table-column>
+      <el-table-column prop="putInTime" header-align="center" align="center" label="入库时间">
+           <template slot-scope="scope">
+                  {{scope.row.putInTime|formateDate }}
+            </template>
+      </el-table-column>
       <el-table-column prop="remark" header-align="center" align="center" label="备注"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
@@ -85,6 +98,7 @@ export default {
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
+      productList:[],
       addOrUpdateVisible: false
     };
   },
@@ -95,8 +109,22 @@ export default {
     this.getDataList();
   },
   methods: {
+    //获取所有的产品
+     getProductList(){
+      this.$http({
+          url:this.$http.adornUrl(`/product/productinfo/getAllProductVoList`),
+          method: "get"
+      }).then(({data})=>{
+        if(data &&data.code==0){
+          this.productList=data.productList;
+        }else {
+              this.$message.error(data.msg);
+         }
+      })
+    },
     // 获取数据列表
     getDataList() {
+      this.getProductList();
       this.dataListLoading = true;
       if(this.range instanceof Array){
         this.dataForm.rangeBefore=this.range[0];
@@ -184,6 +212,15 @@ export default {
           }
         });
       });
+    }
+  },filters:{
+    formateDate(value){
+      if(value!==''){
+         return value.substring(0,10);
+      }else{
+        return '';
+      }
+
     }
   }
 };

@@ -17,6 +17,10 @@
           @click="deleteHandle()"
           :disabled="dataListSelections.length <= 0"
         >批量删除</el-button>
+          <el-button
+          type="success"
+          @click="getExcel()"
+        >导出Excel</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -157,7 +161,15 @@ export default {
           }
         });
       });
-    }
+    },
+     getExcel(){
+   
+      this.token=this.$cookie.get('token');
+    
+      window.location.href = window.SITE_CONFIG.baseUrl +"/product/boxaddleave/getExcel"  + '?token=' + this.token;
+
+   
+    },
   }
 };
 </script>

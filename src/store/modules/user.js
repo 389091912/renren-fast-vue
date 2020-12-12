@@ -4,6 +4,7 @@ export default {
     id: 0,
     name: '',
     type:"",
+    simpleName:"",
     orderMsgCountNumber:0,
     modelMsgCountNumber:0,
   },
@@ -16,6 +17,9 @@ export default {
     },
     updateType (state, type) {
       state.type = type
+    },
+    updateSimpleName (state, simpleName) {
+      state.simpleName = simpleName
     },
     updateOrderMsgCountNumber (state, orderMsgCountNumber) {
       state.orderMsgCountNumber = orderMsgCountNumber

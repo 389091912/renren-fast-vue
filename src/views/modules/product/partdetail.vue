@@ -17,9 +17,20 @@
             </el-option>
           </el-select>
       </el-form-item>
+       <el-form-item>
+       <el-date-picker
+          v-model="range"
+          type="daterange"
+          value-format="yyyyMMdd"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('product:partdetail:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('product:partdetail:save')" type="primary" @click="addOrUpdateHandle()">出入库新增</el-button>
         <el-button v-if="isAuth('product:partdetail:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
@@ -93,6 +104,9 @@
         header-align="center"
         align="center"
         label="采购日期">
+         <template slot-scope="scope">
+                  {{scope.row.purchaseTime|formateDate }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="userName"
@@ -105,6 +119,9 @@
         header-align="center"
         align="center"
         label="使用日期">
+           <template slot-scope="scope">
+                  {{scope.row.userTime|formateDate }}
+        </template>
       </el-table-column>
       
       <el-table-column
@@ -139,8 +156,11 @@
     data () {
       return {
         dataForm: {
-          key: ''
+          key: '',
+          rangeBefore:'',
+          rangeAfter:'',
         },
+        range:"",
         dataList: [],
         partInfoList:[],
         pageIndex: 1,
@@ -175,6 +195,14 @@
       },
       // 获取数据列表
       getDataList () {
+      if(this.range instanceof Array){
+        this.dataForm.rangeBefore=this.range[0];
+        this.dataForm.rangeAfter=this.range[1];
+      }
+      else{
+        this.dataForm.rangeBefore='';
+        this.dataForm.rangeAfter='';
+      }
         this.dataListLoading = true;
          this.getAllPartList();
          this.imageUrl=window.SITE_CONFIG.baseUrl+'/pub';
@@ -185,7 +213,9 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key
+            'key': this.dataForm.key,
+            'rangeBefore': this.dataForm.rangeBefore,
+            'rangeAfter': this.dataForm.rangeAfter
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -250,6 +280,17 @@
           })
         })
       }
+    },
+    filters:{
+    formateDate(value){
+      if(value){
+      return value.substring(0,10);
+      }else{
+        return "";
+      }
+    
     }
+  }
+
   }
 </script>

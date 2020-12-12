@@ -4,7 +4,7 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="130px">
-    
+
     <template>
         <el-form-item label="类型" prop="type">
             <el-radio-group v-if="dataForm.id==''||dataForm.id==0" v-model="dataForm.type">
@@ -19,8 +19,8 @@
 
     </template>
 
-    <el-form-item label="供货商名称" v-if="dataForm.type==1" prop="supplierId">  
-        <el-select v-model="dataForm.supplierId" 
+    <el-form-item label="供货商名称" v-if="dataForm.type==1" prop="supplierId">
+        <el-select v-model="dataForm.supplierId"
         default-first-option
         style="width:260px" clearabled filterable placeholder="请选择">
           <el-option
@@ -68,8 +68,8 @@
           </el-select>
 
       </template>
-      
-    </el-form-item> 
+
+    </el-form-item>
     <el-form-item label="吨数" prop="weight">
       <el-input v-model="dataForm.weight" placeholder="吨数"   style="width:260px">
           <template slot="append">吨</template>
@@ -77,7 +77,7 @@
       <template v-if="dataForm.type==0&&dataForm.materialName">
         剩余数量： <el-tag >{{residueWeight}} 吨</el-tag>
       </template>
- 
+
     </el-form-item>
     <el-form-item label="价格" prop="price" v-if="dataForm.type==1">
       <el-input v-model="dataForm.price" placeholder="价格"   style="width:260px">
@@ -87,8 +87,8 @@
     <el-form-item label="票号" prop="tickerNumber">
       <el-input v-model="dataForm.tickerNumber" placeholder="票号"   style="width:260px"></el-input>
     </el-form-item>
- 
-  
+
+
 
    <template v-if="dataForm.type==1">
          <el-form-item label="入库日期" prop="detailTime" >
@@ -96,17 +96,29 @@
                 v-model="dataForm.detailTime"
                 type="date"
                 value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00']"
                 placeholder="选择日期">
               </el-date-picker>
-        </el-form-item> 
+        </el-form-item>
 
         <el-form-item label="付款状态" prop="isPay" >
-              <el-radio v-model="dataForm.isPay" label="0" border>未付款</el-radio>
-              <el-radio v-model="dataForm.isPay" label="1" border>已付款</el-radio>
+          <el-radio-group v-model="dataForm.isPay">
+              <el-radio  label="0" border>未付款</el-radio>
+              <el-radio label="1" border>已付款</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="运费单价" prop="freightCost" >
+               <el-input v-model="dataForm.freightCost" placeholder="运费单价(整数或者小数)"   style="width:260px"></el-input>
+        </el-form-item>
+
+        <el-form-item label="运费是否付费" prop="freightCostPay" >
+              <el-radio v-model="dataForm.freightCostPay" label="0" border>未付款</el-radio>
+              <el-radio v-model="dataForm.freightCostPay" label="1" border>已付款</el-radio>
         </el-form-item>
         <el-form-item label="入库单留存" prop="imageUrl" >
             <el-upload
-                class="avatar-uploader"  
+                class="avatar-uploader"
                 accept="image/*"
                 :action="uploadImageUrl"
                 :on-remove="handleRemove"
@@ -114,16 +126,16 @@
                 :before-upload="beforeImageUpload"
                 :show-file-list="false"
               >
-              
+
             <img v-if="imageUrl" alt="" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
         </el-form-item>
-     
-  
+
+
     </template>
-  
-   
+
+
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -131,7 +143,7 @@
     </span>
   </el-dialog>
 </template>
-<style>  
+<style>
  .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -162,10 +174,10 @@
     width: 260px;
   }
   .el-select-dropdown__list{
-   
+
     max-height: 150px;
-   
-  }  
+
+  }
 </style>
 <script>
   export default {
@@ -191,16 +203,16 @@
         },
         imageUrl:'',
         dataRule: {
-         
+
           ingredientId: [
             { required: true, message: '原料名称不能为空', trigger: 'blur' }
           ],
           weight: [
             { required: true, message: '吨数不能为空', trigger: 'blur' }
           ],
-       
 
-     
+
+
         }
       }
     },
@@ -218,7 +230,7 @@
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
-                  
+
                   this.residueWeight=data.residueWeight;
               } else {
                 this.$message.error(data.msg)
@@ -261,13 +273,15 @@
           materialName:"",
           detailTime:"",
           isPay:"0",
+          freightCost:"",
+          freightCostPay:"0",
         },
         this.getAllIngredientList(),
         this.getAllSupplierList(),
         this.dataForm.id = id || 0,
         this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadSupplierImage?token=${this.$cookie.get('token')}`);
         this.imageUrl='',
-       
+
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
@@ -287,7 +301,9 @@
                 this.dataForm.imageUrl = data.ingredientDetail.imageUrl
                 this.dataForm.materialName = data.ingredientDetail.materialName
                 this.dataForm.detailTime = data.ingredientDetail.detailTime
-                this.dataForm.isPay = data.ingredientDetail.isPay
+                this.dataForm.isPay = data.ingredientDetail.isPay+""
+                this.dataForm.freightCost = data.ingredientDetail.freightCost
+                this.dataForm.freightCostPay = data.ingredientDetail.freightCostPay+""
                 if(this.dataForm.imageUrl){
                    this.imageUrl =  window.SITE_CONFIG.baseUrl+'/pub'+this.dataForm.imageUrl+'?token='+this.$cookie.get('token');
 
@@ -316,6 +332,8 @@
                 'materialName': this.dataForm.materialName,
                 'detailTime': this.dataForm.detailTime,
                 'isPay': this.dataForm.isPay,
+                'freightCost': this.dataForm.freightCost,
+                'freightCostPay': this.dataForm.freightCostPay,
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
@@ -338,7 +356,7 @@
         handleRemove(file, fileList) {
         console.log(file, fileList);
       },
-    
+
       handleImageSuccess(res, file) {
          this.imageUrl = URL.createObjectURL(file.raw);
          this.dataForm.imageUrl = res.imageUrl;

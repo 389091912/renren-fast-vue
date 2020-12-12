@@ -11,7 +11,7 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="130px"
     >
-      <el-form-item label="产品id" prop="productId">
+      <el-form-item label="产品编号" prop="productId">
         <el-select v-model="dataForm.productId" clearable filterable placeholder="请选择"  style="width:260px">
             <el-option
               v-for="item in productList"
@@ -68,15 +68,20 @@
       </el-form-item>
 
     </template>
-      <el-form-item v-if="boxSupplyWay==1" label="纸箱id" prop="boxId">
+      <!-- <el-form-item v-if="boxSupplyWay==1" label="纸箱id" prop="boxId">
         <el-input v-model="dataForm.boxId" placeholder="纸箱id" style="width:260px"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="箱数" prop="boxNumber">
         <el-input v-model="dataForm.boxNumber" placeholder="箱数" style="width:260px">
           <template slot="append">件</template>
         </el-input>
+       
       </el-form-item>
-     
+      <el-form-item label="托盘" prop="tray">
+        <el-input v-model="dataForm.tray" placeholder="托盘" style="width:260px">
+          <template slot="append">件</template>
+        </el-input>
+       </el-form-item>
       <el-form-item label="出库时间" prop="outTime">
         <el-date-picker
           v-model="dataForm.outTime"
@@ -195,12 +200,12 @@ export default {
           { required: true, message: "出库数量不能为空", trigger: "blur" }
         ],
       
-        boxNumber: [
-          { required: true, message: "箱子数不能为空", trigger: "blur" }
-        ],
-        orderId: [
-          { required: true, message: "订单编号不能为空", trigger: "blur" }
-        ],
+        // boxNumber: [
+        //   { required: true, message: "箱子数不能为空", trigger: "blur" }
+        // ],
+        // orderId: [
+        //   { required: true, message: "订单编号不能为空", trigger: "blur" }
+        // ],
         outTime: [
           { required: true, message: "出库时间不能为空", trigger: "blur" }
         ],
@@ -212,23 +217,23 @@ export default {
      //获取纸箱编号
     selectOrderIdByProductId(){
 
-          let _url=this.$http.adornUrl(`/product/productleavestorage/selectOrderIdByProductId/${this.dataForm.productId}`);
-          if(this.dataForm.productId ==''){
-           _url=this.$http.adornUrl(`/product/productleavestorage/selectOrderIdByProductId/0`)
+            if(this.dataForm.productId){
+             let _url=this.$http.adornUrl(`/product/productleavestorage/selectOrderIdByProductId/${this.dataForm.productId}`);
+                  this.$http({
+                  url:_url,
+                  method: "get"
+              }).then(({data})=>{
+                if(data &&data.code==0){
+              
+                  this.orderList=data.orderList;
+                  
+                //  alert(data.productBoxList);
+                }else {
+                    this.$message.error(data.msg);
+                }
+              })
           }
-            this.$http({
-            url:_url,
-            method: "get"
-        }).then(({data})=>{
-          if(data &&data.code==0){
-        
-            this.orderList=data.orderList;
-            
-          //  alert(data.productBoxList);
-          }else {
-              this.$message.error(data.msg);
-          }
-        })
+          
     },
      //获取所有的产品
      getProductList(){
@@ -260,7 +265,8 @@ export default {
         remark: "",
         updateTime: "",
         status: "",
-        orderImage: ""
+        orderImage: "",
+        tray: ""
       },
       this.getProductList();
       this.uploadImageUrl = this.$http.adornUrl(`/sys/oss/uploadProductLeaveImage?token=${this.$cookie.get('token')}`);
@@ -290,6 +296,7 @@ export default {
               this.dataForm.remark = data.productLeaveStorage.remark;
               this.dataForm.updateTime = data.productLeaveStorage.updateTime;
               this.dataForm.status = data.productLeaveStorage.status;
+              this.dataForm.tray = data.productLeaveStorage.tray;
               this.dataForm.orderImage = data.productLeaveStorage.orderImage;
               if(this.dataForm.orderImage){
               this.imageUrl= window.SITE_CONFIG.baseUrl+'/pub'+this.dataForm.orderImage+'?token='+this.$cookie.get('token');
@@ -326,6 +333,7 @@ export default {
               updateTime: this.dataForm.updateTime,
               status: this.dataForm.status,
               orderImage: this.dataForm.orderImage,
+              tray: this.dataForm.tray,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {

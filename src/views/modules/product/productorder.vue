@@ -34,8 +34,8 @@
         type="index"
          width="70">
       </el-table-column>
-      <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号"></el-table-column>
-      <el-table-column prop="orderTime" header-align="center" align="center" label="订单时间">
+      <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号" width="200"></el-table-column>
+      <el-table-column prop="orderTime" header-align="center" align="center" label="订单时间" width="100">
         <template slot-scope="scope">
           {{scope.row.orderTime|formateDate}}
         </template>

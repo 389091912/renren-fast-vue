@@ -37,8 +37,30 @@
               <el-radio :label="1">自供</el-radio>
             </el-radio-group>
        </el-form-item>
+      <template v-if="dataForm.boxSupplyWay==1">
+        <el-form-item label="纸箱厂" prop="factoryId" >
+              <el-select v-model="dataForm.boxFactoryId" 
+              default-first-option 
+            style="width:260px" clearable filterable placeholder="请选择纸箱厂商">
+                <el-option
+                  v-for="item1 in productBoxFactoryList"
+                  :key="item1.id"
+                  :label="item1.name"
+                  :value="item1.id">
+                </el-option>
+              </el-select>
+        </el-form-item>
 
-
+      <el-form-item  label="所需纸箱数量" prop="needBoxNumber" >
+                    <el-input
+                      v-model.number="dataForm.needBoxNumber"
+                      placeholder="所需纸箱数量"
+                      maxlength="10"
+                     style="width:260px">
+                      <template slot="append">件</template>
+                    </el-input>
+      </el-form-item>
+      </template>
       <el-form-item label="订单生产状态" prop="status">
         <!-- 0为等待生产，1为取消生产，2为生产中，3为生产完成。 -->
         <el-select v-model="dataForm.status" 
@@ -77,7 +99,10 @@ export default {
         boxSupplyWay:"",
         status:"",
         remark: "",
+        boxFactoryId:"",
+        needBoxNumber:"",
       },
+      productBoxFactoryList:[],
       productStatusList:[
         {
           value: 0,
@@ -111,9 +136,22 @@ export default {
     };
   },
   methods: {
-
+  getAllBoxFactoryList(){
+            this.$http({
+            url:this.$http.adornUrl(`/product/boxfactory/getAllBoxFactoryList`),
+            method: "get"
+        }).then(({data})=>{
+          if(data &&data.code==0){
+            this.productBoxFactoryList=data.productBoxFactoryList;
+          }else {
+              this.$message.error(data.msg);
+          }
+        })
+      },
     init(id) {
       this.dataForm.id = id || 0;
+      this.dataForm.orderNo="HX"+""+new Date();
+      this.getAllBoxFactoryList();
       this.visible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].resetFields();
@@ -135,6 +173,8 @@ export default {
               this.dataForm.boxSupplyWay = data.productOrderDetail.boxSupplyWay;
               this.dataForm.remark = data.productOrderDetail.remark;
               this.dataForm.status = data.productOrderDetail.status;
+              this.dataForm.needBoxNumber = data.productOrderDetail.needBoxNumber;
+              this.dataForm.boxFactoryId = data.productOrderDetail.boxFactoryId;
     
             }
           });
@@ -161,6 +201,8 @@ export default {
               boxSupplyWay: this.dataForm.boxSupplyWay,
               remark: this.dataForm.remark,
               status:this.dataForm.status,
+              boxFactoryId:this.dataForm.boxFactoryId,
+              needBoxNumber:this.dataForm.needBoxNumber,
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
