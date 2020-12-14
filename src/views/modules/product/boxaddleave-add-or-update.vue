@@ -12,16 +12,16 @@
       label-width="130px"
     >
     <template >
-      <el-form-item label="类型" prop="type">
-        <el-radio-group v-if="dataForm.id==''||dataForm.id==0" v-model="dataForm.type">
-          <el-radio-button label="1">入库</el-radio-button>
-          <el-radio-button label="0">出库</el-radio-button>
-        </el-radio-group>
-         <el-radio-group v-if="dataForm.id!=''" v-model="dataForm.type" >
-          <el-radio-button v-if="dataForm.type==1" label="1">入库</el-radio-button>
-          <el-radio-button v-if="dataForm.type==0" label="0">出库</el-radio-button>
-        </el-radio-group>
-      </el-form-item>
+<!--      <el-form-item label="类型" prop="type">-->
+<!--        <el-radio-group v-if="dataForm.id==''||dataForm.id==0" v-model="dataForm.type">-->
+<!--          <el-radio-button label="1">入库</el-radio-button>-->
+<!--          <el-radio-button label="0">出库</el-radio-button>-->
+<!--        </el-radio-group>-->
+<!--         <el-radio-group v-if="dataForm.id!=''" v-model="dataForm.type" >-->
+<!--          <el-radio-button v-if="dataForm.type==1" label="1">入库</el-radio-button>-->
+<!--          <el-radio-button v-if="dataForm.type==0" label="0">出库</el-radio-button>-->
+<!--        </el-radio-group>-->
+<!--      </el-form-item>-->
     </template>
      <el-form-item label="订单编号" prop="orderId">
          <el-select v-model="dataForm.orderId"  default-first-option clearable @change="getProductIdListByOrderId()"  style="width:260px" filterable placeholder="请选择">
@@ -49,8 +49,8 @@
         </template>
       </el-form-item>
       <el-form-item label="供货商" prop="factoryId">
-         <el-select v-model="dataForm.factoryId" 
-        default-first-option 
+         <el-select v-model="dataForm.factoryId"
+        default-first-option
         style="width:260px" filterable placeholder="请选择">
           <el-option
             v-for="item1 in productBoxFactoryList"
@@ -80,7 +80,7 @@
       <el-form-item label="垫片数量" prop="spacerNumber">
         <el-input v-model="dataForm.spacerNumber" placeholder="垫片数量"  style="width:260px"></el-input>
       </el-form-item>
-      <template v-if="dataForm.type=='1'">
+      <template v-if="boxType">
       <el-form-item label="纸箱入库数量" prop="addBoxNumber">
         <el-input v-model="dataForm.addBoxNumber" placeholder="纸箱入库数量"  style="width:260px"></el-input>
       </el-form-item>
@@ -99,7 +99,7 @@
       </el-form-item>
        <el-form-item label="纸箱订单留存" prop="boxOrderImage">
         <el-upload
-          class="avatar-uploader"  
+          class="avatar-uploader"
           accept="image/*"
           :action="uploadImageUrl"
           :on-remove="handleRemove"
@@ -107,20 +107,20 @@
           :before-upload="beforeImageUpload"
           :show-file-list="false"
           >
-          
+
          <img v-if="imageUrl" alt="" :src="imageUrl" class="avatar">
          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
         <img width="100%" :src="imageUrl" alt="">
         </el-dialog>
-        
+
       </el-form-item>
       </template>
 
-   
 
-      <template v-if="dataForm.type=='0'">
+
+      <template v-if="!boxType">
       <el-form-item label="纸箱出库数量" prop="outBoxNumber">
         <el-input v-model="dataForm.outBoxNumber" placeholder="纸箱出库数量"  style="width:260px"></el-input>
       </el-form-item>
@@ -141,7 +141,7 @@
     </span>
   </el-dialog>
 </template>
-<style>  
+<style>
  .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -172,10 +172,10 @@
     width: 260px;
   }
   .el-select-dropdown__list{
-   
+
     max-height: 150px;
-   
-  }  
+
+  }
 </style>
 
 <script>
@@ -212,7 +212,7 @@
           outBoxTime:'',
           boxPrice:'',
           factoryId:'',
-          type:'1',
+          type:this.boxType,
           boxOrderImage:'',
           orderId:'',
           productId:'',
@@ -231,8 +231,13 @@
           // spacerNumber: [
           //   { required: true, message: '垫片数量不能为空', trigger: 'blur' }
           // ],
-         
+
         }
+      }
+    },
+    props:{
+      boxType:{
+        type: Number
       }
     },
     methods: {
@@ -290,11 +295,11 @@
                   this.$message.error(data.msg);
               }
             })
-        
+
       },
 
       getBoxNeedNumberListByOrderIdAndProductId(){
-        
+
         this.productOrderDetailEntity='';
         if(this.dataForm.orderId==''){
           this.dataForm.productId='';
@@ -317,7 +322,7 @@
         if (data && data.code === 0) {
           this.productOrderDetailEntity = data.productOrderDetailEntity;
           this.dataForm.factoryId=this.productOrderDetailEntity.boxFactoryId;
-        } 
+        }
       });
       },
       init (id) {
@@ -337,7 +342,7 @@
           outBoxTime:'',
           factoryId:'',
           boxPrice:'',
-          type:'1',
+          type:this.boxType,
           boxOrderImage:'',
           orderId:'',
           productId:'',
@@ -437,7 +442,7 @@
      handleRemove(file, fileList) {
         console.log(file, fileList);
       },
-    
+
       handleImageSuccess(res, file) {
          this.imageUrl = URL.createObjectURL(file.raw);
          this.dataForm.boxOrderImage = res.imageUrl;
@@ -455,7 +460,7 @@
         }
         return isLt5M;
       },
-     
+
     addDomain() {
     this.boxFactory.push({
           factoryId:'',

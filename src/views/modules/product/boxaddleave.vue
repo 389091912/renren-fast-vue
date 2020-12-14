@@ -2,8 +2,8 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
        <el-form-item>
-       
-              <el-select v-model="dataForm.key" 
+
+              <el-select v-model="dataForm.key"
               clearable
               default-first-option
               style="width:260px" filterable placeholder="输入名称">
@@ -14,7 +14,7 @@
                   :value="item.id">
                 </el-option>
               </el-select>
-         
+
 
         <!-- <el-input v-model="dataForm.key" placeholder="输入名称" style="width:260px" clearable></el-input> -->
       </el-form-item>
@@ -29,16 +29,16 @@
           end-placeholder="结束日期">
         </el-date-picker>
       </el-form-item>
-        <el-form-item label="状态" prop="type">
-          <el-select v-model="dataForm.type" clearable filterable placeholder="请选择">
-            <el-option
-              v-for="item in typeList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="状态" prop="type">-->
+<!--          <el-select v-model="dataForm.type" clearable filterable placeholder="请选择">-->
+<!--            <el-option-->
+<!--              v-for="item in typeList"-->
+<!--              :key="item.id"-->
+<!--              :label="item.name"-->
+<!--              :value="item.id"-->
+<!--            ></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button
@@ -55,7 +55,34 @@
          <el-button
           type="success"
           @click="getExcel()"
-        >导出Excel</el-button>
+        >导出入库清单</el-button>
+
+        <el-upload
+          v-if="isAuth('product:boxaddleave:save')&&boxType"
+          class="upload-demo"
+          :action="uploadAdd()"
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+          :before-upload="beforeUpload"
+          :show-file-list="false"
+          :on-success="uploadSuccess"
+        >
+          <el-button  type="primary" icon="el-icon-upload"
+          >入库导入</el-button
+          >
+        </el-upload>
+        <el-upload
+          v-if="isAuth('product:boxaddleave:save')&&!boxType"
+          class="upload-demo"
+          :action="uploadAdd()"
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+          :before-upload="beforeUpload"
+          :show-file-list="false"
+          :on-success="uploadSuccess"
+        >
+          <el-button  type="primary" icon="el-icon-upload"
+          >出库导入</el-button
+          >
+        </el-upload>
       </el-form-item>
     </el-form>
     <el-table
@@ -78,39 +105,39 @@
             trigger="hover" v-if="scope.row.boxOrderImage">
             <img :src="imageUrl+scope.row.boxOrderImage+ '?token='+token" alt="" style="height:600px;width:600px" />
             <img slot="reference" :src="imageUrl+scope.row.boxOrderImage+ '?token='+token" alt="" style="height: 50px;width: 50px">
-          </el-popover> 
+          </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="addBoxNumber" header-align="center" align="center" label="成品入库数量">
+      <el-table-column v-if="boxType" prop="addBoxNumber" header-align="center" align="center" label="成品入库数量">
          <template slot-scope="scope">
             <el-tag  type='success' v-if="scope.row.addBoxNumber">{{scope.row.addBoxNumber}}</el-tag>
           </template>
       </el-table-column>
-      <el-table-column prop="addBoxTime" header-align="center" align="center" label="入库时间">
+      <el-table-column v-if="boxType" prop="addBoxTime" header-align="center" align="center" label="入库时间">
            <template slot-scope="scope">
                   {{scope.row.addBoxTime|formateDate }}
             </template>
 
       </el-table-column>
 
-      <el-table-column prop="outBoxNumber" header-align="center" align="center" label="成品出库数量">
+      <el-table-column v-if="!boxType" prop="outBoxNumber" header-align="center" align="center" label="成品出库数量">
          <template slot-scope="scope">
             <el-tag  type='danger' v-if="scope.row.outBoxNumber">{{scope.row.outBoxNumber}}</el-tag>
           </template>
       </el-table-column>
-      <el-table-column prop="outBoxTime" header-align="center" align="center" label="出库时间">
+      <el-table-column v-if="!boxType" prop="outBoxTime" header-align="center" align="center" label="出库时间">
         <template slot-scope="scope">
                   {{scope.row.outBoxTime|formateDate }}
         </template>
 
       </el-table-column>
-     
+
       <el-table-column prop="type" header-align="center" align="center" label="状态">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.type==1" type='success'>入库</el-tag>
             <el-tag v-if='scope.row.type==0' type='danger'>出库</el-tag>
           </template>
-          
+
       </el-table-column>
 
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
@@ -131,7 +158,7 @@
       layout="total, sizes, prev, pager, next, jumper"
     ></el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" :boxType="boxType" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
@@ -174,6 +201,11 @@ export default {
   activated() {
     this.getDataList();
   },
+  props: {
+    boxType:{
+      type: Number
+    }
+  },
   methods: {
 
     getAllBoxAddLeave(){
@@ -192,7 +224,7 @@ export default {
 
     // 获取数据列表
     getDataList() {
-    
+
       this.getAllBoxAddLeave();
        if(this.range instanceof Array){
         this.dataForm.rangeBefore=this.range[0];
@@ -218,7 +250,7 @@ export default {
           page: this.pageIndex,
           limit: this.pageSize,
           key: this.dataForm.key,
-          type:this.dataForm.type,
+          type:this.boxType,
           rangeBefore: this.dataForm.rangeBefore,
           rangeAfter: this.dataForm.rangeAfter
         })
@@ -256,12 +288,57 @@ export default {
       });
     },
     getExcel(){
-   
+
       this.token=this.$cookie.get('token');
-    
+
       window.location.href = window.SITE_CONFIG.baseUrl +"/product/boxaddleave/getExcel"  + '?token=' + this.token;
 
-   
+
+    },
+    uploadAdd(){
+      return  this.$http.adornUrl(`/product/boxaddleave/uploadBoxAdd?token=${this.$cookie.get('token')}`)
+
+    },
+    beforeUpload (file) {
+      var fileName = []
+      fileName = file.name.split('.')
+      var fileType = fileName[fileName.length - 1]
+      var type = ["xlsx", "xls"].some(item => item === fileType)
+      // var type = fileType == "xlsx" || fileType == "xls" || fileType == "csv"
+      var isLt2M = file.size / 1024 / 1024 < 10
+      if (!type) {
+        this.$message.warning('上传文件只能是xlsx、xls格式!')
+        return false
+      } else if (!isLt2M) {
+        this.$message.warning('上传文件大小不能超过 10MB!')
+        return false
+      }
+    },
+    uploadSuccess (response) {
+      var errMsg = response.errMsg
+      if (errMsg.length > 0) {
+        var errMsg2 = errMsg.join("<br>")
+        this.$message({
+          message: errMsg2,
+          type: 'error',
+          duration: 15000,
+          dangerouslyUseHTMLString:true,
+          onClose: () => {
+            this.visible = false
+            this.$emit('refreshDataList')
+          }
+        })
+      }else if(errMsg.length <= 0 ){
+        this.$message({
+          message: '导入成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            this.visible = false
+            this.$emit('refreshDataList')
+          }
+        })
+      }
     },
     // 删除
     deleteHandle(id) {
@@ -312,3 +389,16 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .upload{
+  margin-bottom: 20px;
+  margin-top: 10px;
+  }
+  .upload-demo {
+  display: inline-block;
+  margin-left: 10px;
+  position: inherit;
+  z-index: 999;
+  }
+</style>
